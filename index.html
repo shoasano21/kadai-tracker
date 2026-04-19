@@ -1,0 +1,1536 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, user-scalable=no" />
+<title>課題トラッカー</title>
+<meta name="description" content="講義ごとの課題を管理するトラッカー" />
+
+<!-- PWA -->
+<meta name="theme-color" content="#667eea" media="(prefers-color-scheme: light)" />
+<meta name="theme-color" content="#0f1120" media="(prefers-color-scheme: dark)" />
+<meta name="apple-mobile-web-app-capable" content="yes" />
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+<meta name="apple-mobile-web-app-title" content="課題トラッカー" />
+<meta name="mobile-web-app-capable" content="yes" />
+<meta name="format-detection" content="telephone=no" />
+
+<link rel="manifest" href="manifest.webmanifest" />
+<link rel="icon" type="image/png" sizes="192x192" href="icons/icon-192.png" />
+<link rel="icon" type="image/png" sizes="512x512" href="icons/icon-512.png" />
+<link rel="icon" type="image/svg+xml" href="icons/icon.svg" />
+<link rel="apple-touch-icon" sizes="180x180" href="icons/apple-touch-icon.png" />
+
+<style>
+  :root {
+    --bg: #f0f2fb;
+    --bg-grad-1: #ffd6e7;
+    --bg-grad-2: #c7e1ff;
+    --bg-grad-3: #d9f5e0;
+    --panel: rgba(255,255,255,0.78);
+    --panel-solid: #ffffff;
+    --panel-2: #fafbfe;
+    --text: #1b1f2e;
+    --text-sub: #616a85;
+    --border: rgba(199,204,224,0.6);
+    --border-strong: #c8ccda;
+    --accent-1: #667eea;
+    --accent-2: #764ba2;
+    --accent: #667eea;
+    --accent-hover: #5568d3;
+    --today: #ff3860;
+    --urgent-1: #ff5978;
+    --urgent-2: #ff8a3d;
+    --urgent: #ff3860;
+    --soon-1: #ffa726;
+    --soon-2: #ffcd38;
+    --soon: #ff9800;
+    --ok-1: #26d67a;
+    --ok-2: #51e898;
+    --ok: #22c55e;
+    --done: #9aa0a6;
+    --type-report-bg: linear-gradient(135deg, #ede7fa, #dcd0f7);
+    --type-report-fg: #6a3dd1;
+    --type-memory-bg: linear-gradient(135deg, #e1f5e7, #c7ecd1);
+    --type-memory-fg: #247a3d;
+    --type-problem-bg: linear-gradient(135deg, #fdecd3, #fbd79c);
+    --type-problem-fg: #a8631a;
+    --type-other-bg: linear-gradient(135deg, #e6e8ef, #d4d7e2);
+    --type-other-fg: #4b5167;
+    --shadow: 0 4px 18px rgba(60,70,120,0.08);
+    --shadow-lg: 0 20px 60px rgba(50,60,110,0.22);
+    --shadow-glow: 0 0 0 4px rgba(102,126,234,0.12);
+    --radius: 14px;
+  }
+  [data-theme="dark"] {
+    --bg: #0f1120;
+    --bg-grad-1: #2d1b4e;
+    --bg-grad-2: #1b2951;
+    --bg-grad-3: #1a3a3a;
+    --panel: rgba(30,34,50,0.78);
+    --panel-solid: #1c1f29;
+    --panel-2: #232735;
+    --text: #edeff8;
+    --text-sub: #a3aac4;
+    --border: rgba(60,65,85,0.6);
+    --border-strong: #3b4055;
+    --accent-1: #8b9fff;
+    --accent-2: #c084fc;
+    --accent: #8b9fff;
+    --accent-hover: #a2b3ff;
+    --today: #ff5978;
+    --urgent-1: #ff6b8a;
+    --urgent-2: #ffa862;
+    --urgent: #ff6b8a;
+    --soon-1: #ffb547;
+    --soon-2: #ffd875;
+    --soon: #ffb547;
+    --ok-1: #5ddb8a;
+    --ok-2: #8dedb0;
+    --ok: #5dd27b;
+    --done: #6b7184;
+    --type-report-bg: linear-gradient(135deg, #3d2d66, #5a3d8c);
+    --type-report-fg: #d4c5ff;
+    --type-memory-bg: linear-gradient(135deg, #1f4230, #2a6545);
+    --type-memory-fg: #9eeab4;
+    --type-problem-bg: linear-gradient(135deg, #4a3820, #6b5028);
+    --type-problem-fg: #ffd89c;
+    --type-other-bg: linear-gradient(135deg, #2d3243, #3f465d);
+    --type-other-fg: #c5cae1;
+    --shadow: 0 4px 18px rgba(0,0,0,0.35);
+    --shadow-lg: 0 20px 60px rgba(0,0,0,0.55);
+    --shadow-glow: 0 0 0 4px rgba(139,159,255,0.18);
+  }
+
+  * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+  html, body { margin: 0; padding: 0; }
+  html { height: 100%; -webkit-text-size-adjust: 100%; }
+
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Hiragino Sans", "Yu Gothic UI", Meiryo, sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    font-size: 14px;
+    line-height: 1.5;
+    min-height: 100vh;
+    min-height: 100dvh;
+    overflow-x: hidden;
+    position: relative;
+    overscroll-behavior-y: none;
+    -webkit-overflow-scrolling: touch;
+    padding: env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left);
+  }
+
+  button, .view-toggle, .summary .card, header.topbar h1, .type-badge, .remain-badge, .toast {
+    -webkit-user-select: none;
+    user-select: none;
+    touch-action: manipulation;
+  }
+
+  @media (hover: none) and (pointer: coarse) {
+    .icon-btn { width: 38px; height: 38px; font-size: 16px; }
+    .btn { padding: 10px 16px; font-size: 14px; }
+    .view-toggle button { padding: 9px 18px; font-size: 14px; }
+  }
+
+  @media (display-mode: standalone) {
+    body { background: var(--bg); }
+    header.topbar { margin-top: 4px; }
+  }
+
+  body::before {
+    content: "";
+    position: fixed;
+    inset: -20%;
+    background:
+      radial-gradient(circle at 15% 20%, var(--bg-grad-1) 0%, transparent 40%),
+      radial-gradient(circle at 85% 15%, var(--bg-grad-2) 0%, transparent 45%),
+      radial-gradient(circle at 50% 85%, var(--bg-grad-3) 0%, transparent 50%);
+    filter: blur(40px);
+    opacity: 0.9;
+    z-index: -2;
+    animation: meshFloat 28s ease-in-out infinite;
+    pointer-events: none;
+  }
+  body::after {
+    content: "";
+    position: fixed;
+    inset: 0;
+    background: var(--bg);
+    opacity: 0.55;
+    z-index: -1;
+    pointer-events: none;
+  }
+  @keyframes meshFloat {
+    0%, 100% { transform: translate(0, 0) rotate(0deg); }
+    33% { transform: translate(-3%, 2%) rotate(1deg); }
+    66% { transform: translate(3%, -2%) rotate(-1deg); }
+  }
+
+  .app {
+    max-width: 1280px;
+    margin: 0 auto;
+    padding: 24px 20px 60px;
+    position: relative;
+    z-index: 1;
+  }
+
+  header.topbar {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 10px;
+    padding: 14px 18px 14px 20px;
+    margin-bottom: 20px;
+    background: var(--panel);
+    backdrop-filter: blur(18px);
+    -webkit-backdrop-filter: blur(18px);
+    border: 1px solid var(--border);
+    border-radius: 18px;
+    box-shadow: var(--shadow);
+  }
+  header.topbar h1 {
+    font-size: 22px;
+    margin: 0;
+    margin-right: auto;
+    padding: 0;
+    letter-spacing: 0.01em;
+    background: linear-gradient(135deg, var(--accent-1), var(--accent-2));
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    font-weight: 800;
+    text-align: left;
+    white-space: nowrap;
+  }
+
+  .view-toggle {
+    display: inline-flex;
+    background: var(--panel-2);
+    border: 1px solid var(--border);
+    border-radius: 999px;
+    padding: 3px;
+    position: relative;
+  }
+  .view-toggle button {
+    background: transparent;
+    color: var(--text-sub);
+    border: none;
+    padding: 7px 16px;
+    cursor: pointer;
+    font-size: 13px;
+    font-weight: 600;
+    border-radius: 999px;
+    transition: color .2s;
+    position: relative;
+    z-index: 2;
+  }
+  .view-toggle button.active { color: #fff; }
+  .view-toggle button.active::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(135deg, var(--accent-1), var(--accent-2));
+    border-radius: 999px;
+    z-index: -1;
+    box-shadow: 0 4px 14px rgba(102,126,234,0.4);
+  }
+
+  .btn {
+    background: var(--panel-solid);
+    color: var(--text);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 8px 14px;
+    cursor: pointer;
+    font-size: 13px;
+    font-weight: 600;
+    transition: transform .15s, box-shadow .15s, background .15s;
+  }
+  .btn:hover { transform: translateY(-1px); box-shadow: var(--shadow); }
+  .btn:active { transform: translateY(0); }
+  .btn.primary {
+    background: linear-gradient(135deg, var(--accent-1), var(--accent-2));
+    color: #fff;
+    border: none;
+    box-shadow: 0 6px 18px rgba(102,126,234,0.35);
+    padding: 9px 18px;
+    position: relative;
+    overflow: hidden;
+  }
+  .btn.primary::after {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.4), transparent);
+    transition: left .6s;
+  }
+  .btn.primary:hover { box-shadow: 0 10px 28px rgba(102,126,234,0.5); }
+  .btn.primary:hover::after { left: 100%; }
+  .btn.notify-on {
+    background: linear-gradient(135deg, var(--ok-1), var(--ok-2));
+    color: #fff;
+    border: none;
+    box-shadow: 0 6px 18px rgba(34,197,94,0.35);
+  }
+
+  .summary {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 12px;
+    margin-bottom: 16px;
+  }
+  .summary .card {
+    background: var(--panel);
+    backdrop-filter: blur(14px);
+    -webkit-backdrop-filter: blur(14px);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 14px 16px;
+    box-shadow: var(--shadow);
+    position: relative;
+    overflow: hidden;
+    transition: transform .2s, box-shadow .2s;
+    cursor: default;
+  }
+  .summary .card:hover { transform: translateY(-3px) scale(1.01); box-shadow: var(--shadow-lg); }
+  .summary .card::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 4px;
+  }
+  .summary .card.urgent::before { background: linear-gradient(90deg, var(--urgent-1), var(--urgent-2)); }
+  .summary .card.soon::before { background: linear-gradient(90deg, var(--soon-1), var(--soon-2)); }
+  .summary .card.ok::before { background: linear-gradient(90deg, var(--ok-1), var(--ok-2)); }
+  .summary .card.done::before { background: linear-gradient(90deg, #c3c7d4, #9aa0a6); }
+  .summary .card .emoji {
+    position: absolute;
+    top: 10px;
+    right: 12px;
+    font-size: 26px;
+    opacity: 0.85;
+  }
+  .summary .label {
+    color: var(--text-sub);
+    font-size: 12px;
+    font-weight: 600;
+    margin-top: 4px;
+  }
+  .summary .value {
+    font-size: 32px;
+    font-weight: 800;
+    font-variant-numeric: tabular-nums;
+    letter-spacing: -0.02em;
+    line-height: 1.1;
+    margin-top: 2px;
+  }
+  .summary .urgent .value { background: linear-gradient(135deg, var(--urgent-1), var(--urgent-2)); -webkit-background-clip: text; background-clip: text; color: transparent; }
+  .summary .soon .value { background: linear-gradient(135deg, var(--soon-1), var(--soon-2)); -webkit-background-clip: text; background-clip: text; color: transparent; }
+  .summary .ok .value { background: linear-gradient(135deg, var(--ok-1), var(--ok-2)); -webkit-background-clip: text; background-clip: text; color: transparent; }
+  .summary .done .value { color: var(--done); }
+
+  @keyframes pulse {
+    0%, 100% { transform: scale(1); }
+    50% { transform: scale(1.08); }
+  }
+  .summary .urgent.has-items .emoji { animation: pulse 1.4s ease-in-out infinite; }
+
+  .filter-bar {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+    align-items: center;
+    background: var(--panel);
+    backdrop-filter: blur(14px);
+    -webkit-backdrop-filter: blur(14px);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 10px 16px;
+    margin-bottom: 16px;
+    box-shadow: var(--shadow);
+  }
+  .filter-bar label {
+    font-size: 12px;
+    color: var(--text-sub);
+    font-weight: 600;
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+  }
+  .filter-bar select {
+    background: var(--panel-2);
+    color: var(--text);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 7px 12px;
+    font-size: 13px;
+    font-family: inherit;
+    cursor: pointer;
+    transition: border-color .15s;
+  }
+  .filter-bar select:focus { outline: none; border-color: var(--accent); box-shadow: var(--shadow-glow); }
+
+  .gantt-wrap {
+    background: var(--panel);
+    backdrop-filter: blur(14px);
+    -webkit-backdrop-filter: blur(14px);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    box-shadow: var(--shadow);
+    overflow: auto;
+    padding: 32px 16px 18px;
+  }
+  .gantt { position: relative; min-width: 800px; }
+  .gantt-header {
+    position: relative;
+    display: grid;
+    grid-template-columns: 280px 1fr 120px;
+    border-bottom: 2px solid var(--border-strong);
+    padding-bottom: 10px;
+    margin-bottom: 10px;
+    font-size: 12px;
+    color: var(--text-sub);
+    font-weight: 700;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+  }
+  .gantt-header .title-col { padding-left: 10px; }
+  .gantt-header .actions-col { text-align: right; padding-right: 10px; }
+  .gantt-header .timeline-col { position: relative; height: 24px; }
+  .gantt-month {
+    position: absolute;
+    top: 0;
+    font-size: 11px;
+    color: var(--text-sub);
+    border-left: 2px dashed var(--border);
+    padding-left: 6px;
+    padding-top: 2px;
+    height: 100%;
+    font-weight: 600;
+    text-transform: none;
+    letter-spacing: 0;
+  }
+
+  .gantt-row {
+    display: grid;
+    grid-template-columns: 280px 1fr 120px;
+    align-items: center;
+    min-height: 46px;
+    border-bottom: 1px dashed var(--border);
+    position: relative;
+    transition: background .15s;
+  }
+  .gantt-row:hover { background: rgba(102,126,234,0.04); }
+  .gantt-row .task-label {
+    padding: 8px 10px;
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    overflow: hidden;
+  }
+  .task-label .course-tag {
+    font-size: 11px;
+    color: var(--text-sub);
+    font-weight: 600;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+  }
+  .task-label .task-title {
+    font-size: 13px;
+    font-weight: 700;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  .gantt-row.done .task-label .task-title { text-decoration: line-through; color: var(--done); }
+  .gantt-row.done .bar { background: linear-gradient(135deg, #b8bdcc, #9aa0a6) !important; opacity: 0.55; }
+
+  .timeline-col { position: relative; height: 100%; min-height: 46px; }
+  .bar {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%) scaleX(0);
+    transform-origin: left center;
+    height: 22px;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    padding: 0 10px;
+    font-size: 11px;
+    color: #fff;
+    font-weight: 700;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    box-shadow: 0 3px 10px rgba(0,0,0,0.12);
+    animation: barSlide 0.6s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+    transition: transform .2s, box-shadow .2s;
+  }
+  .bar:hover { box-shadow: 0 6px 18px rgba(0,0,0,0.22); }
+  @keyframes barSlide {
+    from { transform: translateY(-50%) scaleX(0); }
+    to { transform: translateY(-50%) scaleX(1); }
+  }
+  .bar.urgent {
+    background: linear-gradient(135deg, var(--urgent-1), var(--urgent-2));
+    background-size: 200% 200%;
+    animation: barSlide 0.6s cubic-bezier(0.34, 1.56, 0.64, 1) forwards, shimmerBg 3s ease-in-out infinite;
+  }
+  .bar.soon { background: linear-gradient(135deg, var(--soon-1), var(--soon-2)); }
+  .bar.ok { background: linear-gradient(135deg, var(--ok-1), var(--ok-2)); }
+  .bar.past { background: linear-gradient(135deg, #8b91a6, #9aa0a6); opacity: 0.55; }
+  @keyframes shimmerBg {
+    0%, 100% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+  }
+
+  .today-line {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    width: 2px;
+    background: linear-gradient(180deg, var(--today), transparent);
+    z-index: 10;
+    pointer-events: none;
+    box-shadow: 0 0 12px rgba(255,56,96,0.6);
+  }
+  .today-line::before {
+    content: "📍 今日";
+    position: absolute;
+    top: -22px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: linear-gradient(135deg, var(--today), #ff6b4a);
+    color: #fff;
+    font-size: 10px;
+    padding: 3px 8px;
+    border-radius: 999px;
+    white-space: nowrap;
+    font-weight: 700;
+    box-shadow: 0 4px 12px rgba(255,56,96,0.5);
+    animation: bobble 2.5s ease-in-out infinite;
+  }
+  @keyframes bobble {
+    0%, 100% { transform: translateX(-50%) translateY(0); }
+    50% { transform: translateX(-50%) translateY(-3px); }
+  }
+
+  .row-actions {
+    text-align: right;
+    padding-right: 10px;
+    display: flex;
+    gap: 6px;
+    justify-content: flex-end;
+  }
+  .icon-btn {
+    background: var(--panel-solid);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    width: 32px;
+    height: 32px;
+    cursor: pointer;
+    color: var(--text-sub);
+    font-size: 14px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all .15s;
+  }
+  .icon-btn:hover { transform: translateY(-1px) scale(1.05); }
+  .icon-btn.done-btn:hover { background: linear-gradient(135deg, var(--ok-1), var(--ok-2)); color: #fff; border-color: transparent; box-shadow: 0 4px 12px rgba(34,197,94,0.4); }
+  .icon-btn.done-btn.active {
+    background: linear-gradient(135deg, var(--ok-1), var(--ok-2));
+    color: #fff;
+    border: none;
+    box-shadow: 0 4px 12px rgba(34,197,94,0.4);
+  }
+  .icon-btn.del-btn:hover {
+    background: linear-gradient(135deg, var(--urgent-1), var(--urgent-2));
+    color: #fff;
+    border-color: transparent;
+    box-shadow: 0 4px 12px rgba(255,56,96,0.4);
+  }
+
+  .card-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(290px, 1fr));
+    gap: 16px;
+  }
+  .kadai-card {
+    background: var(--panel);
+    backdrop-filter: blur(14px);
+    -webkit-backdrop-filter: blur(14px);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 16px;
+    box-shadow: var(--shadow);
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    transition: transform .2s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow .2s;
+    position: relative;
+    overflow: hidden;
+    animation: cardPop 0.45s cubic-bezier(0.34, 1.56, 0.64, 1) both;
+  }
+  @keyframes cardPop {
+    from { opacity: 0; transform: translateY(12px) scale(0.95); }
+    to { opacity: 1; transform: translateY(0) scale(1); }
+  }
+  .kadai-card::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 5px;
+    border-radius: var(--radius) var(--radius) 0 0;
+  }
+  .kadai-card.status-urgent::before { background: linear-gradient(90deg, var(--urgent-1), var(--urgent-2)); }
+  .kadai-card.status-soon::before { background: linear-gradient(90deg, var(--soon-1), var(--soon-2)); }
+  .kadai-card.status-ok::before { background: linear-gradient(90deg, var(--ok-1), var(--ok-2)); }
+  .kadai-card.status-past::before { background: linear-gradient(90deg, #d63856, #ff3860); }
+  .kadai-card.done::before { background: linear-gradient(90deg, #c3c7d4, #9aa0a6); }
+
+  .kadai-card:hover { transform: translateY(-4px) scale(1.01); box-shadow: var(--shadow-lg); }
+  .kadai-card.done .card-title { text-decoration: line-through; color: var(--done); }
+  .kadai-card.done { opacity: 0.7; filter: grayscale(0.3); }
+
+  .card-top {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 10px;
+  }
+  .card-course {
+    font-size: 12px;
+    color: var(--text-sub);
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+  }
+  .card-title {
+    font-size: 15px;
+    font-weight: 800;
+    margin: 3px 0 6px;
+    line-height: 1.35;
+  }
+  .type-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    padding: 3px 10px;
+    border-radius: 999px;
+    font-size: 11px;
+    font-weight: 700;
+  }
+  .type-badge.report { background: var(--type-report-bg); color: var(--type-report-fg); }
+  .type-badge.memory { background: var(--type-memory-bg); color: var(--type-memory-fg); }
+  .type-badge.problem { background: var(--type-problem-bg); color: var(--type-problem-fg); }
+  .type-badge.other { background: var(--type-other-bg); color: var(--type-other-fg); }
+
+  .card-desc {
+    font-size: 12px;
+    color: var(--text-sub);
+    line-height: 1.55;
+    border-left: 3px solid;
+    border-image: linear-gradient(180deg, var(--accent-1), var(--accent-2)) 1;
+    padding-left: 10px;
+    margin: 2px 0;
+  }
+  .card-meta {
+    display: grid;
+    grid-template-columns: auto 1fr;
+    gap: 4px 10px;
+    font-size: 12px;
+    color: var(--text-sub);
+  }
+  .card-meta .key { font-weight: 700; }
+  .remain-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 3px;
+    padding: 4px 10px;
+    border-radius: 999px;
+    font-size: 11px;
+    font-weight: 800;
+    color: #fff;
+    white-space: nowrap;
+    box-shadow: 0 3px 8px rgba(0,0,0,0.12);
+  }
+  .remain-badge.urgent { background: linear-gradient(135deg, var(--urgent-1), var(--urgent-2)); animation: pulse 1.6s ease-in-out infinite; }
+  .remain-badge.soon { background: linear-gradient(135deg, var(--soon-1), var(--soon-2)); }
+  .remain-badge.ok { background: linear-gradient(135deg, var(--ok-1), var(--ok-2)); }
+  .remain-badge.past { background: linear-gradient(135deg, #d63856, var(--urgent-1)); }
+
+  .progress-wrap {
+    width: 100%;
+    height: 8px;
+    background: var(--panel-2);
+    border: 1px solid var(--border);
+    border-radius: 999px;
+    overflow: hidden;
+    margin-top: 4px;
+    position: relative;
+  }
+  .progress-bar {
+    height: 100%;
+    background: linear-gradient(90deg, var(--accent-1), var(--accent-2));
+    transition: width .5s cubic-bezier(0.34, 1.56, 0.64, 1);
+    position: relative;
+    overflow: hidden;
+  }
+  .progress-bar::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.45), transparent);
+    animation: progressShine 2.2s linear infinite;
+  }
+  @keyframes progressShine {
+    0% { transform: translateX(-100%); }
+    100% { transform: translateX(100%); }
+  }
+  .progress-bar.urgent { background: linear-gradient(90deg, var(--soon-1), var(--urgent-1)); }
+  .progress-bar.ok { background: linear-gradient(90deg, var(--ok-1), var(--ok-2)); }
+
+  .card-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 6px;
+    margin-top: auto;
+    padding-top: 8px;
+    border-top: 1px dashed var(--border);
+  }
+
+  .modal-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(15,18,35,0.5);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 100;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity .25s;
+  }
+  .modal-overlay.open { opacity: 1; pointer-events: auto; }
+  .modal {
+    background: var(--panel-solid);
+    border: 1px solid var(--border);
+    border-radius: 18px;
+    padding: 24px;
+    width: 90%;
+    max-width: 480px;
+    box-shadow: var(--shadow-lg);
+    transform: scale(0.9) translateY(20px);
+    transition: transform .3s cubic-bezier(0.34, 1.56, 0.64, 1);
+    position: relative;
+    overflow: hidden;
+  }
+  .modal::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 5px;
+    background: linear-gradient(90deg, var(--accent-1), var(--accent-2));
+  }
+  .modal-overlay.open .modal { transform: scale(1) translateY(0); }
+  .modal h2 {
+    margin: 0 0 18px;
+    font-size: 19px;
+    font-weight: 800;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .field { margin-bottom: 14px; }
+  .field label {
+    display: block;
+    font-size: 12px;
+    font-weight: 700;
+    color: var(--text-sub);
+    margin-bottom: 5px;
+  }
+  .field label .req { color: var(--urgent); margin-left: 2px; }
+  .field input, .field select, .field textarea {
+    width: 100%;
+    background: var(--panel-2);
+    color: var(--text);
+    border: 1.5px solid var(--border);
+    border-radius: 10px;
+    padding: 10px 12px;
+    font-size: 16px;
+    font-family: inherit;
+    transition: border-color .15s, box-shadow .15s;
+  }
+  .field input:focus, .field select:focus, .field textarea:focus {
+    outline: none;
+    border-color: var(--accent);
+    box-shadow: var(--shadow-glow);
+  }
+  .field textarea { resize: vertical; min-height: 64px; }
+  .field-row { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+  .field-error {
+    color: var(--urgent);
+    font-size: 12px;
+    min-height: 16px;
+    margin-top: 2px;
+    font-weight: 600;
+  }
+  .modal-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 8px;
+    margin-top: 14px;
+  }
+
+  .toast-host {
+    position: fixed;
+    top: calc(20px + env(safe-area-inset-top));
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 200;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    pointer-events: none;
+  }
+  .toast {
+    background: var(--text);
+    color: var(--panel-solid);
+    padding: 11px 20px;
+    border-radius: 999px;
+    font-size: 13px;
+    font-weight: 700;
+    box-shadow: var(--shadow-lg);
+    opacity: 0;
+    transform: translateY(-20px) scale(0.9);
+    transition: opacity .3s, transform .3s cubic-bezier(0.34, 1.56, 0.64, 1);
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+  .toast.show { opacity: 1; transform: translateY(0) scale(1); }
+  .toast.success { background: linear-gradient(135deg, var(--ok-1), var(--ok-2)); color: #fff; }
+  .toast.warn { background: linear-gradient(135deg, var(--soon-1), var(--soon-2)); color: #fff; }
+  .toast.error { background: linear-gradient(135deg, var(--urgent-1), var(--urgent-2)); color: #fff; }
+
+  .empty {
+    text-align: center;
+    padding: 70px 20px;
+    color: var(--text-sub);
+    font-size: 14px;
+    background: var(--panel);
+    backdrop-filter: blur(14px);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    box-shadow: var(--shadow);
+  }
+  .empty .big-emoji {
+    font-size: 56px;
+    display: block;
+    margin-bottom: 12px;
+    animation: float 3s ease-in-out infinite;
+  }
+  .empty .sub {
+    font-size: 12px;
+    color: var(--text-sub);
+    margin-top: 4px;
+  }
+  @keyframes float {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-8px); }
+  }
+
+  .confetti {
+    position: fixed;
+    width: 10px;
+    height: 10px;
+    pointer-events: none;
+    z-index: 500;
+    will-change: transform, opacity;
+  }
+
+  .install-hint {
+    position: fixed;
+    left: 50%;
+    bottom: calc(16px + env(safe-area-inset-bottom));
+    transform: translateX(-50%);
+    background: linear-gradient(135deg, var(--accent-1), var(--accent-2));
+    color: #fff;
+    padding: 10px 16px;
+    border-radius: 999px;
+    font-size: 12px;
+    font-weight: 700;
+    box-shadow: 0 10px 30px rgba(102,126,234,0.5);
+    z-index: 150;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    animation: cardPop 0.45s cubic-bezier(0.34, 1.56, 0.64, 1);
+  }
+  .install-hint button {
+    background: rgba(255,255,255,0.2);
+    color: #fff;
+    border: none;
+    border-radius: 999px;
+    padding: 4px 10px;
+    font-size: 11px;
+    font-weight: 700;
+    cursor: pointer;
+  }
+  .install-hint button:hover { background: rgba(255,255,255,0.3); }
+
+  @media (max-width: 700px) {
+    .summary { grid-template-columns: repeat(2, 1fr); }
+    .gantt-row, .gantt-header { grid-template-columns: 180px 1fr 90px; }
+    header.topbar h1 { font-size: 18px; flex: 1 1 100%; }
+    header.topbar { padding: 12px; }
+  }
+</style>
+</head>
+<body>
+<div class="app">
+  <header class="topbar">
+    <h1>課題トラッカー</h1>
+    <div class="view-toggle" role="tablist">
+      <button id="btnViewGantt" class="active" data-view="gantt">📊 ガント</button>
+      <button id="btnViewCard" data-view="card">🗂 カード</button>
+    </div>
+    <button id="btnTheme" class="btn" title="テーマ切り替え">🌙</button>
+    <button id="btnNotify" class="btn">🔔 通知オフ</button>
+    <button id="btnAdd" class="btn primary">＋ 追加</button>
+  </header>
+
+  <section class="summary">
+    <div class="card urgent" id="cardUrgent">
+      <span class="emoji">🔥</span>
+      <div class="value" id="sumUrgent">0</div>
+      <div class="label">緊急 (3日以内)</div>
+    </div>
+    <div class="card soon">
+      <span class="emoji">⚡</span>
+      <div class="value" id="sumSoon">0</div>
+      <div class="label">1週間以内</div>
+    </div>
+    <div class="card ok">
+      <span class="emoji">🌱</span>
+      <div class="value" id="sumOk">0</div>
+      <div class="label">余裕あり</div>
+    </div>
+    <div class="card done">
+      <span class="emoji">🎉</span>
+      <div class="value" id="sumDone">0</div>
+      <div class="label">提出済</div>
+    </div>
+  </section>
+
+  <section class="filter-bar">
+    <label for="filterCourse">🎓 講義名</label>
+    <select id="filterCourse"><option value="">すべて</option></select>
+    <label for="filterStatus">🔍 ステータス</label>
+    <select id="filterStatus">
+      <option value="all">全件</option>
+      <option value="open">未提出のみ</option>
+      <option value="done">提出済のみ</option>
+    </select>
+  </section>
+
+  <main id="viewHost"></main>
+</div>
+
+<div id="modalOverlay" class="modal-overlay" aria-hidden="true">
+  <div class="modal" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
+    <h2 id="modalTitle">✨ 課題を追加</h2>
+    <form id="addForm" novalidate>
+      <div class="field">
+        <label for="fCourse">🎓 講義名<span class="req">*</span></label>
+        <input id="fCourse" type="text" list="courseList" maxlength="40" autocomplete="off" />
+        <datalist id="courseList"></datalist>
+      </div>
+      <div class="field">
+        <label for="fTitle">📌 課題名<span class="req">*</span></label>
+        <input id="fTitle" type="text" maxlength="60" />
+      </div>
+      <div class="field">
+        <label for="fType">🏷 種別<span class="req">*</span></label>
+        <select id="fType">
+          <option value="report">📝 レポート</option>
+          <option value="memory">📖 暗記</option>
+          <option value="problem">✏️ 問題演習</option>
+          <option value="other">📎 その他</option>
+        </select>
+      </div>
+      <div class="field">
+        <label for="fDesc">💬 詳細</label>
+        <textarea id="fDesc" maxlength="400" placeholder="任意"></textarea>
+      </div>
+      <div class="field-row">
+        <div class="field">
+          <label for="fStart">🚩 出題日<span class="req">*</span></label>
+          <input id="fStart" type="date" />
+        </div>
+        <div class="field">
+          <label for="fEnd">🏁 締切日<span class="req">*</span></label>
+          <input id="fEnd" type="date" />
+        </div>
+      </div>
+      <div class="field-error" id="formError"></div>
+      <div class="modal-actions">
+        <button type="button" class="btn" id="btnCancel">キャンセル</button>
+        <button type="submit" class="btn primary">💾 保存</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<div class="toast-host" id="toastHost"></div>
+
+<script>
+(function () {
+  'use strict';
+
+  const STORAGE_KEY = 'kadai_tracker_v2';
+  const DAY_MS = 86400000;
+
+  const TYPE_EMOJI = { report: '📝', memory: '📖', problem: '✏️', other: '📎' };
+  const TYPE_LABEL = { report: 'レポート', memory: '暗記', problem: '問題演習', other: 'その他' };
+
+  const SAMPLE = [
+    {id:1,course:"細菌生物学",title:"第2回レポート",type:"report",desc:"細胞周期とチェックポイントについてA4 2枚",start:"2026-04-07",end:"2026-04-28",done:false},
+    {id:2,course:"化学Ⅰ",title:"反応速度の問題集",type:"problem",desc:"教科書p.45〜60の練習問題",start:"2026-04-10",end:"2026-04-24",done:false},
+    {id:3,course:"解剖学",title:"骨格系の暗記",type:"memory",desc:"上肢骨の全名称・起始停止",start:"2026-04-14",end:"2026-05-02",done:false},
+    {id:4,course:"倫理学Ⅰ",title:"ミル読書レポート",type:"report",desc:"功利主義の現代的意義について600字",start:"2026-04-17",end:"2026-05-09",done:false},
+    {id:5,course:"物理学Ⅰ",title:"力学小テスト対策",type:"memory",desc:"公式と例題10問",start:"2026-04-15",end:"2026-04-22",done:false}
+  ];
+
+  let state = loadState();
+  let currentView = 'gantt';
+  let filterCourse = '';
+  let filterStatus = 'all';
+  let notifyEnabled = state.notify === true;
+
+  const $ = (id) => document.getElementById(id);
+  const host = $('viewHost');
+  const toastHost = $('toastHost');
+
+  function loadState() {
+    try {
+      const raw = localStorage.getItem(STORAGE_KEY);
+      if (!raw) return { items: SAMPLE.slice(), notify: false };
+      const parsed = JSON.parse(raw);
+      if (!parsed || !Array.isArray(parsed.items)) return { items: SAMPLE.slice(), notify: false };
+      return { items: parsed.items, notify: !!parsed.notify };
+    } catch (e) {
+      return { items: SAMPLE.slice(), notify: false };
+    }
+  }
+  function saveState() {
+    try {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify({ items: state.items, notify: notifyEnabled }));
+    } catch (e) {
+      toast('保存に失敗しました', 'error');
+    }
+  }
+
+  function todayStr() {
+    const d = new Date();
+    return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
+  }
+  function parseDate(s) {
+    if (!s) return null;
+    const [y, m, d] = s.split('-').map(Number);
+    return new Date(y, m - 1, d);
+  }
+  function daysBetween(a, b) {
+    const ad = new Date(a.getFullYear(), a.getMonth(), a.getDate());
+    const bd = new Date(b.getFullYear(), b.getMonth(), b.getDate());
+    return Math.round((bd - ad) / DAY_MS);
+  }
+  function fmtDate(s) {
+    const d = parseDate(s);
+    if (!d) return s;
+    return `${d.getMonth()+1}/${d.getDate()}`;
+  }
+  function daysLeft(item) {
+    return daysBetween(parseDate(todayStr()), parseDate(item.end));
+  }
+  function statusOf(item) {
+    if (item.done) return 'done';
+    const left = daysLeft(item);
+    if (left < 0) return 'past';
+    if (left <= 3) return 'urgent';
+    if (left <= 7) return 'soon';
+    return 'ok';
+  }
+  function statusLabel(item) {
+    const s = statusOf(item);
+    if (s === 'done') return { text: '✅ 完了', cls: 'past' };
+    if (s === 'past') return { text: '⚠️ 超過', cls: 'past' };
+    if (s === 'urgent') return { text: '🔥 緊急', cls: 'urgent' };
+    if (s === 'soon') return { text: '⚡ 注意', cls: 'soon' };
+    return { text: '🌱 余裕', cls: 'ok' };
+  }
+  function progressPct(item) {
+    const s = parseDate(item.start);
+    const e = parseDate(item.end);
+    const t = parseDate(todayStr());
+    if (!s || !e) return 0;
+    const total = Math.max(1, daysBetween(s, e));
+    const passed = Math.max(0, Math.min(total, daysBetween(s, t)));
+    return Math.round((passed / total) * 100);
+  }
+
+  function filteredItems() {
+    return state.items.filter(it => {
+      if (filterCourse && it.course !== filterCourse) return false;
+      if (filterStatus === 'open' && it.done) return false;
+      if (filterStatus === 'done' && !it.done) return false;
+      return true;
+    });
+  }
+  function sortedForGantt(items) {
+    return items.slice().sort((a, b) => {
+      if (a.done !== b.done) return a.done ? 1 : -1;
+      return a.end.localeCompare(b.end);
+    });
+  }
+
+  function renderSummary() {
+    let urgent = 0, soon = 0, ok = 0, done = 0;
+    state.items.forEach(it => {
+      if (it.done) { done++; return; }
+      const s = statusOf(it);
+      if (s === 'urgent' || s === 'past') urgent++;
+      else if (s === 'soon') soon++;
+      else ok++;
+    });
+    $('sumUrgent').textContent = urgent;
+    $('sumSoon').textContent = soon;
+    $('sumOk').textContent = ok;
+    $('sumDone').textContent = done;
+    const uc = $('cardUrgent');
+    if (urgent > 0) uc.classList.add('has-items');
+    else uc.classList.remove('has-items');
+  }
+
+  function refreshCourseOptions() {
+    const courses = Array.from(new Set(state.items.map(i => i.course))).sort();
+    const sel = $('filterCourse');
+    const prev = sel.value;
+    sel.innerHTML = '<option value="">すべて</option>' +
+      courses.map(c => `<option value="${escapeHtml(c)}">${escapeHtml(c)}</option>`).join('');
+    sel.value = courses.includes(prev) ? prev : '';
+    filterCourse = sel.value;
+    const dl = $('courseList');
+    dl.innerHTML = courses.map(c => `<option value="${escapeHtml(c)}"></option>`).join('');
+  }
+
+  function render() {
+    renderSummary();
+    refreshCourseOptions();
+    if (currentView === 'gantt') renderGantt();
+    else renderCards();
+  }
+
+  function emptyHtml(msg, emoji, sub) {
+    return `<div class="empty"><span class="big-emoji">${emoji}</span>${msg}${sub ? `<div class="sub">${sub}</div>` : ''}</div>`;
+  }
+
+  function renderGantt() {
+    const items = sortedForGantt(filteredItems());
+    if (items.length === 0) {
+      host.innerHTML = emptyHtml('課題がありません', '🌈', '「＋ 追加」から登録しよう');
+      return;
+    }
+
+    const today = parseDate(todayStr());
+    let minDate = today, maxDate = today;
+    items.forEach(it => {
+      const s = parseDate(it.start);
+      const e = parseDate(it.end);
+      if (s < minDate) minDate = s;
+      if (e > maxDate) maxDate = e;
+    });
+    minDate = new Date(minDate.getFullYear(), minDate.getMonth(), minDate.getDate() - 2);
+    maxDate = new Date(maxDate.getFullYear(), maxDate.getMonth(), maxDate.getDate() + 2);
+    const totalDays = Math.max(1, daysBetween(minDate, maxDate));
+
+    const pctOfDate = (dStr) => (daysBetween(minDate, parseDate(dStr)) / totalDays) * 100;
+    const todayPct = (daysBetween(minDate, today) / totalDays) * 100;
+
+    const months = [];
+    let cursor = new Date(minDate.getFullYear(), minDate.getMonth(), 1);
+    const endCursor = new Date(maxDate.getFullYear(), maxDate.getMonth() + 1, 1);
+    while (cursor < endCursor) {
+      const offset = Math.max(0, daysBetween(minDate, cursor));
+      const pct = (offset / totalDays) * 100;
+      months.push({ label: `${cursor.getFullYear()}/${cursor.getMonth()+1}`, pct });
+      cursor = new Date(cursor.getFullYear(), cursor.getMonth() + 1, 1);
+    }
+
+    const html = `
+      <div class="gantt-wrap">
+        <div class="gantt">
+          <div class="gantt-header">
+            <div class="title-col">📋 課題</div>
+            <div class="timeline-col">
+              ${months.map(m => `<div class="gantt-month" style="left:${m.pct}%">${m.label}</div>`).join('')}
+            </div>
+            <div class="actions-col">操作</div>
+          </div>
+          ${items.map((it, i) => ganttRowHtml(it, pctOfDate, i)).join('')}
+          <div class="today-line" style="left:calc(280px + (100% - 280px - 120px) * ${todayPct / 100});"></div>
+        </div>
+      </div>
+    `;
+    host.innerHTML = html;
+    bindRowActions();
+  }
+
+  function ganttRowHtml(it, pctOfDate, idx) {
+    const leftPct = pctOfDate(it.start);
+    const rightPct = pctOfDate(it.end);
+    const widthPct = Math.max(1.8, rightPct - leftPct);
+    const s = statusOf(it);
+    const barClass = it.done ? 'past' : s;
+    const label = `${fmtDate(it.start)} → ${fmtDate(it.end)}`;
+    const emoji = TYPE_EMOJI[it.type] || '📎';
+    const delay = Math.min(idx * 0.04, 0.5);
+    return `
+      <div class="gantt-row ${it.done ? 'done' : ''}" data-id="${it.id}">
+        <div class="task-label">
+          <span class="course-tag">${emoji} ${escapeHtml(it.course)}</span>
+          <span class="task-title">${escapeHtml(it.title)}</span>
+        </div>
+        <div class="timeline-col">
+          <div class="bar ${barClass}" style="left:${leftPct}%;width:${widthPct}%;animation-delay:${delay}s;" title="${escapeHtml(label)}">${label}</div>
+        </div>
+        <div class="row-actions">
+          <button class="icon-btn done-btn ${it.done ? 'active' : ''}" data-action="toggle" data-id="${it.id}" title="${it.done ? '未完了に戻す' : '完了にする'}">✓</button>
+          <button class="icon-btn del-btn" data-action="del" data-id="${it.id}" title="削除">×</button>
+        </div>
+      </div>
+    `;
+  }
+
+  function renderCards() {
+    const items = filteredItems().slice().sort((a, b) => {
+      if (a.done !== b.done) return a.done ? 1 : -1;
+      return a.end.localeCompare(b.end);
+    });
+    if (items.length === 0) {
+      host.innerHTML = emptyHtml('課題がありません', '🌈', '「＋ 追加」から登録しよう');
+      return;
+    }
+    host.innerHTML = `<div class="card-grid">${items.map(cardHtml).join('')}</div>`;
+    bindRowActions();
+  }
+
+  function cardHtml(it) {
+    const s = statusOf(it);
+    const badge = statusLabel(it);
+    const typeLabel = TYPE_LABEL[it.type] || 'その他';
+    const typeEmoji = TYPE_EMOJI[it.type] || '📎';
+    const left = daysLeft(it);
+    let remainText;
+    if (it.done) remainText = '✅ 完了';
+    else if (left < 0) remainText = `⚠️ ${Math.abs(left)}日超過`;
+    else if (left === 0) remainText = '🔥 今日締切';
+    else if (left <= 3) remainText = `🔥 残り${left}日`;
+    else if (left <= 7) remainText = `⚡ 残り${left}日`;
+    else remainText = `🌱 残り${left}日`;
+
+    const pct = progressPct(it);
+    const progClass = it.done ? 'ok' : (s === 'urgent' || s === 'past' ? 'urgent' : '');
+    const statusClass = it.done ? 'done' : `status-${s}`;
+
+    return `
+      <div class="kadai-card ${it.done ? 'done' : ''} ${statusClass}" data-id="${it.id}">
+        <div class="card-top">
+          <div style="min-width:0;flex:1;">
+            <div class="card-course">🎓 ${escapeHtml(it.course)}</div>
+            <div class="card-title">${escapeHtml(it.title)}</div>
+            <span class="type-badge ${it.type}">${typeEmoji} ${typeLabel}</span>
+          </div>
+          <span class="remain-badge ${badge.cls}">${escapeHtml(remainText)}</span>
+        </div>
+        ${it.desc ? `<div class="card-desc">${escapeHtml(it.desc)}</div>` : ''}
+        <div class="card-meta">
+          <span class="key">🚩 出題</span><span>${escapeHtml(it.start)}</span>
+          <span class="key">🏁 締切</span><span>${escapeHtml(it.end)}</span>
+        </div>
+        <div class="progress-wrap" title="進捗 ${pct}%"><div class="progress-bar ${progClass}" style="width:${pct}%"></div></div>
+        <div class="card-actions">
+          <button class="icon-btn done-btn ${it.done ? 'active' : ''}" data-action="toggle" data-id="${it.id}" title="${it.done ? '未完了に戻す' : '完了にする'}">✓</button>
+          <button class="icon-btn del-btn" data-action="del" data-id="${it.id}" title="削除">×</button>
+        </div>
+      </div>
+    `;
+  }
+
+  function bindRowActions() {
+    host.querySelectorAll('[data-action]').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const id = Number(btn.dataset.id);
+        const action = btn.dataset.action;
+        if (action === 'toggle') toggleDone(id, btn);
+        else if (action === 'del') deleteItem(id);
+      });
+    });
+  }
+
+  function toggleDone(id, btnEl) {
+    const it = state.items.find(x => x.id === id);
+    if (!it) return;
+    it.done = !it.done;
+    saveState();
+    if (it.done && btnEl) {
+      const rect = btnEl.getBoundingClientRect();
+      launchConfetti(rect.left + rect.width / 2, rect.top + rect.height / 2);
+    }
+    render();
+    toast(it.done ? `🎉 「${it.title}」を完了！` : `↩️ 「${it.title}」を未完了に`, it.done ? 'success' : 'warn');
+  }
+  function deleteItem(id) {
+    const it = state.items.find(x => x.id === id);
+    if (!it) return;
+    if (!confirm(`「${it.title}」を削除しますか？`)) return;
+    state.items = state.items.filter(x => x.id !== id);
+    saveState();
+    render();
+    toast('🗑 削除しました', 'warn');
+  }
+  function addItem(data) {
+    const maxId = state.items.reduce((m, x) => Math.max(m, x.id), 0);
+    state.items.push({ id: maxId + 1, ...data, done: false });
+    saveState();
+    render();
+    toast('✨ 追加しました', 'success');
+  }
+
+  function launchConfetti(x, y) {
+    const colors = ['#667eea','#764ba2','#ff5978','#ffa726','#26d67a','#ffcd38','#4fc3f7','#ba68c8'];
+    const count = 32;
+    for (let i = 0; i < count; i++) {
+      const el = document.createElement('div');
+      el.className = 'confetti';
+      const size = 6 + Math.random() * 8;
+      const color = colors[Math.floor(Math.random() * colors.length)];
+      const shape = Math.random() > 0.5 ? '50%' : '2px';
+      el.style.cssText = `left:${x}px;top:${y}px;width:${size}px;height:${size}px;background:${color};border-radius:${shape};`;
+      document.body.appendChild(el);
+      const angle = Math.random() * Math.PI * 2;
+      const velocity = 120 + Math.random() * 180;
+      const dx = Math.cos(angle) * velocity;
+      const dy = Math.sin(angle) * velocity - 60;
+      const rot = (Math.random() - 0.5) * 720;
+      const dur = 900 + Math.random() * 700;
+      el.animate([
+        { transform: 'translate(0,0) rotate(0deg)', opacity: 1 },
+        { transform: `translate(${dx}px, ${dy + 250}px) rotate(${rot}deg)`, opacity: 0 }
+      ], { duration: dur, easing: 'cubic-bezier(0.22, 0.61, 0.36, 1)', fill: 'forwards' });
+      setTimeout(() => el.remove(), dur + 50);
+    }
+  }
+
+  function openModal() {
+    $('addForm').reset();
+    $('fStart').value = todayStr();
+    $('formError').textContent = '';
+    $('modalOverlay').classList.add('open');
+    $('modalOverlay').setAttribute('aria-hidden', 'false');
+    setTimeout(() => $('fCourse').focus(), 100);
+  }
+  function closeModal() {
+    $('modalOverlay').classList.remove('open');
+    $('modalOverlay').setAttribute('aria-hidden', 'true');
+  }
+  $('btnAdd').addEventListener('click', openModal);
+  $('btnCancel').addEventListener('click', closeModal);
+  $('modalOverlay').addEventListener('click', (e) => {
+    if (e.target === $('modalOverlay')) closeModal();
+  });
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape') closeModal();
+  });
+
+  $('addForm').addEventListener('submit', (e) => {
+    e.preventDefault();
+    const course = $('fCourse').value.trim();
+    const title = $('fTitle').value.trim();
+    const type = $('fType').value;
+    const desc = $('fDesc').value.trim();
+    const start = $('fStart').value;
+    const end = $('fEnd').value;
+    const err = $('formError');
+    err.textContent = '';
+    if (!course) return (err.textContent = '⚠️ 講義名を入力してください');
+    if (!title) return (err.textContent = '⚠️ 課題名を入力してください');
+    if (!start) return (err.textContent = '⚠️ 出題日を入力してください');
+    if (!end) return (err.textContent = '⚠️ 締切日を入力してください');
+    if (end < start) return (err.textContent = '⚠️ 締切日は出題日以降にしてください');
+    addItem({ course, title, type, desc, start, end });
+    closeModal();
+  });
+
+  document.querySelectorAll('.view-toggle button').forEach(btn => {
+    btn.addEventListener('click', () => {
+      document.querySelectorAll('.view-toggle button').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      currentView = btn.dataset.view;
+      render();
+    });
+  });
+
+  $('filterCourse').addEventListener('change', (e) => { filterCourse = e.target.value; render(); });
+  $('filterStatus').addEventListener('change', (e) => { filterStatus = e.target.value; render(); });
+
+  const themeKey = 'kadai_tracker_theme';
+  function applyTheme(t) {
+    if (t === 'dark') document.documentElement.setAttribute('data-theme', 'dark');
+    else document.documentElement.removeAttribute('data-theme');
+    $('btnTheme').textContent = t === 'dark' ? '☀️' : '🌙';
+  }
+  let currentTheme = localStorage.getItem(themeKey) || 'light';
+  applyTheme(currentTheme);
+  $('btnTheme').addEventListener('click', () => {
+    currentTheme = currentTheme === 'dark' ? 'light' : 'dark';
+    localStorage.setItem(themeKey, currentTheme);
+    applyTheme(currentTheme);
+  });
+
+  function updateNotifyBtn() {
+    const btn = $('btnNotify');
+    if (notifyEnabled && typeof Notification !== 'undefined' && Notification.permission === 'granted') {
+      btn.classList.add('notify-on');
+      btn.textContent = '🔔 通知オン';
+    } else {
+      btn.classList.remove('notify-on');
+      btn.textContent = '🔔 通知オフ';
+    }
+  }
+  $('btnNotify').addEventListener('click', async () => {
+    if (typeof Notification === 'undefined') {
+      toast('このブラウザは通知に対応していません', 'error');
+      return;
+    }
+    if (Notification.permission === 'granted') {
+      notifyEnabled = !notifyEnabled;
+      saveState();
+      updateNotifyBtn();
+      toast(notifyEnabled ? '🔔 通知をオンにしました' : '🔕 通知をオフにしました', notifyEnabled ? 'success' : 'warn');
+      if (notifyEnabled) fireStartupNotifications();
+    } else if (Notification.permission === 'denied') {
+      toast('通知がブロックされています', 'error');
+    } else {
+      const p = await Notification.requestPermission();
+      if (p === 'granted') {
+        notifyEnabled = true;
+        saveState();
+        updateNotifyBtn();
+        toast('🔔 通知をオンにしました', 'success');
+        fireStartupNotifications();
+      } else {
+        toast('通知が許可されませんでした', 'warn');
+      }
+    }
+  });
+
+  function fireStartupNotifications() {
+    if (!notifyEnabled || typeof Notification === 'undefined' || Notification.permission !== 'granted') return;
+    const today = todayStr();
+    const tomorrow = (() => {
+      const d = parseDate(today);
+      d.setDate(d.getDate() + 1);
+      return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
+    })();
+    const targets = state.items.filter(it => !it.done && (it.end === today || it.end === tomorrow));
+    if (targets.length === 0) return;
+    try {
+      new Notification('📚 課題トラッカー', {
+        body: `本日・明日締切の課題が ${targets.length} 件あります\n` +
+              targets.slice(0, 3).map(t => `・${t.course}: ${t.title}`).join('\n'),
+      });
+    } catch (e) { /* noop */ }
+  }
+
+  function toast(msg, kind) {
+    const el = document.createElement('div');
+    el.className = 'toast' + (kind ? ' ' + kind : '');
+    el.textContent = msg;
+    toastHost.appendChild(el);
+    requestAnimationFrame(() => el.classList.add('show'));
+    setTimeout(() => {
+      el.classList.remove('show');
+      setTimeout(() => el.remove(), 300);
+    }, 2800);
+  }
+
+  function escapeHtml(s) {
+    return String(s).replace(/[&<>"']/g, c => ({
+      '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;'
+    }[c]));
+  }
+
+  // ===== URL action handler (for PWA shortcuts) =====
+  function handleUrlAction() {
+    try {
+      const url = new URL(location.href);
+      if (url.searchParams.get('action') === 'add') {
+        openModal();
+        url.searchParams.delete('action');
+        history.replaceState(null, '', url.pathname + (url.search || '') + url.hash);
+      }
+    } catch (e) { /* noop */ }
+  }
+
+  // ===== Install hint for iOS =====
+  function maybeShowInstallHint() {
+    const isStandalone = window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone === true;
+    if (isStandalone) return;
+    const iOS = /iPhone|iPad|iPod/.test(navigator.userAgent) && !window.MSStream;
+    if (!iOS) return;
+    if (localStorage.getItem('kadai_install_hint_dismissed')) return;
+    const hint = document.createElement('div');
+    hint.className = 'install-hint';
+    hint.innerHTML = `📲 ホーム画面に追加でアプリ化 <button id="dismissHint">閉じる</button>`;
+    document.body.appendChild(hint);
+    hint.querySelector('#dismissHint').addEventListener('click', () => {
+      hint.remove();
+      localStorage.setItem('kadai_install_hint_dismissed', '1');
+    });
+  }
+
+  // ===== Service Worker =====
+  if ('serviceWorker' in navigator) {
+    window.addEventListener('load', () => {
+      navigator.serviceWorker.register('sw.js').catch(() => {});
+    });
+  }
+
+  updateNotifyBtn();
+  render();
+  if (notifyEnabled) setTimeout(fireStartupNotifications, 600);
+  handleUrlAction();
+  setTimeout(maybeShowInstallHint, 1500);
+})();
+</script>
+</body>
+</html>

@@ -1,0 +1,44 @@
+{
+  "name": "課題トラッカー",
+  "short_name": "課題",
+  "description": "講義ごとの課題を管理するトラッカー",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "display_override": ["standalone", "minimal-ui"],
+  "orientation": "any",
+  "background_color": "#f0f2fb",
+  "theme_color": "#667eea",
+  "lang": "ja",
+  "dir": "ltr",
+  "categories": ["productivity", "education"],
+  "icons": [
+    {
+      "src": "icons/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "icons/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "icons/icon-maskable-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable"
+    }
+  ],
+  "shortcuts": [
+    {
+      "name": "課題を追加",
+      "short_name": "追加",
+      "url": "./?action=add",
+      "description": "新しい課題をすぐ追加"
+    }
+  ],
+  "screenshots": []
+}
