@@ -1751,7 +1751,7 @@
     }
 
     // Day-level tick labels so users can see the near-future dates at a glance.
-    const dayStep = totalDays <= 21 ? 2 : totalDays <= 45 ? 3 : totalDays <= 90 ? 7 : 14;
+    const dayStep = 1;
     const days = [];
     for (let i = 0; i <= totalDays; i += dayStep) {
       const d = new Date(minDate);
