@@ -167,7 +167,7 @@
     display: none;
   }
   body[data-view="calendar"] .cal-cell {
-    min-height: 60px;
+    height: 72px;
   }
   body[data-view="calendar"] .cal-chip {
     font-size: 10px;
@@ -754,13 +754,14 @@
     font-weight: 700;
   }
 
-  .calendar-weekdays {
-    display: grid;
-    grid-template-columns: repeat(7, minmax(0, 1fr));
-    gap: 6px;
-    margin-bottom: 4px;
+  .cal-table {
+    width: 100%;
+    max-width: 100%;
+    border-collapse: separate;
+    border-spacing: 5px;
+    table-layout: fixed;
   }
-  .calendar-weekdays > div {
+  .cal-table thead th {
     text-align: center;
     font-size: 11px;
     font-weight: 700;
@@ -769,29 +770,20 @@
     letter-spacing: 0.06em;
     border-radius: 6px;
   }
-  .calendar-weekdays > div:nth-child(1) { color: var(--urgent); }
-  .calendar-weekdays > div:nth-child(7) { color: var(--accent); }
+  .cal-table thead th.dow-sun { color: var(--urgent); }
+  .cal-table thead th.dow-sat { color: var(--accent); }
 
-  .calendar-grid {
-    display: grid;
-    grid-template-columns: repeat(7, minmax(0, 1fr));
-    gap: 6px;
-  }
   .cal-cell {
-    aspect-ratio: 1 / 1.05;
     border: none;
     border-radius: 8px;
     background: var(--panel-solid);
     padding: 4px 3px 3px;
     cursor: pointer;
-    display: flex;
-    flex-direction: column;
-    align-items: stretch;
     position: relative;
     transition: transform .15s, background .15s;
     overflow: hidden;
-    min-height: 52px;
-    min-width: 0;
+    height: 60px;
+    vertical-align: top;
   }
   @media (hover: hover) {
     .cal-cell:hover { transform: translateY(-1px); box-shadow: var(--shadow); }
@@ -1659,6 +1651,10 @@
     const selDate = parseDate(calSelectedDate);
     const selDow = ['日','月','火','水','木','金','土'][selDate.getDay()];
 
+    // Chunk cells into rows of 7 for the table body.
+    const rows = [];
+    for (let i = 0; i < totalCells; i += 7) rows.push(cells.slice(i, i + 7));
+
     const html = `
       <div class="calendar-wrap">
         <div class="calendar-header">
@@ -1667,12 +1663,16 @@
           <button class="cal-nav" id="calNext" aria-label="翌月">›</button>
           <button class="btn cal-today-btn" id="calToday">今日</button>
         </div>
-        <div class="calendar-weekdays">
-          <div>日</div><div>月</div><div>火</div><div>水</div><div>木</div><div>金</div><div>土</div>
-        </div>
-        <div class="calendar-grid">
-          ${cells.slice(0, totalCells).map(c => calCellHtml(c)).join('')}
-        </div>
+        <table class="cal-table">
+          <thead>
+            <tr>
+              <th class="dow-sun">日</th><th>月</th><th>火</th><th>水</th><th>木</th><th>金</th><th class="dow-sat">土</th>
+            </tr>
+          </thead>
+          <tbody>
+            ${rows.map(r => `<tr>${r.map(c => calCellHtml(c)).join('')}</tr>`).join('')}
+          </tbody>
+        </table>
         <div class="cal-detail">
           <div class="cal-detail-header">🗓 ${selDate.getMonth()+1}月${selDate.getDate()}日(${selDow}) 締切の課題</div>
           ${selectedTasks.length === 0
@@ -1715,10 +1715,10 @@
     }).join('');
     const more = c.tasks.length > 2 ? `<div class="cal-chip more">+${c.tasks.length - 2}</div>` : '';
     return `
-      <div class="${cls}" data-date="${c.dateStr}">
+      <td class="${cls}" data-date="${c.dateStr}">
         <div class="day-num">${c.date.getDate()}</div>
         <div class="cal-chips">${chips}${more}</div>
-      </div>
+      </td>
     `;
   }
 
