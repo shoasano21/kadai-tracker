@@ -805,7 +805,9 @@
     overflow: hidden;
     min-height: 60px;
   }
-  .cal-cell:hover { transform: translateY(-1px); box-shadow: var(--shadow); }
+  @media (hover: hover) {
+    .cal-cell:hover { transform: translateY(-1px); box-shadow: var(--shadow); }
+  }
   .cal-cell .day-num {
     font-size: 13px;
     font-weight: 700;
