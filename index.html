@@ -653,7 +653,7 @@
 
   .today-line {
     position: absolute;
-    top: 28px;
+    top: 0;
     bottom: 0;
     width: 1.5px;
     background: rgba(231,76,92,0.55);
@@ -666,14 +666,14 @@
     top: 4px;
     left: 50%;
     transform: translateX(-50%);
-    background: rgba(231,76,92,0.15);
+    background: var(--panel-solid);
     color: var(--urgent);
     font-size: 10px;
-    padding: 3px 8px;
+    padding: 2px 7px;
     border-radius: 999px;
     white-space: nowrap;
     font-weight: 700;
-    border: 1px solid rgba(231,76,92,0.35);
+    border: 1.5px solid var(--urgent);
   }
 
   .row-actions {
