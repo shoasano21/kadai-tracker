@@ -498,7 +498,7 @@
   }
   .gantt-header .title-col { padding-left: 6px; }
   .gantt-header .actions-col { text-align: right; padding-right: 10px; }
-  .gantt-header .timeline-col { position: relative; height: 24px; }
+  .gantt-header .timeline-col { position: relative; height: 40px; }
 
   /* Sticky task-name column so the timeline can scroll independently while
      course/title stays visible. Actions column is NOT sticky — user has to
@@ -531,10 +531,24 @@
     border-left: 2px dashed var(--border);
     padding-left: 6px;
     padding-top: 2px;
-    height: 100%;
-    font-weight: 600;
+    height: 18px;
+    font-weight: 700;
     text-transform: none;
     letter-spacing: 0;
+  }
+  .gantt-day-tick {
+    position: absolute;
+    bottom: 0;
+    font-size: 10px;
+    color: var(--text-sub);
+    font-weight: 500;
+    padding-left: 3px;
+    border-left: 1px solid var(--border);
+    height: 18px;
+    line-height: 1.4;
+    text-transform: none;
+    letter-spacing: 0;
+    white-space: nowrap;
   }
 
   .gantt-row {
@@ -1501,6 +1515,16 @@
       cursor = new Date(cursor.getFullYear(), cursor.getMonth() + 1, 1);
     }
 
+    // Day-level tick labels so users can see the near-future dates at a glance.
+    const dayStep = totalDays <= 21 ? 2 : totalDays <= 45 ? 3 : totalDays <= 90 ? 7 : 14;
+    const days = [];
+    for (let i = 0; i <= totalDays; i += dayStep) {
+      const d = new Date(minDate);
+      d.setDate(minDate.getDate() + i);
+      const pct = (i / totalDays) * 100;
+      days.push({ label: `${d.getMonth()+1}/${d.getDate()}`, pct });
+    }
+
     const html = `
       <div class="gantt-wrap">
         <div class="gantt">
@@ -1508,6 +1532,7 @@
             <div class="title-col">📋 課題</div>
             <div class="timeline-col">
               ${months.map(m => `<div class="gantt-month" style="left:${m.pct}%">${m.label}</div>`).join('')}
+              ${days.map(d => `<div class="gantt-day-tick" style="left:${d.pct}%">${d.label}</div>`).join('')}
             </div>
             <div class="actions-col">操作</div>
           </div>
