@@ -499,6 +499,25 @@
   .gantt-header .title-col { padding-left: 10px; }
   .gantt-header .actions-col { text-align: right; padding-right: 10px; }
   .gantt-header .timeline-col { position: relative; height: 24px; }
+
+  /* Sticky left (task name) and right (actions) columns so the timeline can
+     scroll independently and "today" stays visible with the task rows. */
+  .gantt-header .title-col,
+  .gantt-row .task-label {
+    position: sticky;
+    left: 0;
+    z-index: 15;
+    background: var(--panel-solid);
+    border-right: 1px solid var(--border);
+  }
+  .gantt-header .actions-col,
+  .gantt-row .row-actions {
+    position: sticky;
+    right: 0;
+    z-index: 15;
+    background: var(--panel-solid);
+    border-left: 1px solid var(--border);
+  }
   .gantt-month {
     position: absolute;
     top: 0;
