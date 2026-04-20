@@ -582,7 +582,7 @@
     height: 100%;
   }
   .gantt-header .actions-col { text-align: right; padding-right: 10px; }
-  .gantt-header .timeline-col { position: relative; height: 56px; }
+  .gantt-header .timeline-col { position: relative; height: 64px; }
 
   /* Sticky task-name column so the timeline can scroll independently while
      course/title stays visible. Actions column is NOT sticky — user has to
@@ -611,19 +611,38 @@
   .gantt-day-tick {
     position: absolute;
     bottom: 0;
-    font-size: 13px;
+    font-size: 12px;
     color: var(--text-sub);
     font-weight: 600;
     padding-left: 3px;
-    padding-top: 2px;
+    padding-top: 1px;
     border-left: 1px solid var(--border);
-    height: 26px;
-    line-height: 1.3;
+    height: 30px;
+    line-height: 1.1;
     text-transform: none;
     letter-spacing: 0;
     white-space: nowrap;
     transform: translateX(-3px);
+    display: inline-flex;
+    flex-direction: column;
+    align-items: flex-start;
   }
+  .gantt-day-tick .day-num {
+    font-size: 12px;
+    font-weight: 700;
+    color: var(--text-sub);
+  }
+  .gantt-day-tick .day-dow {
+    font-size: 10px;
+    font-weight: 600;
+    color: var(--text-sub);
+    opacity: 0.75;
+    margin-top: 1px;
+  }
+  .gantt-day-tick.sun .day-num,
+  .gantt-day-tick.sun .day-dow { color: var(--urgent); opacity: 1; }
+  .gantt-day-tick.sat .day-num,
+  .gantt-day-tick.sat .day-dow { color: var(--accent); opacity: 1; }
 
   .gantt-row {
     display: grid;
@@ -1885,13 +1904,14 @@
 
     // Day-level tick labels so users can see the near-future dates at a glance.
     const dayStep = 1;
+    const DOW = ['日','月','火','水','木','金','土'];
     const days = [];
     for (let i = 0; i <= totalDays; i += dayStep) {
       const d = new Date(minDate);
       d.setDate(minDate.getDate() + i);
       const pct = (i / totalDays) * 100;
-      // Day-number-only label since the row above already shows the month.
-      days.push({ label: `${d.getDate()}`, pct });
+      // Day-number label + weekday; month shown in the row above.
+      days.push({ label: `${d.getDate()}`, dow: DOW[d.getDay()], dowIdx: d.getDay(), pct });
     }
 
     const html = `
@@ -1901,7 +1921,7 @@
             <div class="title-col">📋 課題</div>
             <div class="timeline-col">
               ${months.map(m => `<div class="gantt-month" style="left:${m.pct}%">${m.label}</div>`).join('')}
-              ${days.map(d => `<div class="gantt-day-tick" style="left:${d.pct}%">${d.label}</div>`).join('')}
+              ${days.map(d => `<div class="gantt-day-tick${d.dowIdx === 0 ? ' sun' : d.dowIdx === 6 ? ' sat' : ''}" style="left:${d.pct}%"><span class="day-num">${d.label}</span><span class="day-dow">${d.dow}</span></div>`).join('')}
             </div>
             <div class="actions-col">操作</div>
           </div>
