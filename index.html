@@ -227,31 +227,37 @@
     box-shadow: var(--shadow);
   }
   header.topbar h1 {
-    font-size: 26px;
     margin: 0;
     margin-right: auto;
-    padding: 2px 0;
+    padding: 0;
+    position: relative;
+    display: inline-flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 1px;
+    line-height: 1;
+  }
+  header.topbar h1 .title-main {
+    font-size: 28px;
+    font-weight: 900;
     letter-spacing: -0.01em;
     background: linear-gradient(135deg, var(--accent-1), var(--accent-2));
     -webkit-background-clip: text;
     background-clip: text;
     color: transparent;
-    font-weight: 900;
-    text-align: left;
     white-space: nowrap;
-    position: relative;
-    display: inline-flex;
-    align-items: center;
-    gap: 8px;
+    line-height: 1.05;
+    padding-left: 10px;
+    border-left: 4px solid;
+    border-image: linear-gradient(180deg, var(--accent-1), var(--accent-2)) 1;
   }
-  header.topbar h1::before {
-    content: "";
-    display: inline-block;
-    width: 5px;
-    height: 26px;
-    background: linear-gradient(180deg, var(--accent-1), var(--accent-2));
-    border-radius: 3px;
-    -webkit-text-fill-color: initial;
+  header.topbar h1 .title-sub {
+    font-size: 9px;
+    font-weight: 800;
+    letter-spacing: 0.28em;
+    color: var(--text-sub);
+    padding-left: 14px;
+    margin-top: 1px;
   }
 
   .bottom-bar {
@@ -1203,8 +1209,8 @@
     .gantt-row, .gantt-header { grid-template-columns: 120px 1fr 76px; }
     .gantt { --title-w: 120px; --action-w: 76px; }
     header.topbar { padding: 12px 14px; }
-    header.topbar h1 { font-size: 22px; }
-    header.topbar h1::before { height: 22px; }
+    header.topbar h1 .title-main { font-size: 24px; }
+    header.topbar h1 .title-sub { font-size: 8px; letter-spacing: 0.24em; }
     .bottom-bar .view-toggle button { padding: 13px 14px; font-size: 14px; }
     .bottom-bar { padding: 8px 12px calc(8px + env(safe-area-inset-bottom)) 12px; }
     .fab { width: 64px; height: 64px; right: 14px; bottom: calc(84px + env(safe-area-inset-bottom)); font-size: 30px; }
@@ -1222,7 +1228,7 @@
 <body>
 <div class="app">
   <header class="topbar">
-    <h1>課題トラッカー</h1>
+    <h1><span class="title-main">課題トラッカー</span><span class="title-sub">KADAI TRACKER</span></h1>
     <button id="btnTheme" class="btn" title="テーマ切り替え">🌙</button>
     <button id="btnNotify" class="btn">🔔</button>
   </header>
