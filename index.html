@@ -1372,7 +1372,10 @@
 
   // ===== Reminder banner =====
   function renderReminder() {
-    const today = parseDate(todayStr());
+    if (!notifyEnabled) {
+      reminderHost.innerHTML = '';
+      return;
+    }
     const tasksToAlert = state.items.filter(it => {
       if (it.done) return false;
       const left = daysLeft(it);
@@ -1778,40 +1781,33 @@
   });
 
   // ===== Notifications =====
+  const hasNotifAPI = typeof Notification !== 'undefined';
+
   function updateNotifyBtn() {
     const btn = $('btnNotify');
-    if (notifyEnabled && typeof Notification !== 'undefined' && Notification.permission === 'granted') {
+    if (notifyEnabled) {
       btn.classList.add('notify-on');
       btn.textContent = '🔔 ON';
     } else {
       btn.classList.remove('notify-on');
-      btn.textContent = '🔔';
+      btn.textContent = '🔕';
     }
   }
+
   $('btnNotify').addEventListener('click', async () => {
-    if (typeof Notification === 'undefined') {
-      toast('このブラウザは通知に対応していません', 'error');
-      return;
+    // If native API available and permission not yet determined, request it before toggling ON.
+    if (!notifyEnabled && hasNotifAPI && Notification.permission === 'default') {
+      try { await Notification.requestPermission(); } catch (e) {}
     }
-    if (Notification.permission === 'granted') {
-      notifyEnabled = !notifyEnabled;
-      saveState();
-      updateNotifyBtn();
-      toast(notifyEnabled ? '🔔 通知オン' : '🔕 通知オフ', notifyEnabled ? 'success' : 'warn');
-      if (notifyEnabled) runScheduledNotifications();
-    } else if (Notification.permission === 'denied') {
-      toast('通知が端末側でブロックされています', 'error');
+    notifyEnabled = !notifyEnabled;
+    saveState();
+    updateNotifyBtn();
+    render();
+    if (notifyEnabled) {
+      toast('🔔 リマインダーON', 'success');
+      runScheduledNotifications();
     } else {
-      const p = await Notification.requestPermission();
-      if (p === 'granted') {
-        notifyEnabled = true;
-        saveState();
-        updateNotifyBtn();
-        toast('🔔 通知オン', 'success');
-        runScheduledNotifications();
-      } else {
-        toast('通知が許可されませんでした', 'warn');
-      }
+      toast('🔕 リマインダーOFF', 'warn');
     }
   });
 
