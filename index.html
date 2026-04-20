@@ -1146,8 +1146,8 @@
     <div class="filter-row">
       <label for="filterStatus">🔍 ステータス</label>
       <select id="filterStatus">
+        <option value="open" selected>未提出のみ</option>
         <option value="all">全件</option>
-        <option value="open">未提出のみ</option>
         <option value="done">提出済のみ</option>
       </select>
     </div>
@@ -1252,7 +1252,7 @@
   let state = loadState();
   let currentView = 'gantt';
   let filterCourse = '';
-  let filterStatus = 'all';
+  let filterStatus = 'open';
   let notifyEnabled = state.notify === true;
   let calCursor = new Date();
   calCursor.setDate(1);
