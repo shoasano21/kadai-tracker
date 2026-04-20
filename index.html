@@ -1928,7 +1928,7 @@
 
     const chips = c.tasks.slice(0, 2).map(t => {
       const s = t.done ? 'past' : statusOf(t);
-      return `<div class="cal-chip ${s}" title="${escapeHtml(t.title)}">${escapeHtml(t.title)}</div>`;
+      return `<div class="cal-chip ${s}" title="${escapeHtml(t.course)} — ${escapeHtml(t.title)}">${escapeHtml(t.course)}</div>`;
     }).join('');
     const more = c.tasks.length > 2 ? `<div class="cal-chip more">+${c.tasks.length - 2}</div>` : '';
     return `
