@@ -619,62 +619,54 @@
     top: 50%;
     transform: translateY(-50%) scaleX(0);
     transform-origin: left center;
-    height: 22px;
-    border-radius: 8px;
+    height: 20px;
+    border-radius: 6px;
     display: flex;
     align-items: center;
     padding: 0 10px;
     font-size: 11px;
     color: #fff;
-    font-weight: 700;
+    font-weight: 600;
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
-    box-shadow: 0 3px 10px rgba(0,0,0,0.12);
+    box-shadow: 0 1px 3px rgba(0,0,0,0.06);
     animation: barSlide 0.6s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
-    transition: transform .2s, box-shadow .2s;
+    transition: transform .2s;
   }
   @keyframes barSlide {
     from { transform: translateY(-50%) scaleX(0); }
     to { transform: translateY(-50%) scaleX(1); }
   }
-  .bar.urgent {
-    background: linear-gradient(135deg, var(--urgent-1), var(--urgent-2));
-    background-size: 200% 200%;
-    animation: barSlide 0.6s cubic-bezier(0.34, 1.56, 0.64, 1) forwards, shimmerBg 3s ease-in-out infinite;
-  }
-  .bar.soon { background: linear-gradient(135deg, var(--soon-1), var(--soon-2)); }
-  .bar.ok { background: linear-gradient(135deg, var(--ok-1), var(--ok-2)); }
-  .bar.past { background: linear-gradient(135deg, #8b91a6, #9aa0a6); opacity: 0.55; }
-  @keyframes shimmerBg {
-    0%, 100% { background-position: 0% 50%; }
-    50% { background-position: 100% 50%; }
-  }
+  .bar.urgent { background: #e88595; }
+  .bar.soon { background: #e8b56d; }
+  .bar.ok { background: #7ec8a4; }
+  .bar.past { background: #b0b4c2; opacity: 0.6; }
 
   .today-line {
     position: absolute;
     top: 0;
     bottom: 0;
-    width: 2px;
-    background: linear-gradient(180deg, var(--today), transparent);
+    width: 1.5px;
+    background: var(--today);
     z-index: 10;
     pointer-events: none;
-    box-shadow: 0 0 12px rgba(255,56,96,0.6);
+    opacity: 0.75;
   }
   .today-line::before {
-    content: "📍 今日";
+    content: "今日";
     position: absolute;
     top: 4px;
     left: 50%;
     transform: translateX(-50%);
-    background: linear-gradient(135deg, var(--today), #ff6b4a);
+    background: var(--today);
     color: #fff;
     font-size: 10px;
-    padding: 3px 8px;
+    padding: 2px 7px;
     border-radius: 999px;
     white-space: nowrap;
     font-weight: 700;
-    box-shadow: 0 4px 12px rgba(255,56,96,0.5);
+    opacity: 0.9;
   }
 
   .row-actions {
