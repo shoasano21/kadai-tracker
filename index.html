@@ -1813,13 +1813,7 @@
 
   function updateNotifyBtn() {
     const btn = $('btnNotify');
-    if (notifyEnabled) {
-      btn.classList.add('notify-on');
-      btn.textContent = '🔔 ON';
-    } else {
-      btn.classList.remove('notify-on');
-      btn.textContent = '🔕';
-    }
+    btn.textContent = notifyEnabled ? '🔔' : '🔕';
   }
 
   $('btnNotify').addEventListener('click', async () => {
