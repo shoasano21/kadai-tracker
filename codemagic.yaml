@@ -23,18 +23,23 @@ workflows:
       - name: Decode API key and set up code signing
         script: |
           set -ex
-          # Decode base64 API key to a file
           echo "$APP_STORE_CONNECT_PRIVATE_KEY_B64" | base64 -d > /tmp/auth_key.p8
-          # Expose the decoded key to subsequent steps via $CM_ENV (Codemagic's env persistence)
           {
             echo "APP_STORE_CONNECT_PRIVATE_KEY<<__EOF__"
             cat /tmp/auth_key.p8
             echo "__EOF__"
           } >> "$CM_ENV"
 
+          # Generate a fresh RSA private key for the iOS Distribution certificate.
+          # This tells fetch-signing-files to create a NEW certificate using this
+          # key, avoiding the "cannot save without private key" path where it tries
+          # to download an existing certificate.
+          openssl genrsa -out /tmp/cert_key.pem 2048
+
           keychain initialize
           app-store-connect fetch-signing-files "$BUNDLE_ID" \
             --private-key @file:/tmp/auth_key.p8 \
+            --certificate-key @file:/tmp/cert_key.pem \
             --issuer-id "$APP_STORE_CONNECT_ISSUER_ID" \
             --key-id "$APP_STORE_CONNECT_KEY_IDENTIFIER" \
             --type IOS_APP_STORE \
