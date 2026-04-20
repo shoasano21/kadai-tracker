@@ -634,6 +634,7 @@
     position: relative;
     transition: background .15s;
   }
+  .gantt-row { cursor: pointer; }
   .gantt-row:hover { background: rgba(102,126,234,0.04); }
   .gantt-row .task-label {
     padding: 8px 8px 8px 14px;
@@ -1928,7 +1929,7 @@
     const emoji = courseEmoji(it.course);
     const delay = Math.min(idx * 0.04, 0.5);
     return `
-      <div class="gantt-row ${it.done ? 'done' : ''}" data-id="${it.id}">
+      <div class="gantt-row ${it.done ? 'done' : ''}" data-id="${it.id}" data-action="detail">
         <div class="task-label">
           <span class="course-tag">${emoji} ${escapeHtml(it.course)}</span>
           <span class="task-title">${escapeHtml(it.title)}</span>
@@ -2072,7 +2073,7 @@
     else if (left === 0) leftText = '🔥 今日締切';
     else leftText = `残り${left}日`;
     return `
-      <div class="cal-task ${s}" data-id="${it.id}">
+      <div class="cal-task ${s}" data-id="${it.id}" data-action="detail" style="cursor:pointer;">
         <div class="cal-task-body">
           <div class="cal-task-course">🎓 ${escapeHtml(it.course)}</div>
           <div class="cal-task-title">${escapeHtml(it.title)}</div>
@@ -2092,11 +2093,15 @@
   function bindRowActions() {
     host.querySelectorAll('[data-action]').forEach(btn => {
       btn.addEventListener('click', (e) => {
-        e.stopPropagation();
         const id = Number(btn.dataset.id);
         const action = btn.dataset.action;
-        if (action === 'toggle') toggleDone(id, btn);
-        else if (action === 'del') deleteItem(id);
+        if (action === 'toggle') { e.stopPropagation(); toggleDone(id, btn); }
+        else if (action === 'del') { e.stopPropagation(); deleteItem(id); }
+        else if (action === 'detail') {
+          // Only fire detail when the click didn't originate from an inner action button.
+          if (e.target.closest('[data-action="toggle"], [data-action="del"]')) return;
+          openEditModal(id);
+        }
       });
     });
   }
@@ -2201,15 +2206,38 @@
     });
   }
 
+  let editingId = null;
+
   function openModal() {
+    editingId = null;
     $('addForm').reset();
     $('fStart').value = todayStr();
     $('fRemindDays').value = '3';
     $('formError').textContent = '';
+    $('modalTitle').textContent = '✨ 課題を追加';
     renderCourseChips();
     $('modalOverlay').classList.add('open');
     $('modalOverlay').setAttribute('aria-hidden', 'false');
     setTimeout(() => $('fCourse').focus(), 100);
+  }
+
+  function openEditModal(id) {
+    const it = state.items.find(x => x.id === id);
+    if (!it) return;
+    editingId = id;
+    $('addForm').reset();
+    $('fCourse').value = it.course || '';
+    $('fTitle').value = it.title || '';
+    $('fType').value = it.type || 'report';
+    $('fDesc').value = it.desc || '';
+    $('fStart').value = it.start || todayStr();
+    $('fEnd').value = it.end || '';
+    $('fRemindDays').value = String(it.remindDays ?? 3);
+    $('formError').textContent = '';
+    $('modalTitle').textContent = '✏️ 課題を編集';
+    renderCourseChips();
+    $('modalOverlay').classList.add('open');
+    $('modalOverlay').setAttribute('aria-hidden', 'false');
   }
   function closeModal() {
     $('modalOverlay').classList.remove('open');
@@ -2242,7 +2270,17 @@
     if (!start) return (err.textContent = '⚠️ 出題日を入力してください');
     if (!end) return (err.textContent = '⚠️ 締切日を入力してください');
     if (end < start) return (err.textContent = '⚠️ 締切日は出題日以降にしてください');
-    addItem({ course, title, type, desc, start, end, remindDays });
+    if (editingId !== null) {
+      const it = state.items.find(x => x.id === editingId);
+      if (it) Object.assign(it, { course, title, type, desc, start, end, remindDays });
+      saveState();
+      render();
+      syncNativeNotifications();
+      toast('💾 更新しました', 'success');
+      editingId = null;
+    } else {
+      addItem({ course, title, type, desc, start, end, remindDays });
+    }
     closeModal();
   });
 
