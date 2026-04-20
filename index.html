@@ -1356,8 +1356,6 @@
       courses.map(c => `<option value="${escapeHtml(c)}">${escapeHtml(c)}</option>`).join('');
     sel.value = courses.includes(prev) ? prev : '';
     filterCourse = sel.value;
-    const dl = $('courseList');
-    dl.innerHTML = courses.map(c => `<option value="${escapeHtml(c)}"></option>`).join('');
   }
 
   function render() {
