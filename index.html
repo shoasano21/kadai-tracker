@@ -635,14 +635,29 @@
     transition: background .15s;
   }
   .gantt-row { cursor: pointer; }
-  .gantt-row:hover { background: rgba(102,126,234,0.04); }
+  .gantt-row:hover { background: rgba(102,126,234,0.06); }
+  .gantt-row:active { background: rgba(102,126,234,0.12); }
   .gantt-row .task-label {
-    padding: 8px 8px 8px 14px;
+    padding: 8px 18px 8px 14px;
     display: flex;
     flex-direction: column;
     gap: 2px;
     overflow: hidden;
   }
+  .gantt-row .task-label::after {
+    content: "›";
+    position: absolute;
+    right: 6px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: var(--text-sub);
+    font-size: 18px;
+    line-height: 1;
+    font-weight: 700;
+    opacity: 0.55;
+  }
+  .gantt-row:hover .task-label::after,
+  .gantt-row:active .task-label::after { opacity: 1; color: var(--accent); }
   .task-label .course-tag {
     font-size: 11px;
     color: var(--text-sub);
