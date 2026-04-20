@@ -1180,6 +1180,9 @@
   .type-badge.other { background: var(--type-other-bg); color: var(--type-other-fg); }
 
   /* Course chip suggestions in modal */
+  .course-select {
+    margin-top: 6px;
+  }
   .chip-suggestions {
     display: flex;
     flex-wrap: nowrap;
@@ -1570,7 +1573,10 @@
     <form id="addForm" novalidate>
       <div class="field">
         <label for="fCourse">🎓 講義名<span class="req">*</span></label>
-        <input id="fCourse" type="text" maxlength="40" autocomplete="off" placeholder="新しい講義名を入力、または下から選択" />
+        <input id="fCourse" type="text" maxlength="40" autocomplete="off" placeholder="新しい講義名を入力..." />
+        <select id="fCourseSelect" class="course-select">
+          <option value="">既存から選択...</option>
+        </select>
         <div class="chip-suggestions" id="chipSuggestions" aria-label="既存の講義から選択"></div>
       </div>
       <div class="field">
@@ -2159,6 +2165,14 @@
     const merged = existingSorted
       .concat(COMMON_COURSES.filter(c => !existing.includes(c)))
       .filter(c => !hidden.has(c));
+
+    // Populate the dropdown too
+    const sel = $('fCourseSelect');
+    if (sel) {
+      sel.innerHTML = '<option value="">既存から選択...</option>' +
+        merged.map(c => `<option value="${escapeHtml(c)}">${escapeHtml(c)}</option>`).join('');
+    }
+
     if (merged.length === 0) { host.innerHTML = ''; return; }
     host.innerHTML = merged.map(c => `
       <span class="chip-item" data-course="${escapeHtml(c)}">
@@ -2232,6 +2246,14 @@
   if (btnAdd) btnAdd.addEventListener('click', openModal);
   $('btnCancel').addEventListener('click', closeModal);
   $('fCourse').addEventListener('input', updateChipActiveState);
+  $('fCourseSelect').addEventListener('change', (e) => {
+    const v = e.target.value;
+    if (!v) return;
+    $('fCourse').value = v;
+    updateChipActiveState();
+    e.target.value = '';
+    $('fCourse').focus();
+  });
   $('modalOverlay').addEventListener('click', (e) => {
     if (e.target === $('modalOverlay')) closeModal();
   });
