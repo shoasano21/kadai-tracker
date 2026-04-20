@@ -343,6 +343,20 @@
     border: none;
     box-shadow: none;
   }
+  .notify-time-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    padding: 8px 10px;
+    font-variant-numeric: tabular-nums;
+  }
+  .notify-time-input {
+    position: absolute;
+    opacity: 0;
+    pointer-events: none;
+    width: 1px;
+    height: 1px;
+  }
 
   /* Summary */
   .summary {
@@ -1421,6 +1435,8 @@
     <h1><span class="title-main">課題トラッカー</span><span class="title-sub">KADAI TRACKER</span></h1>
     <button id="btnTheme" class="btn" title="テーマ切り替え">🌙</button>
     <button id="btnNotify" class="btn">🔔</button>
+    <button id="btnNotifyTime" class="btn notify-time-btn" title="通知時刻を変更">⏰ <span id="notifyTimeLabel">09:00</span></button>
+    <input type="time" id="notifyTimeInput" class="notify-time-input" />
   </header>
 
   <section class="summary">
@@ -1610,19 +1626,29 @@
   function loadState() {
     try {
       const raw = localStorage.getItem(STORAGE_KEY);
-      if (!raw) return { items: SAMPLE.slice(), notify: false, lastNotified: {} };
+      if (!raw) return { items: SAMPLE.slice(), notify: false, notifyTime: '09:00', lastNotified: {} };
       const parsed = JSON.parse(raw);
-      if (!parsed || !Array.isArray(parsed.items)) return { items: SAMPLE.slice(), notify: false, lastNotified: {} };
+      if (!parsed || !Array.isArray(parsed.items)) return { items: SAMPLE.slice(), notify: false, notifyTime: '09:00', lastNotified: {} };
       // Migration: ensure remindDays field exists
       parsed.items.forEach(it => { if (it.remindDays === undefined) it.remindDays = 3; });
-      return { items: parsed.items, notify: !!parsed.notify, lastNotified: parsed.lastNotified || {} };
+      return {
+        items: parsed.items,
+        notify: !!parsed.notify,
+        notifyTime: typeof parsed.notifyTime === 'string' && /^\d{2}:\d{2}$/.test(parsed.notifyTime) ? parsed.notifyTime : '09:00',
+        lastNotified: parsed.lastNotified || {}
+      };
     } catch (e) {
-      return { items: SAMPLE.slice(), notify: false, lastNotified: {} };
+      return { items: SAMPLE.slice(), notify: false, notifyTime: '09:00', lastNotified: {} };
     }
   }
   function saveState() {
     try {
-      localStorage.setItem(STORAGE_KEY, JSON.stringify({ items: state.items, notify: notifyEnabled, lastNotified: state.lastNotified }));
+      localStorage.setItem(STORAGE_KEY, JSON.stringify({
+        items: state.items,
+        notify: notifyEnabled,
+        notifyTime: state.notifyTime,
+        lastNotified: state.lastNotified
+      }));
     } catch (e) {
       toast('保存に失敗しました', 'error');
     }
@@ -2172,10 +2198,11 @@
       if (rd >= 3) offsets.push(3);
       if (rd >= 1) offsets.push(1);
       if (rd >= 0) offsets.push(0);
+      const [notifH, notifM] = (state.notifyTime || '09:00').split(':').map(Number);
       offsets.forEach(off => {
         const when = new Date(end);
         when.setDate(when.getDate() - off);
-        when.setHours(9, 0, 0, 0);
+        when.setHours(notifH || 9, notifM || 0, 0, 0);
         if (when.getTime() <= now) return;
         out.push({
           id: `${it.id}-${off}`,
@@ -2197,7 +2224,32 @@
   function updateNotifyBtn() {
     const btn = $('btnNotify');
     btn.textContent = notifyEnabled ? '🔔' : '🔕';
+    const lbl = $('notifyTimeLabel');
+    if (lbl) lbl.textContent = state.notifyTime || '09:00';
+    const input = $('notifyTimeInput');
+    if (input) input.value = state.notifyTime || '09:00';
   }
+
+  // Time picker: the native <input type="time"> is visually hidden; tapping
+  // the ⏰ pill triggers it. On change, persist and resync notifications.
+  $('btnNotifyTime').addEventListener('click', () => {
+    const input = $('notifyTimeInput');
+    input.value = state.notifyTime || '09:00';
+    input.focus();
+    input.click();
+    if (typeof input.showPicker === 'function') {
+      try { input.showPicker(); } catch (e) {}
+    }
+  });
+  $('notifyTimeInput').addEventListener('change', (e) => {
+    const v = e.target.value;
+    if (!/^\d{2}:\d{2}$/.test(v)) return;
+    state.notifyTime = v;
+    saveState();
+    updateNotifyBtn();
+    syncNativeNotifications();
+    toast(`⏰ 通知時刻を ${v} に変更しました`, 'success');
+  });
 
   $('btnNotify').addEventListener('click', async () => {
     // If native API available and permission not yet determined, request it before toggling ON.
