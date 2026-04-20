@@ -22,12 +22,16 @@ workflows:
     scripts:
       - name: Set up code signing
         script: |
+          set -ex
           keychain initialize
           app-store-connect fetch-signing-files "$BUNDLE_ID" \
             --type IOS_APP_STORE \
             --create
           keychain add-certificates
+          cd ios/src
           xcode-project use-profiles
+          echo "=== Signing settings after use-profiles ==="
+          grep -E "PROVISIONING_PROFILE|DEVELOPMENT_TEAM|CODE_SIGN" 課題トラッカー.xcodeproj/project.pbxproj | head -12
       - name: Install CocoaPods dependencies
         script: |
           cd ios/src
