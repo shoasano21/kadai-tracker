@@ -513,7 +513,7 @@
   }
   .gantt {
     position: relative;
-    min-width: 800px;
+    min-width: 1100px;
     --title-w: 200px;
     --action-w: 90px;
   }
@@ -532,7 +532,7 @@
   }
   .gantt-header .title-col {
     padding-left: 14px;
-    font-size: 15px;
+    font-size: 19px;
     font-weight: 800;
     text-transform: none;
     letter-spacing: 0;
@@ -572,14 +572,15 @@
     bottom: 0;
     font-size: 10px;
     color: var(--text-sub);
-    font-weight: 500;
-    padding-left: 3px;
+    font-weight: 600;
+    padding-left: 2px;
     border-left: 1px solid var(--border);
     height: 18px;
     line-height: 1.4;
     text-transform: none;
     letter-spacing: 0;
     white-space: nowrap;
+    transform: translateX(-3px);
   }
 
   .gantt-row {
@@ -1757,7 +1758,8 @@
       const d = new Date(minDate);
       d.setDate(minDate.getDate() + i);
       const pct = (i / totalDays) * 100;
-      days.push({ label: `${d.getMonth()+1}/${d.getDate()}`, pct });
+      // Day-number-only label since the row above already shows the month.
+      days.push({ label: `${d.getDate()}`, pct });
     }
 
     const html = `
