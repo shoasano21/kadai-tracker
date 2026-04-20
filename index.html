@@ -350,6 +350,13 @@
     font-weight: 600;
     line-height: 1.2;
     flex: 1;
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+  }
+  .summary .label-emoji {
+    font-size: 13px;
+    line-height: 1;
   }
   .summary .value {
     font-size: 22px;
@@ -1138,19 +1145,19 @@
   <section class="summary">
     <div class="card urgent" id="cardUrgent">
       <div class="value" id="sumUrgent">0</div>
-      <div class="label">緊急 (3日以内)</div>
+      <div class="label"><span class="label-emoji">🔥</span>緊急 (3日以内)</div>
     </div>
     <div class="card soon">
       <div class="value" id="sumSoon">0</div>
-      <div class="label">1週間以内</div>
+      <div class="label"><span class="label-emoji">⚡</span>1週間以内</div>
     </div>
     <div class="card ok">
       <div class="value" id="sumOk">0</div>
-      <div class="label">余裕あり</div>
+      <div class="label"><span class="label-emoji">🌱</span>余裕あり</div>
     </div>
     <div class="card done">
       <div class="value" id="sumDone">0</div>
-      <div class="label">提出済</div>
+      <div class="label"><span class="label-emoji">🎉</span>提出済</div>
     </div>
   </section>
 
