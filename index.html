@@ -947,7 +947,16 @@
   @media (max-width: 480px) {
     .field-row { grid-template-columns: 1fr; gap: 12px; }
   }
-  .field input[type="date"] { padding-right: 6px; }
+  .field input[type="date"] {
+    text-align: left;
+    -webkit-appearance: none;
+    appearance: none;
+    min-height: 44px;
+    display: block;
+  }
+  .field input[type="date"]::-webkit-date-and-time-value {
+    text-align: left;
+  }
   .field-error {
     color: var(--urgent);
     font-size: 12px;
