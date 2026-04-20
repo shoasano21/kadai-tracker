@@ -1592,7 +1592,6 @@
         <select id="fCourseSelect" class="course-select">
           <option value="">既存から選択...</option>
         </select>
-        <div class="chip-suggestions" id="chipSuggestions" aria-label="既存の講義から選択"></div>
       </div>
       <div class="field">
         <label for="fTitle">📌 課題名<span class="req">*</span></label>
@@ -2176,7 +2175,6 @@
 
   // ===== Modal =====
   function renderCourseChips() {
-    const host = $('chipSuggestions');
     const hidden = new Set(state.hiddenCourses || []);
     const existing = Array.from(new Set(state.items.map(i => i.course).filter(Boolean)));
     const existingSorted = existing.slice().sort();
@@ -2184,44 +2182,13 @@
       .concat(COMMON_COURSES.filter(c => !existing.includes(c)))
       .filter(c => !hidden.has(c));
 
-    // Populate the dropdown too
     const sel = $('fCourseSelect');
     if (sel) {
       sel.innerHTML = '<option value="">既存から選択...</option>' +
         merged.map(c => `<option value="${escapeHtml(c)}">${escapeHtml(c)}</option>`).join('');
     }
-
-    if (merged.length === 0) { host.innerHTML = ''; return; }
-    host.innerHTML = merged.map(c => `
-      <span class="chip-item" data-course="${escapeHtml(c)}">
-        <button type="button" class="chip">${escapeHtml(c)}</button>
-        <button type="button" class="chip-del" aria-label="${escapeHtml(c)} を候補から削除">×</button>
-      </span>
-    `).join('');
-    const input = $('fCourse');
-    host.querySelectorAll('.chip-item').forEach(item => {
-      const course = item.dataset.course;
-      item.querySelector('.chip').addEventListener('click', () => {
-        input.value = course;
-        updateChipActiveState();
-        input.focus();
-      });
-      item.querySelector('.chip-del').addEventListener('click', (e) => {
-        e.stopPropagation();
-        if (!state.hiddenCourses) state.hiddenCourses = [];
-        if (!state.hiddenCourses.includes(course)) state.hiddenCourses.push(course);
-        saveState();
-        renderCourseChips();
-      });
-    });
-    updateChipActiveState();
   }
-  function updateChipActiveState() {
-    const val = $('fCourse').value.trim();
-    document.querySelectorAll('#chipSuggestions .chip-item').forEach(item => {
-      item.classList.toggle('active', item.dataset.course === val);
-    });
-  }
+  function updateChipActiveState() {}
 
   let editingId = null;
 
