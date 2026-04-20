@@ -30,7 +30,10 @@ workflows:
             echo "__EOF_P8__"
           } >> "$CM_ENV"
 
-          openssl genrsa -out /tmp/cert_key.pem 2048
+          # Persistent RSA private key for the iOS Distribution certificate.
+          # Stored as base64 env var so subsequent builds can reuse the same
+          # certificate (Apple allows only one Distribution cert at a time).
+          echo "$DISTRIBUTION_CERT_KEY_B64" | base64 -d > /tmp/cert_key.pem
 
           keychain initialize
           app-store-connect fetch-signing-files "$BUNDLE_ID" \
