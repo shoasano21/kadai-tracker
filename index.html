@@ -1955,12 +1955,11 @@
     const s = statusOf(it);
     const barClass = it.done ? 'done' : s;
     const label = `${fmtDate(it.start)} → ${fmtDate(it.end)}`;
-    const emoji = courseEmoji(it.course);
     const delay = Math.min(idx * 0.04, 0.5);
     return `
       <div class="gantt-row ${it.done ? 'done' : ''}" data-id="${it.id}" data-action="detail">
         <div class="task-label">
-          <span class="course-tag">${emoji} ${escapeHtml(it.course)}</span>
+          <span class="course-tag">${escapeHtml(it.course)}</span>
           <span class="task-title">${escapeHtml(it.title)}</span>
         </div>
         <div class="timeline-col">
