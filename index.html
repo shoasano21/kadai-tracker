@@ -2038,7 +2038,7 @@
           </tbody>
         </table>
         <div class="cal-detail">
-          <div class="cal-detail-header">🗓 ${selDate.getMonth()+1}月${selDate.getDate()}日(${selDow}) 締切の課題</div>
+          <div class="cal-detail-header">${selDate.getMonth()+1}月${selDate.getDate()}日(${selDow}) 締切の課題</div>
           ${selectedTasks.length === 0
             ? `<div class="cal-detail-empty">この日に締切の課題はありません</div>`
             : selectedTasks.map(it => calTaskHtml(it)).join('')}
