@@ -318,7 +318,7 @@
   /* Summary */
   .summary {
     display: grid;
-    grid-template-columns: repeat(4, 1fr);
+    grid-template-columns: repeat(3, 1fr);
     gap: 10px;
     margin-bottom: 14px;
   }
@@ -1154,7 +1154,7 @@
 
   @media (max-width: 700px) {
     .app { padding: 16px 12px calc(110px + env(safe-area-inset-bottom)); }
-    .summary { grid-template-columns: repeat(2, 1fr); gap: 8px; }
+    .summary { grid-template-columns: repeat(3, 1fr); gap: 6px; }
     .summary .value { font-size: 20px; }
     .summary .card { padding: 9px 10px 9px 12px; }
     .summary .label { font-size: 11px; }
@@ -1192,11 +1192,7 @@
   <section class="summary">
     <div class="card urgent" id="cardUrgent">
       <div class="value" id="sumUrgent">0</div>
-      <div class="label">緊急 (3日以内)<span class="label-emoji">🔥</span></div>
-    </div>
-    <div class="card soon">
-      <div class="value" id="sumSoon">0</div>
-      <div class="label">1週間以内<span class="label-emoji">⚡</span></div>
+      <div class="label">緊急<span class="label-emoji">🔥</span></div>
     </div>
     <div class="card ok">
       <div class="value" id="sumOk">0</div>
@@ -1204,7 +1200,7 @@
     </div>
     <div class="card done">
       <div class="value" id="sumDone">0</div>
-      <div class="label">提出済<span class="label-emoji">🎉</span></div>
+      <div class="label">済み<span class="label-emoji">🎉</span></div>
     </div>
   </section>
 
@@ -1404,16 +1400,14 @@
   }
 
   function renderSummary() {
-    let urgent = 0, soon = 0, ok = 0, done = 0;
+    let urgent = 0, ok = 0, done = 0;
     state.items.forEach(it => {
       if (it.done) { done++; return; }
       const s = statusOf(it);
       if (s === 'urgent' || s === 'past') urgent++;
-      else if (s === 'soon') soon++;
       else ok++;
     });
     $('sumUrgent').textContent = urgent;
-    $('sumSoon').textContent = soon;
     $('sumOk').textContent = ok;
     $('sumDone').textContent = done;
     const uc = $('cardUrgent');
