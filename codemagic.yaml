@@ -45,11 +45,23 @@ workflows:
           xcode-project use-profiles
       - name: Set build number
         script: |
+          set -e
           cd ios/src
-          LATEST_BUILD_NUMBER=$(app-store-connect get-latest-app-store-build-number "$APP_STORE_APPLE_ID" --private-key @file:/tmp/auth_key.p8 --issuer-id "$APP_STORE_CONNECT_ISSUER_ID" --key-id "$APP_STORE_CONNECT_KEY_IDENTIFIER" 2>/dev/null || echo 0)
-          NEW_BUILD_NUMBER=$(($LATEST_BUILD_NUMBER + 1))
+          # Prefer the latest TestFlight build number, fall back to Codemagic's
+          # auto-incrementing $BUILD_NUMBER. Either way, we add 1 so every
+          # upload has a strictly greater CFBundleVersion than the last.
+          LATEST_TF=$(app-store-connect get-latest-testflight-build-number "$APP_STORE_APPLE_ID" \
+            --private-key @file:/tmp/auth_key.p8 \
+            --issuer-id "$APP_STORE_CONNECT_ISSUER_ID" \
+            --key-id "$APP_STORE_CONNECT_KEY_IDENTIFIER" 2>/dev/null || echo "")
+          if [ -z "$LATEST_TF" ] || ! [[ "$LATEST_TF" =~ ^[0-9]+$ ]]; then
+            LATEST_TF=0
+          fi
+          CM_BN=${BUILD_NUMBER:-0}
+          BASELINE=$(( LATEST_TF > CM_BN ? LATEST_TF : CM_BN ))
+          NEW_BUILD_NUMBER=$(( BASELINE + 1 ))
           agvtool new-version -all $NEW_BUILD_NUMBER
-          echo "Using build number $NEW_BUILD_NUMBER"
+          echo "TestFlight latest=$LATEST_TF, Codemagic build=$CM_BN, using=$NEW_BUILD_NUMBER"
       - name: Build ipa
         script: |
           cd ios/src
