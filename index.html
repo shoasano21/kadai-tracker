@@ -712,7 +712,8 @@
     border: 1px solid var(--border);
     border-radius: var(--radius);
     box-shadow: var(--shadow);
-    padding: 18px 14px 14px;
+    padding: 18px 12px 14px;
+    overflow: hidden;
   }
   .calendar-header {
     display: flex;
@@ -755,7 +756,7 @@
 
   .calendar-weekdays {
     display: grid;
-    grid-template-columns: repeat(7, 1fr);
+    grid-template-columns: repeat(7, minmax(0, 1fr));
     gap: 6px;
     margin-bottom: 4px;
   }
@@ -773,12 +774,12 @@
 
   .calendar-grid {
     display: grid;
-    grid-template-columns: repeat(7, 1fr);
+    grid-template-columns: repeat(7, minmax(0, 1fr));
     gap: 6px;
   }
   .cal-cell {
     aspect-ratio: 1 / 1.05;
-    border: 1px solid transparent;
+    border: none;
     border-radius: 8px;
     background: var(--panel-solid);
     padding: 4px 3px 3px;
@@ -787,9 +788,10 @@
     flex-direction: column;
     align-items: stretch;
     position: relative;
-    transition: transform .15s, box-shadow .15s, border-color .15s;
+    transition: transform .15s, background .15s;
     overflow: hidden;
     min-height: 52px;
+    min-width: 0;
   }
   @media (hover: hover) {
     .cal-cell:hover { transform: translateY(-1px); box-shadow: var(--shadow); }
