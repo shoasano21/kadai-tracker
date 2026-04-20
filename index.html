@@ -514,13 +514,13 @@
   .gantt {
     position: relative;
     min-width: 800px;
-    --title-w: 180px;
+    --title-w: 200px;
     --action-w: 90px;
   }
   .gantt-header {
     position: relative;
     display: grid;
-    grid-template-columns: 180px 1fr 90px;
+    grid-template-columns: 200px 1fr 90px;
     border-bottom: 2px solid var(--border-strong);
     padding-bottom: 10px;
     margin-bottom: 10px;
@@ -575,9 +575,9 @@
 
   .gantt-row {
     display: grid;
-    grid-template-columns: 180px 1fr 90px;
+    grid-template-columns: 200px 1fr 90px;
     align-items: center;
-    min-height: 48px;
+    min-height: 56px;
     border-bottom: 1px dashed var(--border);
     position: relative;
     transition: background .15s;
@@ -591,7 +591,7 @@
     overflow: hidden;
   }
   .task-label .course-tag {
-    font-size: 12px;
+    font-size: 13px;
     color: var(--text-sub);
     font-weight: 600;
     white-space: nowrap;
@@ -602,7 +602,7 @@
     gap: 4px;
   }
   .task-label .task-title {
-    font-size: 15px;
+    font-size: 17px;
     font-weight: 700;
     white-space: nowrap;
     overflow: hidden;
@@ -1186,8 +1186,8 @@
     .summary .card { padding: 14px 10px 14px 12px; min-height: 68px; }
     .summary .label { font-size: 13px; }
     .summary .label-emoji { font-size: 14px; }
-    .gantt-row, .gantt-header { grid-template-columns: 120px 1fr 76px; }
-    .gantt { --title-w: 120px; --action-w: 76px; }
+    .gantt-row, .gantt-header { grid-template-columns: 140px 1fr 76px; }
+    .gantt { --title-w: 140px; --action-w: 76px; }
     header.topbar { padding: 14px 14px; }
     header.topbar h1 .title-main { font-size: 30px; }
     header.topbar h1 .title-sub { font-size: 9px; letter-spacing: 0.26em; padding-left: 15px; }
