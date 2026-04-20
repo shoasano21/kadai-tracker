@@ -212,18 +212,31 @@
     box-shadow: var(--shadow);
   }
   header.topbar h1 {
-    font-size: 20px;
+    font-size: 26px;
     margin: 0;
     margin-right: auto;
-    padding: 0;
-    letter-spacing: 0.01em;
+    padding: 2px 0;
+    letter-spacing: -0.01em;
     background: linear-gradient(135deg, var(--accent-1), var(--accent-2));
     -webkit-background-clip: text;
     background-clip: text;
     color: transparent;
-    font-weight: 800;
+    font-weight: 900;
     text-align: left;
     white-space: nowrap;
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+  }
+  header.topbar h1::before {
+    content: "";
+    display: inline-block;
+    width: 5px;
+    height: 26px;
+    background: linear-gradient(180deg, var(--accent-1), var(--accent-2));
+    border-radius: 3px;
+    -webkit-text-fill-color: initial;
   }
 
   .view-bar {
@@ -1123,8 +1136,9 @@
     .summary .label { font-size: 11px; }
     .gantt-row, .gantt-header { grid-template-columns: 150px 1fr 80px; }
     .gantt { --title-w: 150px; --action-w: 80px; }
-    header.topbar { padding: 10px 14px; }
-    header.topbar h1 { font-size: 18px; }
+    header.topbar { padding: 12px 14px; }
+    header.topbar h1 { font-size: 22px; }
+    header.topbar h1::before { height: 22px; }
     .view-bar .view-toggle button { padding: 13px 14px; font-size: 14px; }
     .calendar-wrap { padding: 12px 8px; }
     .calendar-weekdays > div { font-size: 10px; padding: 4px 0; }
