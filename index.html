@@ -159,6 +159,21 @@
     header.topbar { margin-top: 12px; }
   }
 
+  /* Calendar-only mode: hide summary / filters / reminder so the grid is
+     the main focus and can breathe. */
+  body[data-view="calendar"] .summary,
+  body[data-view="calendar"] .filter-bar,
+  body[data-view="calendar"] #reminderHost {
+    display: none;
+  }
+  body[data-view="calendar"] .cal-cell {
+    min-height: 60px;
+  }
+  body[data-view="calendar"] .cal-chip {
+    font-size: 10px;
+    padding: 2px 4px;
+  }
+
   body::before {
     content: "";
     position: fixed;
@@ -1462,6 +1477,7 @@
     renderSummary();
     refreshCourseOptions();
     renderReminder();
+    document.body.dataset.view = currentView;
     if (currentView === 'gantt') renderGantt();
     else renderCalendar();
   }
