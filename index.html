@@ -1343,6 +1343,7 @@
     if (/生理/.test(s)) return '❤️';
     if (/病理/.test(s)) return '🔬';
     if (/薬理|薬/.test(s)) return '💊';
+    if (/細胞/.test(s)) return '🧫';
     if (/細菌|ウイルス|微生物/.test(s)) return '🦠';
     if (/免疫/.test(s)) return '🛡️';
     if (/倫理|哲学/.test(s)) return '⚖️';
@@ -1365,7 +1366,7 @@
   };
 
   const SAMPLE = [
-    {id:1,course:"細菌生物学",title:"第2回レポート",type:"report",desc:"細胞周期とチェックポイントについてA4 2枚",start:"2026-04-07",end:"2026-04-28",done:false,remindDays:3},
+    {id:1,course:"細胞生物学",title:"第2回レポート",type:"report",desc:"細胞周期とチェックポイントについてA4 2枚",start:"2026-04-07",end:"2026-04-28",done:false,remindDays:3},
     {id:2,course:"化学Ⅰ",title:"反応速度の問題集",type:"problem",desc:"教科書p.45〜60の練習問題",start:"2026-04-10",end:"2026-04-24",done:false,remindDays:3},
     {id:3,course:"解剖学",title:"骨格系の暗記",type:"memory",desc:"上肢骨の全名称・起始停止",start:"2026-04-14",end:"2026-05-02",done:false,remindDays:3},
     {id:4,course:"倫理学Ⅰ",title:"ミル読書レポート",type:"report",desc:"功利主義の現代的意義について600字",start:"2026-04-17",end:"2026-05-09",done:false,remindDays:3},
