@@ -1494,38 +1494,9 @@
     return `<div class="empty"><span class="big-emoji">${emoji}</span>${msg}${sub ? `<div class="sub">${sub}</div>` : ''}</div>`;
   }
 
-  // ===== Reminder banner =====
+  // ===== Reminder banner (disabled; OS notifications handle alerts) =====
   function renderReminder() {
-    if (!notifyEnabled) {
-      reminderHost.innerHTML = '';
-      return;
-    }
-    const tasksToAlert = state.items.filter(it => {
-      if (it.done) return false;
-      const left = daysLeft(it);
-      return left >= 0 && left <= 1;
-    });
-    if (tasksToAlert.length === 0) {
-      reminderHost.innerHTML = '';
-      return;
-    }
-    if (sessionStorage.getItem('kadai_reminder_dismissed') === '1') {
-      reminderHost.innerHTML = '';
-      return;
-    }
-    const msg = tasksToAlert.length === 1
-      ? `⏰ 「${escapeHtml(tasksToAlert[0].title)}」が${daysLeft(tasksToAlert[0]) === 0 ? '今日' : '明日'}締切です`
-      : `⏰ 今日〜明日締切の課題が ${tasksToAlert.length} 件あります`;
-    reminderHost.innerHTML = `
-      <div class="reminder">
-        <span class="msg">${msg}</span>
-        <button class="close-btn" id="reminderClose" aria-label="閉じる">×</button>
-      </div>
-    `;
-    $('reminderClose').addEventListener('click', () => {
-      sessionStorage.setItem('kadai_reminder_dismissed', '1');
-      reminderHost.innerHTML = '';
-    });
+    reminderHost.innerHTML = '';
   }
 
   // ===== Gantt =====
