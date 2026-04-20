@@ -85,3 +85,75 @@ func sendPushClickToWebView(userInfo: [AnyHashable: Any]) {
           let json = String(data: jsonData, encoding: .utf8) else { return }
     checkViewAndEvaluate(event: "push-notification-click", detail: json)
 }
+
+// ===== Local notification scheduling (JS ↔ Swift bridge) =====
+
+private func parseIsoDate(_ s: String) -> Date? {
+    let f = ISO8601DateFormatter()
+    f.formatOptions = [.withInternetDateTime, .withFractionalSeconds]
+    if let d = f.date(from: s) { return d }
+    f.formatOptions = [.withInternetDateTime]
+    return f.date(from: s)
+}
+
+func handleScheduleLocal(message: WKScriptMessage) {
+    let bodyString: String
+    if let s = message.body as? String {
+        bodyString = s
+    } else if let dict = message.body as? [String: Any],
+              let data = try? JSONSerialization.data(withJSONObject: dict),
+              let s = String(data: data, encoding: .utf8) {
+        bodyString = s
+    } else {
+        return
+    }
+    guard let data = bodyString.data(using: .utf8),
+          let json = try? JSONSerialization.jsonObject(with: data) as? [String: Any] else { return }
+
+    let center = UNUserNotificationCenter.current()
+
+    // Ensure permission before scheduling.
+    center.getNotificationSettings { settings in
+        let ensureAuth: (@escaping (Bool) -> Void) -> Void = { done in
+            switch settings.authorizationStatus {
+            case .authorized, .ephemeral, .provisional:
+                done(true)
+            case .notDetermined:
+                center.requestAuthorization(options: [.alert, .badge, .sound]) { granted, _ in done(granted) }
+            default:
+                done(false)
+            }
+        }
+        ensureAuth { granted in
+            guard granted else { return }
+
+            // Cancel previously-scheduled notifications owned by this app.
+            center.getPendingNotificationRequests { requests in
+                let ids = requests.map { $0.identifier }.filter { $0.hasPrefix("kadai-") }
+                center.removePendingNotificationRequests(withIdentifiers: ids)
+
+                // Schedule new ones.
+                let notifications = (json["notifications"] as? [[String: Any]]) ?? []
+                let now = Date()
+                for n in notifications {
+                    guard let id = n["id"] as? String,
+                          let title = n["title"] as? String,
+                          let body = n["body"] as? String,
+                          let whenStr = n["when"] as? String,
+                          let when = parseIsoDate(whenStr) else { continue }
+                    if when <= now { continue }
+
+                    let content = UNMutableNotificationContent()
+                    content.title = title
+                    content.body = body
+                    content.sound = .default
+
+                    let comps = Calendar.current.dateComponents([.year, .month, .day, .hour, .minute], from: when)
+                    let trigger = UNCalendarNotificationTrigger(dateMatching: comps, repeats: false)
+                    let request = UNNotificationRequest(identifier: "kadai-\(id)", content: content, trigger: trigger)
+                    center.add(request) { _ in }
+                }
+            }
+        }
+    }
+}

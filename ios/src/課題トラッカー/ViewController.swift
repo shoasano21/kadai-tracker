@@ -272,5 +272,8 @@ extension ViewController: WKScriptMessageHandler {
         if message.name == "push-token" {
             handleFCMToken()
         }
+        if message.name == "schedule-local" {
+            handleScheduleLocal(message: message)
+        }
   }
 }

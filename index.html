@@ -1668,6 +1668,7 @@
       launchConfetti(rect.left + rect.width / 2, rect.top + rect.height / 2);
     }
     render();
+    syncNativeNotifications();
     toast(it.done ? `🎉 「${it.title}」を完了！` : `↩️ 「${it.title}」を未完了に`, it.done ? 'success' : 'warn');
   }
   function deleteItem(id) {
@@ -1677,6 +1678,7 @@
     state.items = state.items.filter(x => x.id !== id);
     saveState();
     render();
+    syncNativeNotifications();
     toast('🗑 削除しました', 'warn');
   }
   function addItem(data) {
@@ -1684,6 +1686,7 @@
     state.items.push({ id: maxId + 1, ...data, done: false });
     saveState();
     render();
+    syncNativeNotifications();
     toast('✨ 追加しました', 'success');
   }
 
@@ -1811,6 +1814,60 @@
   // ===== Notifications =====
   const hasNotifAPI = typeof Notification !== 'undefined';
 
+  function postToNative(name, body) {
+    try {
+      if (typeof webkit !== 'undefined' && webkit && webkit.messageHandlers && webkit.messageHandlers[name]) {
+        webkit.messageHandlers[name].postMessage(body);
+        return true;
+      }
+    } catch (e) {}
+    return false;
+  }
+  const hasNativeBridge = (() => {
+    try {
+      return typeof webkit !== 'undefined'
+        && webkit
+        && webkit.messageHandlers
+        && typeof webkit.messageHandlers['schedule-local'] !== 'undefined';
+    } catch (e) { return false; }
+  })();
+
+  function buildNotificationsPayload() {
+    const now = Date.now();
+    const out = [];
+    state.items.forEach(it => {
+      if (it.done) return;
+      const rd = Number(it.remindDays ?? 3);
+      if (rd < 0) return;
+      const end = parseDate(it.end);
+      if (!end) return;
+      const offsets = [];
+      if (rd >= 7) offsets.push(7);
+      if (rd >= 3) offsets.push(3);
+      if (rd >= 1) offsets.push(1);
+      if (rd >= 0) offsets.push(0);
+      offsets.forEach(off => {
+        const when = new Date(end);
+        when.setDate(when.getDate() - off);
+        when.setHours(9, 0, 0, 0);
+        if (when.getTime() <= now) return;
+        out.push({
+          id: `${it.id}-${off}`,
+          title: off === 0 ? `🔥 今日締切: ${it.title}` : `⏰ あと${off}日: ${it.title}`,
+          body: `${it.course} — ${TYPE_LABEL[it.type] || ''}`,
+          when: when.toISOString()
+        });
+      });
+    });
+    return out;
+  }
+
+  function syncNativeNotifications() {
+    if (!hasNativeBridge) return;
+    const notifications = notifyEnabled ? buildNotificationsPayload() : [];
+    postToNative('schedule-local', JSON.stringify({ notifications }));
+  }
+
   function updateNotifyBtn() {
     const btn = $('btnNotify');
     btn.textContent = notifyEnabled ? '🔔' : '🔕';
@@ -1828,8 +1885,10 @@
     if (notifyEnabled) {
       toast('🔔 リマインダーON', 'success');
       runScheduledNotifications();
+      syncNativeNotifications();
     } else {
       toast('🔕 リマインダーOFF', 'warn');
+      syncNativeNotifications();
     }
   });
 
@@ -1920,7 +1979,12 @@
   updateNotifyBtn();
   render();
   handleUrlAction();
-  setTimeout(() => { if (notifyEnabled) runScheduledNotifications(); }, 600);
+  setTimeout(() => {
+    if (notifyEnabled) {
+      runScheduledNotifications();
+      syncNativeNotifications();
+    }
+  }, 600);
 })();
 </script>
 </body>
