@@ -660,7 +660,7 @@
     text-overflow: ellipsis;
   }
   .gantt-row.done .task-label .task-title { text-decoration: line-through; color: var(--done); }
-  .gantt-row.done .bar { background: linear-gradient(135deg, #b8bdcc, #9aa0a6) !important; opacity: 0.55; }
+  .gantt-row.done .bar { background: #9aa0a6 !important; opacity: 0.55; }
 
   .timeline-col { position: relative; height: 100%; min-height: 48px; }
   .bar {
@@ -688,9 +688,10 @@
     to { transform: translateY(-50%) scaleX(1); }
   }
   .bar.urgent { background: var(--urgent); }
-  .bar.soon { background: var(--soon); }
+  .bar.soon { background: var(--ok); }
   .bar.ok { background: var(--ok); }
-  .bar.past { background: #9aa0a6; opacity: 0.6; }
+  .bar.past { background: var(--urgent); }
+  .bar.done { background: #9aa0a6; opacity: 0.6; }
 
   .today-line {
     position: absolute;
@@ -1856,7 +1857,7 @@
     const rightPct = pctOfDate(it.end);
     const widthPct = Math.max(1.8, rightPct - leftPct);
     const s = statusOf(it);
-    const barClass = it.done ? 'past' : s;
+    const barClass = it.done ? 'done' : s;
     const label = `${fmtDate(it.start)} → ${fmtDate(it.end)}`;
     const emoji = courseEmoji(it.course);
     const delay = Math.min(idx * 0.04, 0.5);
