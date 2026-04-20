@@ -7,12 +7,11 @@ workflows:
       groups:
         - app store credentials
       vars:
-        XCODE_WORKSPACE: "課題トラッカー.xcworkspace"
+        XCODE_PROJECT: "課題トラッカー.xcodeproj"
         XCODE_SCHEME: "課題トラッカー"
         APP_STORE_APPLE_ID: "6762558649"
         BUNDLE_ID: "com.shoasano21.kadaitracker"
       xcode: latest
-      cocoapods: default
     triggering:
       events:
         - push
@@ -31,10 +30,6 @@ workflows:
             echo "__EOF_P8__"
           } >> "$CM_ENV"
 
-          # Generate a fresh RSA private key for the iOS Distribution certificate.
-          # This tells fetch-signing-files to create a NEW certificate using this
-          # key, avoiding the "cannot save without private key" path where it tries
-          # to download an existing certificate.
           openssl genrsa -out /tmp/cert_key.pem 2048
 
           keychain initialize
@@ -48,12 +43,6 @@ workflows:
           keychain add-certificates
           cd ios/src
           xcode-project use-profiles
-          echo "=== Signing settings after use-profiles ==="
-          grep -E "PROVISIONING_PROFILE|DEVELOPMENT_TEAM|CODE_SIGN" 課題トラッカー.xcodeproj/project.pbxproj | head -12
-      - name: Install CocoaPods dependencies
-        script: |
-          cd ios/src
-          pod install --repo-update
       - name: Set build number
         script: |
           cd ios/src
@@ -65,7 +54,7 @@ workflows:
         script: |
           cd ios/src
           xcode-project build-ipa \
-            --workspace "$XCODE_WORKSPACE" \
+            --project "$XCODE_PROJECT" \
             --scheme "$XCODE_SCHEME"
     artifacts:
       - ios/src/build/ios/ipa/*.ipa
