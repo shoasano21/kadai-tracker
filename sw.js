@@ -1,4 +1,4 @@
-const CACHE = 'kadai-tracker-v4';
+const CACHE = 'kadai-tracker-v5';
 const ASSETS = [
   './',
   './index.html',
@@ -30,6 +30,25 @@ self.addEventListener('fetch', (e) => {
   const url = new URL(req.url);
   if (url.origin !== self.location.origin) return;
 
+  const isHtml = req.mode === 'navigate'
+    || (req.headers.get('accept') || '').includes('text/html')
+    || url.pathname.endsWith('.html');
+
+  if (isHtml) {
+    // Network-first for HTML so the user always sees the freshest UI.
+    e.respondWith(
+      fetch(req).then(res => {
+        if (res && res.status === 200) {
+          const copy = res.clone();
+          caches.open(CACHE).then(c => c.put(req, copy));
+        }
+        return res;
+      }).catch(() => caches.match(req).then(c => c || caches.match('./index.html')))
+    );
+    return;
+  }
+
+  // Cache-first for other assets (icons, manifest, etc.)
   e.respondWith(
     caches.match(req).then(cached => {
       const network = fetch(req).then(res => {
