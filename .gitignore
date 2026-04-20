@@ -30,3 +30,6 @@ _original.zip
 # IDE
 .vscode/
 .idea/
+*.p8
+AuthKey_*
+p8_base64*

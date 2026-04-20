@@ -20,11 +20,23 @@ workflows:
         - pattern: main
           include: true
     scripts:
-      - name: Set up code signing
+      - name: Decode API key and set up code signing
         script: |
           set -ex
+          # Decode base64 API key to a file
+          echo "$APP_STORE_CONNECT_PRIVATE_KEY_B64" | base64 -d > /tmp/auth_key.p8
+          # Expose the decoded key to subsequent steps via $CM_ENV (Codemagic's env persistence)
+          {
+            echo "APP_STORE_CONNECT_PRIVATE_KEY<<__EOF__"
+            cat /tmp/auth_key.p8
+            echo "__EOF__"
+          } >> "$CM_ENV"
+
           keychain initialize
           app-store-connect fetch-signing-files "$BUNDLE_ID" \
+            --private-key @file:/tmp/auth_key.p8 \
+            --issuer-id "$APP_STORE_CONNECT_ISSUER_ID" \
+            --key-id "$APP_STORE_CONNECT_KEY_IDENTIFIER" \
             --type IOS_APP_STORE \
             --create
           keychain add-certificates
@@ -39,7 +51,7 @@ workflows:
       - name: Set build number
         script: |
           cd ios/src
-          LATEST_BUILD_NUMBER=$(app-store-connect get-latest-app-store-build-number "$APP_STORE_APPLE_ID" 2>/dev/null || echo 0)
+          LATEST_BUILD_NUMBER=$(app-store-connect get-latest-app-store-build-number "$APP_STORE_APPLE_ID" --private-key @file:/tmp/auth_key.p8 --issuer-id "$APP_STORE_CONNECT_ISSUER_ID" --key-id "$APP_STORE_CONNECT_KEY_IDENTIFIER" 2>/dev/null || echo 0)
           NEW_BUILD_NUMBER=$(($LATEST_BUILD_NUMBER + 1))
           agvtool new-version -all $NEW_BUILD_NUMBER
           echo "Using build number $NEW_BUILD_NUMBER"
