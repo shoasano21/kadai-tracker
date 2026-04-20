@@ -25,9 +25,10 @@ workflows:
           set -ex
           echo "$APP_STORE_CONNECT_PRIVATE_KEY_B64" | base64 -d > /tmp/auth_key.p8
           {
-            echo "APP_STORE_CONNECT_PRIVATE_KEY<<__EOF__"
+            echo "APP_STORE_CONNECT_PRIVATE_KEY<<__EOF_P8__"
             cat /tmp/auth_key.p8
-            echo "__EOF__"
+            echo ""
+            echo "__EOF_P8__"
           } >> "$CM_ENV"
 
           # Generate a fresh RSA private key for the iOS Distribution certificate.
