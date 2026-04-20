@@ -312,15 +312,15 @@
     position: relative;
     z-index: 2;
   }
-  .view-toggle button.active { color: #fff; }
+  .view-toggle button.active { color: var(--text); }
   .view-toggle button.active::before {
     content: "";
     position: absolute;
     inset: 0;
-    background: var(--accent);
+    background: transparent;
+    border: 2px solid var(--text);
     border-radius: 999px;
     z-index: -1;
-    box-shadow: 0 2px 8px rgba(90,114,224,0.25);
   }
 
   .btn {
