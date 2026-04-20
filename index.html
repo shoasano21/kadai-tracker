@@ -23,30 +23,30 @@
 
 <style>
   :root {
-    --bg: #f0f2fb;
-    --bg-grad-1: #ffd6e7;
-    --bg-grad-2: #c7e1ff;
-    --bg-grad-3: #d9f5e0;
-    --panel: rgba(255,255,255,0.8);
+    --bg: #f5f6fb;
+    --bg-grad-1: #f5dfec;
+    --bg-grad-2: #d8e3fb;
+    --bg-grad-3: #dff0e4;
+    --panel: rgba(255,255,255,0.82);
     --panel-solid: #ffffff;
-    --panel-2: #fafbfe;
-    --text: #1b1f2e;
-    --text-sub: #616a85;
-    --border: rgba(199,204,224,0.6);
-    --border-strong: #c8ccda;
-    --accent-1: #667eea;
-    --accent-2: #764ba2;
-    --accent: #667eea;
-    --today: #ff3860;
-    --urgent-1: #ff5978;
-    --urgent-2: #ff8a3d;
-    --urgent: #ff3860;
-    --soon-1: #ffa726;
-    --soon-2: #ffcd38;
-    --soon: #ff9800;
-    --ok-1: #26d67a;
-    --ok-2: #51e898;
-    --ok: #22c55e;
+    --panel-2: #f8f9fc;
+    --text: #1d2236;
+    --text-sub: #5a6480;
+    --border: rgba(196,201,222,0.65);
+    --border-strong: #c4c9de;
+    --accent-1: #5a72e0;
+    --accent-2: #8561cf;
+    --accent: #5a72e0;
+    --today: #e74c5c;
+    --urgent-1: #e74c5c;
+    --urgent-2: #eb8a4a;
+    --urgent: #e74c5c;
+    --soon-1: #eaa93c;
+    --soon-2: #f0c14b;
+    --soon: #eaa93c;
+    --ok-1: #38b77e;
+    --ok-2: #58cf93;
+    --ok: #2ea36c;
     --done: #9aa0a6;
     --type-report-bg: linear-gradient(135deg, #ede7fa, #dcd0f7);
     --type-report-fg: #6a3dd1;
@@ -74,30 +74,30 @@
     --radius: 14px;
   }
   [data-theme="dark"] {
-    --bg: #0f1120;
-    --bg-grad-1: #2d1b4e;
-    --bg-grad-2: #1b2951;
-    --bg-grad-3: #1a3a3a;
-    --panel: rgba(30,34,50,0.8);
-    --panel-solid: #1c1f29;
-    --panel-2: #232735;
-    --text: #edeff8;
-    --text-sub: #a3aac4;
-    --border: rgba(60,65,85,0.6);
-    --border-strong: #3b4055;
-    --accent-1: #8b9fff;
-    --accent-2: #c084fc;
-    --accent: #8b9fff;
-    --today: #ff5978;
-    --urgent-1: #ff6b8a;
-    --urgent-2: #ffa862;
-    --urgent: #ff6b8a;
-    --soon-1: #ffb547;
-    --soon-2: #ffd875;
-    --soon: #ffb547;
-    --ok-1: #5ddb8a;
-    --ok-2: #8dedb0;
-    --ok: #5dd27b;
+    --bg: #131628;
+    --bg-grad-1: #2a1f46;
+    --bg-grad-2: #1c2a4a;
+    --bg-grad-3: #1c3536;
+    --panel: rgba(32,36,55,0.82);
+    --panel-solid: #1e2232;
+    --panel-2: #262a3c;
+    --text: #ebedf6;
+    --text-sub: #9ba3be;
+    --border: rgba(62,68,92,0.65);
+    --border-strong: #3c4262;
+    --accent-1: #8a9cf3;
+    --accent-2: #b683f0;
+    --accent: #8a9cf3;
+    --today: #f06675;
+    --urgent-1: #f06675;
+    --urgent-2: #f09765;
+    --urgent: #f06675;
+    --soon-1: #f2b862;
+    --soon-2: #f5d080;
+    --soon: #f2b862;
+    --ok-1: #5ec991;
+    --ok-2: #82dbae;
+    --ok: #4fbd85;
     --done: #6b7184;
     --type-report-bg: linear-gradient(135deg, #3d2d66, #5a3d8c);
     --type-report-fg: #d4c5ff;
@@ -164,11 +164,11 @@
     position: fixed;
     inset: -20%;
     background:
-      radial-gradient(circle at 15% 20%, var(--bg-grad-1) 0%, transparent 40%),
-      radial-gradient(circle at 85% 15%, var(--bg-grad-2) 0%, transparent 45%),
-      radial-gradient(circle at 50% 85%, var(--bg-grad-3) 0%, transparent 50%);
-    filter: blur(40px);
-    opacity: 0.9;
+      radial-gradient(circle at 15% 20%, var(--bg-grad-1) 0%, transparent 45%),
+      radial-gradient(circle at 85% 15%, var(--bg-grad-2) 0%, transparent 50%),
+      radial-gradient(circle at 50% 85%, var(--bg-grad-3) 0%, transparent 55%);
+    filter: blur(60px);
+    opacity: 0.7;
     z-index: -2;
     animation: meshFloat 28s ease-in-out infinite;
     pointer-events: none;
@@ -178,7 +178,7 @@
     position: fixed;
     inset: 0;
     background: var(--bg);
-    opacity: 0.55;
+    opacity: 0.65;
     z-index: -1;
     pointer-events: none;
   }
