@@ -555,12 +555,12 @@
     position: relative;
     min-width: 1100px;
     --title-w: 200px;
-    --action-w: 90px;
+    --action-w: 0px;
   }
   .gantt-header {
     position: relative;
     display: grid;
-    grid-template-columns: 200px 1fr 90px;
+    grid-template-columns: 200px 1fr;
     border-bottom: 2px solid var(--border-strong);
     padding-bottom: 10px;
     margin-bottom: 10px;
@@ -627,7 +627,7 @@
 
   .gantt-row {
     display: grid;
-    grid-template-columns: 200px 1fr 90px;
+    grid-template-columns: 200px 1fr;
     align-items: center;
     min-height: 56px;
     border-bottom: 1px dashed var(--border);
@@ -1125,6 +1125,21 @@
     gap: 8px;
     margin-top: 12px;
   }
+  .modal-done-btn {
+    background: var(--ok);
+    color: #fff;
+    border: none;
+  }
+  .modal-done-btn.active-done {
+    background: var(--panel-2);
+    color: var(--text);
+    border: 1px solid var(--border);
+  }
+  .modal-del-btn {
+    background: var(--urgent);
+    color: #fff;
+    border: none;
+  }
 
   /* Toast */
   .toast-host {
@@ -1469,8 +1484,8 @@
     .summary .card { padding: 14px 10px 14px 12px; min-height: 68px; }
     .summary .label { font-size: 13px; }
     .summary .label-emoji { font-size: 14px; }
-    .gantt-row, .gantt-header { grid-template-columns: 140px 1fr 76px; }
-    .gantt { --title-w: 140px; --action-w: 76px; }
+    .gantt-row, .gantt-header { grid-template-columns: 140px 1fr; }
+    .gantt { --title-w: 140px; --action-w: 0px; }
     header.topbar { padding: 14px 14px; }
     header.topbar h1 .title-main { font-size: 30px; }
     header.topbar h1 .title-sub { font-size: 9px; letter-spacing: 0.26em; }
@@ -1581,7 +1596,10 @@
       </div>
       <div class="field">
         <label for="fTitle">📌 課題名<span class="req">*</span></label>
-        <input id="fTitle" type="text" maxlength="60" />
+        <input id="fTitle" type="text" maxlength="60" placeholder="新しい課題名を入力..." />
+        <select id="fTitleSelect" class="course-select">
+          <option value="">既存から選択...</option>
+        </select>
       </div>
       <div class="field">
         <label for="fType">🏷 種別<span class="req">*</span></label>
@@ -1623,6 +1641,10 @@
         </select>
       </div>
       <div class="field-error" id="formError"></div>
+      <div class="modal-actions" id="modalEditActions" style="display:none;">
+        <button type="button" class="btn modal-done-btn" id="btnModalDone">✓ 完了</button>
+        <button type="button" class="btn modal-del-btn" id="btnModalDelete">× 削除</button>
+      </div>
       <div class="modal-actions">
         <button type="button" class="btn" id="btnCancel">キャンセル</button>
         <button type="submit" class="btn primary">💾 保存</button>
@@ -1928,10 +1950,6 @@
         <div class="timeline-col">
           <div class="bar ${barClass}" style="left:${leftPct}%;width:${widthPct}%;animation-delay:${delay}s;" title="${escapeHtml(label)}">${label}</div>
         </div>
-        <div class="row-actions">
-          <button class="icon-btn done-btn ${it.done ? 'active' : ''}" data-action="toggle" data-id="${it.id}" title="${it.done ? '未完了に戻す' : '完了にする'}">✓</button>
-          <button class="icon-btn del-btn" data-action="del" data-id="${it.id}" title="削除">×</button>
-        </div>
       </div>
     `;
   }
@@ -2215,6 +2233,8 @@
     $('formError').textContent = '';
     $('modalTitle').textContent = '✨ 課題を追加';
     renderCourseChips();
+    refreshTitleSelect();
+    $('modalEditActions').style.display = 'none';
     $('modalOverlay').classList.add('open');
     $('modalOverlay').setAttribute('aria-hidden', 'false');
     setTimeout(() => $('fCourse').focus(), 100);
@@ -2235,6 +2255,12 @@
     $('formError').textContent = '';
     $('modalTitle').textContent = '✏️ 課題を編集';
     renderCourseChips();
+    refreshTitleSelect();
+    // Show done/delete buttons, update done label to reflect state
+    $('modalEditActions').style.display = '';
+    const doneBtn = $('btnModalDone');
+    doneBtn.textContent = it.done ? '↩️ 未完了に戻す' : '✓ 完了';
+    doneBtn.classList.toggle('active-done', !!it.done);
     $('modalOverlay').classList.add('open');
     $('modalOverlay').setAttribute('aria-hidden', 'false');
   }
@@ -2253,6 +2279,47 @@
     updateChipActiveState();
     e.target.value = '';
     $('fCourse').focus();
+  });
+
+  // Populate task title dropdown from existing titles, honoring course filter
+  function refreshTitleSelect() {
+    const sel = $('fTitleSelect');
+    if (!sel) return;
+    const titles = Array.from(new Set(state.items.map(i => i.title).filter(Boolean))).sort();
+    sel.innerHTML = '<option value="">既存から選択...</option>' +
+      titles.map(t => `<option value="${escapeHtml(t)}">${escapeHtml(t)}</option>`).join('');
+  }
+  $('fTitleSelect').addEventListener('change', (e) => {
+    const v = e.target.value;
+    if (!v) return;
+    $('fTitle').value = v;
+    e.target.value = '';
+    $('fTitle').focus();
+  });
+
+  // Modal edit actions: done toggle + delete
+  $('btnModalDone').addEventListener('click', () => {
+    if (editingId === null) return;
+    const it = state.items.find(x => x.id === editingId);
+    if (!it) return;
+    it.done = !it.done;
+    saveState();
+    render();
+    syncNativeNotifications();
+    toast(it.done ? '🎉 完了にしました' : '↩️ 未完了に戻しました', it.done ? 'success' : 'warn');
+    closeModal();
+  });
+  $('btnModalDelete').addEventListener('click', () => {
+    if (editingId === null) return;
+    const it = state.items.find(x => x.id === editingId);
+    if (!it) return;
+    if (!confirm(`「${it.title}」を削除しますか？`)) return;
+    state.items = state.items.filter(x => x.id !== editingId);
+    saveState();
+    render();
+    syncNativeNotifications();
+    toast('🗑 削除しました', 'warn');
+    closeModal();
   });
   $('modalOverlay').addEventListener('click', (e) => {
     if (e.target === $('modalOverlay')) closeModal();
