@@ -830,10 +830,11 @@
     box-shadow: 0 2px 8px rgba(90,114,224,0.35);
   }
   .cal-cell.selected {
-    background: linear-gradient(135deg, rgba(90,114,224,0.12), rgba(133,97,207,0.12));
-    border-color: var(--accent);
+    background: linear-gradient(135deg, rgba(90,114,224,0.14), rgba(133,97,207,0.14));
+    border-color: transparent;
+    box-shadow: inset 0 0 0 2px var(--accent);
   }
-  .cal-cell.selected.today { background: linear-gradient(135deg, rgba(90,114,224,0.18), rgba(133,97,207,0.18)); }
+  .cal-cell.selected.today { background: linear-gradient(135deg, rgba(90,114,224,0.22), rgba(133,97,207,0.22)); }
 
   .cal-chips {
     display: flex;
