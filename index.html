@@ -1333,6 +1333,31 @@
     lab: '🔬', presentation: '🎤', quiz: '✅', exam: '📊',
     group: '👥', other: '📎'
   };
+
+  function courseEmoji(course) {
+    const s = course || '';
+    if (/物理/.test(s)) return '⚛️';
+    if (/化学/.test(s)) return '🧪';
+    if (/生化/.test(s)) return '🧬';
+    if (/解剖/.test(s)) return '🦴';
+    if (/生理/.test(s)) return '❤️';
+    if (/病理/.test(s)) return '🔬';
+    if (/薬理|薬/.test(s)) return '💊';
+    if (/細菌|ウイルス|微生物/.test(s)) return '🦠';
+    if (/免疫/.test(s)) return '🛡️';
+    if (/倫理|哲学/.test(s)) return '⚖️';
+    if (/統計|確率/.test(s)) return '📊';
+    if (/数学|微積|線形/.test(s)) return '📐';
+    if (/英語/.test(s)) return '🔤';
+    if (/生物/.test(s)) return '🌱';
+    if (/発生/.test(s)) return '🐣';
+    if (/公衆衛生|社会医学|予防/.test(s)) return '🏥';
+    if (/心理/.test(s)) return '🧠';
+    if (/歴史|史/.test(s)) return '📜';
+    if (/医学|内科|外科/.test(s)) return '🏥';
+    if (/組織/.test(s)) return '🔬';
+    return '🎓';
+  }
   const TYPE_LABEL = {
     report: 'レポート', problem: '問題演習', memory: '暗記', reading: '予習・読書',
     lab: '実習・実験', presentation: '発表・プレゼン', quiz: '小テスト', exam: '試験対策',
@@ -1583,7 +1608,7 @@
     const s = statusOf(it);
     const barClass = it.done ? 'past' : s;
     const label = `${fmtDate(it.start)} → ${fmtDate(it.end)}`;
-    const emoji = TYPE_EMOJI[it.type] || '📎';
+    const emoji = courseEmoji(it.course);
     const delay = Math.min(idx * 0.04, 0.5);
     return `
       <div class="gantt-row ${it.done ? 'done' : ''}" data-id="${it.id}">
