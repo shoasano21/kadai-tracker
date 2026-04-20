@@ -475,18 +475,18 @@
     border-radius: var(--radius);
     box-shadow: var(--shadow);
     overflow: auto;
-    padding: 32px 16px 18px;
+    padding: 32px 10px 18px 6px;
   }
   .gantt {
     position: relative;
     min-width: 800px;
-    --title-w: 260px;
-    --action-w: 100px;
+    --title-w: 180px;
+    --action-w: 90px;
   }
   .gantt-header {
     position: relative;
     display: grid;
-    grid-template-columns: 260px 1fr 100px;
+    grid-template-columns: 180px 1fr 90px;
     border-bottom: 2px solid var(--border-strong);
     padding-bottom: 10px;
     margin-bottom: 10px;
@@ -496,7 +496,7 @@
     letter-spacing: 0.04em;
     text-transform: uppercase;
   }
-  .gantt-header .title-col { padding-left: 10px; }
+  .gantt-header .title-col { padding-left: 6px; }
   .gantt-header .actions-col { text-align: right; padding-right: 10px; }
   .gantt-header .timeline-col { position: relative; height: 24px; }
 
@@ -534,7 +534,7 @@
 
   .gantt-row {
     display: grid;
-    grid-template-columns: 260px 1fr 100px;
+    grid-template-columns: 180px 1fr 90px;
     align-items: center;
     min-height: 48px;
     border-bottom: 1px dashed var(--border);
@@ -543,7 +543,7 @@
   }
   .gantt-row:hover { background: rgba(102,126,234,0.04); }
   .gantt-row .task-label {
-    padding: 8px 10px;
+    padding: 8px 8px 8px 6px;
     display: flex;
     flex-direction: column;
     gap: 2px;
@@ -1153,8 +1153,8 @@
     .summary .value { font-size: 20px; }
     .summary .card { padding: 9px 10px 9px 12px; }
     .summary .label { font-size: 11px; }
-    .gantt-row, .gantt-header { grid-template-columns: 150px 1fr 80px; }
-    .gantt { --title-w: 150px; --action-w: 80px; }
+    .gantt-row, .gantt-header { grid-template-columns: 120px 1fr 76px; }
+    .gantt { --title-w: 120px; --action-w: 76px; }
     header.topbar { padding: 12px 14px; }
     header.topbar h1 { font-size: 22px; }
     header.topbar h1::before { height: 22px; }
