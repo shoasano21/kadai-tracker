@@ -44,10 +44,10 @@
     --soon-1: #eaa93c;
     --soon-2: #f0c14b;
     --soon: #eaa93c;
-    --ok-1: #2e7d32;
-    --ok-2: #4caf50;
-    --ok: #2e7d32;
-    --done: #9aa0a6;
+    --ok-1: #43a047;
+    --ok-2: #66bb6a;
+    --ok: #43a047;
+    --done: #000000;
     --type-report-bg: linear-gradient(135deg, #ede7fa, #dcd0f7);
     --type-report-fg: #6a3dd1;
     --type-memory-bg: linear-gradient(135deg, #e1f5e7, #c7ecd1);
@@ -458,7 +458,7 @@
   .summary .urgent .value { color: var(--urgent); }
   .summary .soon .value { color: var(--soon); }
   .summary .ok .value { color: var(--ok); }
-  .summary .done .value { color: #000; }
+  .summary .done .value { color: var(--text); }
 
   @keyframes pulse {
     0%, 100% { transform: scale(1); }
@@ -696,7 +696,7 @@
     text-overflow: ellipsis;
   }
   .gantt-row.done .task-label .task-title { text-decoration: line-through; color: var(--done); }
-  .gantt-row.done .bar { background: #9aa0a6 !important; opacity: 0.55; }
+  .gantt-row.done .bar { background: var(--done) !important; opacity: 0.55; }
 
   .timeline-col { position: relative; height: 100%; min-height: 48px; }
   .bar {
@@ -727,7 +727,7 @@
   .bar.soon { background: var(--ok); }
   .bar.ok { background: var(--ok); }
   .bar.past { background: var(--urgent); }
-  .bar.done { background: #9aa0a6; opacity: 0.6; }
+  .bar.done { background: var(--done); opacity: 0.6; }
 
   .today-line {
     position: absolute;
