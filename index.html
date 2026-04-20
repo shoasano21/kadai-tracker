@@ -1335,6 +1335,15 @@
     group: '👥', other: '📎'
   };
 
+  const COMMON_COURSES = [
+    '物理学', '化学', '生化学', '生物学',
+    '解剖学', '生理学', '組織学', '発生学',
+    '細胞生物学', '微生物学', '免疫学',
+    '病理学', '薬理学',
+    '公衆衛生', '心理学', '倫理学',
+    '統計学', '数学', '英語'
+  ];
+
   function courseEmoji(course) {
     const s = course || '';
     if (/物理/.test(s)) return '⚛️';
@@ -1819,9 +1828,15 @@
   // ===== Modal =====
   function renderCourseChips() {
     const host = $('chipSuggestions');
-    const courses = Array.from(new Set(state.items.map(i => i.course))).sort();
-    if (courses.length === 0) { host.innerHTML = ''; return; }
-    host.innerHTML = courses.map(c => `<button type="button" class="chip" data-course="${escapeHtml(c)}">${escapeHtml(c)}</button>`).join('');
+    const existing = Array.from(new Set(state.items.map(i => i.course).filter(Boolean)));
+    // Merge: user's existing courses first (sorted), then the common subject
+    // list for anything not already present.
+    const existingSorted = existing.slice().sort();
+    const merged = existingSorted.concat(COMMON_COURSES.filter(c => !existing.includes(c)));
+    if (merged.length === 0) { host.innerHTML = ''; return; }
+    host.innerHTML = merged
+      .map(c => `<button type="button" class="chip" data-course="${escapeHtml(c)}">${escapeHtml(c)}</button>`)
+      .join('');
     const input = $('fCourse');
     host.querySelectorAll('.chip').forEach(btn => {
       btn.addEventListener('click', () => {
