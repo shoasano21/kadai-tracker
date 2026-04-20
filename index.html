@@ -159,8 +159,9 @@
     header.topbar { margin-top: 12px; }
   }
 
-  /* Calendar-only mode: hide summary / filters / reminder so the grid is
-     the main focus and can breathe. */
+  /* Calendar-only mode: hide header banner / summary / filters / reminder
+     so the grid is the main focus and can breathe. */
+  body[data-view="calendar"] header.topbar,
   body[data-view="calendar"] .summary,
   body[data-view="calendar"] .filter-bar,
   body[data-view="calendar"] #reminderHost {
