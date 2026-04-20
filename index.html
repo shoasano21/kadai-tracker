@@ -54,6 +54,18 @@
     --type-memory-fg: #247a3d;
     --type-problem-bg: linear-gradient(135deg, #fdecd3, #fbd79c);
     --type-problem-fg: #a8631a;
+    --type-reading-bg: linear-gradient(135deg, #dce8fa, #bed4f5);
+    --type-reading-fg: #1e5aaa;
+    --type-lab-bg: linear-gradient(135deg, #d7f3ee, #b0e6dd);
+    --type-lab-fg: #0e7268;
+    --type-presentation-bg: linear-gradient(135deg, #fce4ec, #f7c0d2);
+    --type-presentation-fg: #b02a5e;
+    --type-quiz-bg: linear-gradient(135deg, #ffe5d4, #ffc9a8);
+    --type-quiz-fg: #c54c10;
+    --type-exam-bg: linear-gradient(135deg, #fde0e0, #fbc1c1);
+    --type-exam-fg: #a81c1c;
+    --type-group-bg: linear-gradient(135deg, #d9f1f5, #b3e3ea);
+    --type-group-fg: #0f6d82;
     --type-other-bg: linear-gradient(135deg, #e6e8ef, #d4d7e2);
     --type-other-fg: #4b5167;
     --shadow: 0 4px 18px rgba(60,70,120,0.08);
@@ -93,6 +105,18 @@
     --type-memory-fg: #9eeab4;
     --type-problem-bg: linear-gradient(135deg, #4a3820, #6b5028);
     --type-problem-fg: #ffd89c;
+    --type-reading-bg: linear-gradient(135deg, #1e3a66, #2a548c);
+    --type-reading-fg: #bfd7ff;
+    --type-lab-bg: linear-gradient(135deg, #173f3a, #205a52);
+    --type-lab-fg: #9eebdf;
+    --type-presentation-bg: linear-gradient(135deg, #4a2236, #6a3452);
+    --type-presentation-fg: #ffc0d6;
+    --type-quiz-bg: linear-gradient(135deg, #4a2e18, #6a4423);
+    --type-quiz-fg: #ffcaa3;
+    --type-exam-bg: linear-gradient(135deg, #4d1e1e, #6e2a2a);
+    --type-exam-fg: #ffbaba;
+    --type-group-bg: linear-gradient(135deg, #1a3d45, #255864);
+    --type-group-fg: #a6e4ef;
     --type-other-bg: linear-gradient(135deg, #2d3243, #3f465d);
     --type-other-fg: #c5cae1;
     --shadow: 0 4px 18px rgba(0,0,0,0.35);
@@ -202,13 +226,30 @@
     white-space: nowrap;
   }
 
+  .view-bar {
+    margin-bottom: 14px;
+  }
+  .view-bar .view-toggle {
+    width: 100%;
+    display: flex;
+  }
+  .view-bar .view-toggle button {
+    flex: 1;
+    padding: 14px 20px;
+    font-size: 15px;
+    font-weight: 700;
+    letter-spacing: 0.02em;
+  }
   .view-toggle {
     display: inline-flex;
-    background: var(--panel-2);
+    background: var(--panel);
+    backdrop-filter: blur(14px);
+    -webkit-backdrop-filter: blur(14px);
     border: 1px solid var(--border);
     border-radius: 999px;
-    padding: 3px;
+    padding: 4px;
     position: relative;
+    box-shadow: var(--shadow);
   }
   .view-toggle button {
     background: transparent;
@@ -354,25 +395,29 @@
     font-weight: 700;
   }
 
-  /* Filter bar */
+  /* Filter bar (vertical stack) */
   .filter-bar {
     display: flex;
-    flex-wrap: wrap;
+    flex-direction: column;
     gap: 10px;
-    align-items: center;
     background: var(--panel);
     backdrop-filter: blur(14px);
     -webkit-backdrop-filter: blur(14px);
     border: 1px solid var(--border);
     border-radius: var(--radius);
-    padding: 10px 14px;
+    padding: 12px 14px;
     margin-bottom: 14px;
     box-shadow: var(--shadow);
+  }
+  .filter-row {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
   }
   .filter-bar label {
     font-size: 12px;
     color: var(--text-sub);
-    font-weight: 600;
+    font-weight: 700;
     display: inline-flex;
     align-items: center;
     gap: 4px;
@@ -381,12 +426,13 @@
     background: var(--panel-2);
     color: var(--text);
     border: 1px solid var(--border);
-    border-radius: 8px;
-    padding: 7px 12px;
-    font-size: 13px;
+    border-radius: 10px;
+    padding: 10px 12px;
+    font-size: 14px;
     font-family: inherit;
     cursor: pointer;
     transition: border-color .15s;
+    width: 100%;
   }
   .filter-bar select:focus { outline: none; border-color: var(--accent); box-shadow: var(--shadow-glow); }
 
@@ -957,7 +1003,46 @@
   .type-badge.report { background: var(--type-report-bg); color: var(--type-report-fg); }
   .type-badge.memory { background: var(--type-memory-bg); color: var(--type-memory-fg); }
   .type-badge.problem { background: var(--type-problem-bg); color: var(--type-problem-fg); }
+  .type-badge.reading { background: var(--type-reading-bg); color: var(--type-reading-fg); }
+  .type-badge.lab { background: var(--type-lab-bg); color: var(--type-lab-fg); }
+  .type-badge.presentation { background: var(--type-presentation-bg); color: var(--type-presentation-fg); }
+  .type-badge.quiz { background: var(--type-quiz-bg); color: var(--type-quiz-fg); }
+  .type-badge.exam { background: var(--type-exam-bg); color: var(--type-exam-fg); }
+  .type-badge.group { background: var(--type-group-bg); color: var(--type-group-fg); }
   .type-badge.other { background: var(--type-other-bg); color: var(--type-other-fg); }
+
+  /* Course chip suggestions in modal */
+  .chip-suggestions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    margin-top: 8px;
+  }
+  .chip-suggestions:empty { display: none; }
+  .chip {
+    background: var(--panel-2);
+    border: 1px solid var(--border);
+    border-radius: 999px;
+    padding: 6px 12px;
+    font-size: 12px;
+    font-weight: 600;
+    cursor: pointer;
+    color: var(--text);
+    transition: all .15s;
+    font-family: inherit;
+  }
+  .chip:hover {
+    background: linear-gradient(135deg, var(--accent-1), var(--accent-2));
+    color: #fff;
+    border-color: transparent;
+    transform: translateY(-1px);
+  }
+  .chip.active {
+    background: linear-gradient(135deg, var(--accent-1), var(--accent-2));
+    color: #fff;
+    border-color: transparent;
+    box-shadow: 0 4px 12px rgba(102,126,234,0.35);
+  }
 
   .empty {
     text-align: center;
@@ -1002,7 +1087,7 @@
     .gantt-row, .gantt-header { grid-template-columns: 150px 1fr 80px; }
     header.topbar { padding: 10px 14px; }
     header.topbar h1 { font-size: 18px; }
-    .view-toggle button { padding: 7px 12px; font-size: 12px; }
+    .view-bar .view-toggle button { padding: 13px 14px; font-size: 14px; }
     .calendar-wrap { padding: 12px 8px; }
     .calendar-weekdays > div { font-size: 10px; padding: 4px 0; }
     .cal-cell { min-height: 46px; border-radius: 8px; padding: 3px; }
@@ -1017,13 +1102,16 @@
 <div class="app">
   <header class="topbar">
     <h1>課題トラッカー</h1>
+    <button id="btnTheme" class="btn" title="テーマ切り替え">🌙</button>
+    <button id="btnNotify" class="btn">🔔</button>
+  </header>
+
+  <div class="view-bar">
     <div class="view-toggle" role="tablist">
       <button id="btnViewGantt" class="active" data-view="gantt">📊 ガント</button>
       <button id="btnViewCalendar" data-view="calendar">📅 カレンダー</button>
     </div>
-    <button id="btnTheme" class="btn" title="テーマ切り替え">🌙</button>
-    <button id="btnNotify" class="btn">🔔</button>
-  </header>
+  </div>
 
   <section class="summary">
     <div class="card urgent" id="cardUrgent">
@@ -1051,14 +1139,18 @@
   <div id="reminderHost"></div>
 
   <section class="filter-bar">
-    <label for="filterCourse">🎓 講義名</label>
-    <select id="filterCourse"><option value="">すべて</option></select>
-    <label for="filterStatus">🔍 ステータス</label>
-    <select id="filterStatus">
-      <option value="all">全件</option>
-      <option value="open">未提出のみ</option>
-      <option value="done">提出済のみ</option>
-    </select>
+    <div class="filter-row">
+      <label for="filterCourse">🎓 講義名</label>
+      <select id="filterCourse"><option value="">すべて</option></select>
+    </div>
+    <div class="filter-row">
+      <label for="filterStatus">🔍 ステータス</label>
+      <select id="filterStatus">
+        <option value="all">全件</option>
+        <option value="open">未提出のみ</option>
+        <option value="done">提出済のみ</option>
+      </select>
+    </div>
   </section>
 
   <main id="viewHost"></main>
@@ -1074,8 +1166,8 @@
     <form id="addForm" novalidate>
       <div class="field">
         <label for="fCourse">🎓 講義名<span class="req">*</span></label>
-        <input id="fCourse" type="text" list="courseList" maxlength="40" autocomplete="off" />
-        <datalist id="courseList"></datalist>
+        <input id="fCourse" type="text" maxlength="40" autocomplete="off" placeholder="新しい講義名を入力、または下から選択" />
+        <div class="chip-suggestions" id="chipSuggestions" aria-label="既存の講義から選択"></div>
       </div>
       <div class="field">
         <label for="fTitle">📌 課題名<span class="req">*</span></label>
@@ -1085,8 +1177,14 @@
         <label for="fType">🏷 種別<span class="req">*</span></label>
         <select id="fType">
           <option value="report">📝 レポート</option>
-          <option value="memory">📖 暗記</option>
           <option value="problem">✏️ 問題演習</option>
+          <option value="memory">📖 暗記</option>
+          <option value="reading">📚 予習・読書</option>
+          <option value="lab">🔬 実習・実験</option>
+          <option value="presentation">🎤 発表・プレゼン</option>
+          <option value="quiz">✅ 小テスト</option>
+          <option value="exam">📊 試験対策</option>
+          <option value="group">👥 グループワーク</option>
           <option value="other">📎 その他</option>
         </select>
       </div>
@@ -1132,8 +1230,16 @@
   const STORAGE_KEY = 'kadai_tracker_v2';
   const DAY_MS = 86400000;
 
-  const TYPE_EMOJI = { report: '📝', memory: '📖', problem: '✏️', other: '📎' };
-  const TYPE_LABEL = { report: 'レポート', memory: '暗記', problem: '問題演習', other: 'その他' };
+  const TYPE_EMOJI = {
+    report: '📝', problem: '✏️', memory: '📖', reading: '📚',
+    lab: '🔬', presentation: '🎤', quiz: '✅', exam: '📊',
+    group: '👥', other: '📎'
+  };
+  const TYPE_LABEL = {
+    report: 'レポート', problem: '問題演習', memory: '暗記', reading: '予習・読書',
+    lab: '実習・実験', presentation: '発表・プレゼン', quiz: '小テスト', exam: '試験対策',
+    group: 'グループワーク', other: 'その他'
+  };
 
   const SAMPLE = [
     {id:1,course:"細菌生物学",title:"第2回レポート",type:"report",desc:"細胞周期とチェックポイントについてA4 2枚",start:"2026-04-07",end:"2026-04-28",done:false,remindDays:3},
@@ -1579,11 +1685,34 @@
   }
 
   // ===== Modal =====
+  function renderCourseChips() {
+    const host = $('chipSuggestions');
+    const courses = Array.from(new Set(state.items.map(i => i.course))).sort();
+    if (courses.length === 0) { host.innerHTML = ''; return; }
+    host.innerHTML = courses.map(c => `<button type="button" class="chip" data-course="${escapeHtml(c)}">${escapeHtml(c)}</button>`).join('');
+    const input = $('fCourse');
+    host.querySelectorAll('.chip').forEach(btn => {
+      btn.addEventListener('click', () => {
+        input.value = btn.dataset.course;
+        updateChipActiveState();
+        input.focus();
+      });
+    });
+    updateChipActiveState();
+  }
+  function updateChipActiveState() {
+    const val = $('fCourse').value.trim();
+    document.querySelectorAll('#chipSuggestions .chip').forEach(c => {
+      c.classList.toggle('active', c.dataset.course === val);
+    });
+  }
+
   function openModal() {
     $('addForm').reset();
     $('fStart').value = todayStr();
     $('fRemindDays').value = '3';
     $('formError').textContent = '';
+    renderCourseChips();
     $('modalOverlay').classList.add('open');
     $('modalOverlay').setAttribute('aria-hidden', 'false');
     setTimeout(() => $('fCourse').focus(), 100);
@@ -1594,6 +1723,7 @@
   }
   $('btnFab').addEventListener('click', openModal);
   $('btnCancel').addEventListener('click', closeModal);
+  $('fCourse').addEventListener('input', updateChipActiveState);
   $('modalOverlay').addEventListener('click', (e) => {
     if (e.target === $('modalOverlay')) closeModal();
   });
