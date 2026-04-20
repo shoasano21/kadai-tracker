@@ -1166,23 +1166,53 @@
   /* Course chip suggestions in modal */
   .chip-suggestions {
     display: flex;
-    flex-wrap: wrap;
+    flex-wrap: nowrap;
     gap: 6px;
     margin-top: 8px;
+    overflow-x: auto;
+    padding-bottom: 6px;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: thin;
   }
   .chip-suggestions:empty { display: none; }
-  .chip {
+  .chip-item {
+    display: inline-flex;
+    align-items: stretch;
+    flex-shrink: 0;
+    border-radius: 999px;
+    overflow: hidden;
     background: var(--panel-2);
     border: 1px solid var(--border);
-    border-radius: 999px;
-    padding: 6px 12px;
+    transition: all .15s;
+  }
+  .chip-item:hover { transform: translateY(-1px); box-shadow: var(--shadow); }
+  .chip-item.active {
+    background: linear-gradient(135deg, var(--accent-1), var(--accent-2));
+    border-color: transparent;
+  }
+  .chip-item.active .chip,
+  .chip-item.active .chip-del { color: #fff; }
+  .chip {
+    background: transparent;
+    border: none;
+    padding: 6px 4px 6px 12px;
     font-size: 12px;
     font-weight: 600;
     cursor: pointer;
     color: var(--text);
-    transition: all .15s;
     font-family: inherit;
   }
+  .chip-del {
+    background: transparent;
+    border: none;
+    padding: 4px 10px 4px 4px;
+    font-size: 12px;
+    color: var(--text-sub);
+    cursor: pointer;
+    font-weight: 700;
+    line-height: 1;
+  }
+  .chip-del:hover { color: var(--urgent); }
   .chip:hover {
     background: linear-gradient(135deg, var(--accent-1), var(--accent-2));
     color: #fff;
@@ -1659,19 +1689,20 @@
   function loadState() {
     try {
       const raw = localStorage.getItem(STORAGE_KEY);
-      if (!raw) return { items: SAMPLE.slice(), notify: false, notifyTime: '09:00', lastNotified: {} };
+      if (!raw) return { items: SAMPLE.slice(), notify: false, notifyTime: '09:00', hiddenCourses: [], lastNotified: {} };
       const parsed = JSON.parse(raw);
-      if (!parsed || !Array.isArray(parsed.items)) return { items: SAMPLE.slice(), notify: false, notifyTime: '09:00', lastNotified: {} };
+      if (!parsed || !Array.isArray(parsed.items)) return { items: SAMPLE.slice(), notify: false, notifyTime: '09:00', hiddenCourses: [], lastNotified: {} };
       // Migration: ensure remindDays field exists
       parsed.items.forEach(it => { if (it.remindDays === undefined) it.remindDays = 3; });
       return {
         items: parsed.items,
         notify: !!parsed.notify,
         notifyTime: typeof parsed.notifyTime === 'string' && /^\d{2}:\d{2}$/.test(parsed.notifyTime) ? parsed.notifyTime : '09:00',
+        hiddenCourses: Array.isArray(parsed.hiddenCourses) ? parsed.hiddenCourses : [],
         lastNotified: parsed.lastNotified || {}
       };
     } catch (e) {
-      return { items: SAMPLE.slice(), notify: false, notifyTime: '09:00', lastNotified: {} };
+      return { items: SAMPLE.slice(), notify: false, notifyTime: '09:00', hiddenCourses: [], lastNotified: {} };
     }
   }
   function saveState() {
@@ -1680,6 +1711,7 @@
         items: state.items,
         notify: notifyEnabled,
         notifyTime: state.notifyTime,
+        hiddenCourses: state.hiddenCourses || [],
         lastNotified: state.lastNotified
       }));
     } catch (e) {
@@ -2098,29 +2130,41 @@
   // ===== Modal =====
   function renderCourseChips() {
     const host = $('chipSuggestions');
+    const hidden = new Set(state.hiddenCourses || []);
     const existing = Array.from(new Set(state.items.map(i => i.course).filter(Boolean)));
-    // Merge: user's existing courses first (sorted), then the common subject
-    // list for anything not already present.
     const existingSorted = existing.slice().sort();
-    const merged = existingSorted.concat(COMMON_COURSES.filter(c => !existing.includes(c)));
+    const merged = existingSorted
+      .concat(COMMON_COURSES.filter(c => !existing.includes(c)))
+      .filter(c => !hidden.has(c));
     if (merged.length === 0) { host.innerHTML = ''; return; }
-    host.innerHTML = merged
-      .map(c => `<button type="button" class="chip" data-course="${escapeHtml(c)}">${escapeHtml(c)}</button>`)
-      .join('');
+    host.innerHTML = merged.map(c => `
+      <span class="chip-item" data-course="${escapeHtml(c)}">
+        <button type="button" class="chip">${escapeHtml(c)}</button>
+        <button type="button" class="chip-del" aria-label="${escapeHtml(c)} を候補から削除">×</button>
+      </span>
+    `).join('');
     const input = $('fCourse');
-    host.querySelectorAll('.chip').forEach(btn => {
-      btn.addEventListener('click', () => {
-        input.value = btn.dataset.course;
+    host.querySelectorAll('.chip-item').forEach(item => {
+      const course = item.dataset.course;
+      item.querySelector('.chip').addEventListener('click', () => {
+        input.value = course;
         updateChipActiveState();
         input.focus();
+      });
+      item.querySelector('.chip-del').addEventListener('click', (e) => {
+        e.stopPropagation();
+        if (!state.hiddenCourses) state.hiddenCourses = [];
+        if (!state.hiddenCourses.includes(course)) state.hiddenCourses.push(course);
+        saveState();
+        renderCourseChips();
       });
     });
     updateChipActiveState();
   }
   function updateChipActiveState() {
     const val = $('fCourse').value.trim();
-    document.querySelectorAll('#chipSuggestions .chip').forEach(c => {
-      c.classList.toggle('active', c.dataset.course === val);
+    document.querySelectorAll('#chipSuggestions .chip-item').forEach(item => {
+      item.classList.toggle('active', item.dataset.course === val);
     });
   }
 
