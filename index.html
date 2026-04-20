@@ -7,7 +7,6 @@
 <meta name="description" content="講義ごとの課題を管理するトラッカー" />
 <link rel="privacy-policy" href="privacy.html" />
 
-<!-- PWA -->
 <meta name="theme-color" content="#667eea" media="(prefers-color-scheme: light)" />
 <meta name="theme-color" content="#0f1120" media="(prefers-color-scheme: dark)" />
 <meta name="apple-mobile-web-app-capable" content="yes" />
@@ -28,7 +27,7 @@
     --bg-grad-1: #ffd6e7;
     --bg-grad-2: #c7e1ff;
     --bg-grad-3: #d9f5e0;
-    --panel: rgba(255,255,255,0.78);
+    --panel: rgba(255,255,255,0.8);
     --panel-solid: #ffffff;
     --panel-2: #fafbfe;
     --text: #1b1f2e;
@@ -38,7 +37,6 @@
     --accent-1: #667eea;
     --accent-2: #764ba2;
     --accent: #667eea;
-    --accent-hover: #5568d3;
     --today: #ff3860;
     --urgent-1: #ff5978;
     --urgent-2: #ff8a3d;
@@ -68,7 +66,7 @@
     --bg-grad-1: #2d1b4e;
     --bg-grad-2: #1b2951;
     --bg-grad-3: #1a3a3a;
-    --panel: rgba(30,34,50,0.78);
+    --panel: rgba(30,34,50,0.8);
     --panel-solid: #1c1f29;
     --panel-2: #232735;
     --text: #edeff8;
@@ -78,7 +76,6 @@
     --accent-1: #8b9fff;
     --accent-2: #c084fc;
     --accent: #8b9fff;
-    --accent-hover: #a2b3ff;
     --today: #ff5978;
     --urgent-1: #ff6b8a;
     --urgent-2: #ffa862;
@@ -119,23 +116,22 @@
     position: relative;
     overscroll-behavior-y: none;
     -webkit-overflow-scrolling: touch;
-    padding: env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left);
+    padding: env(safe-area-inset-top) env(safe-area-inset-right) 0 env(safe-area-inset-left);
   }
 
-  button, .view-toggle, .summary .card, header.topbar h1, .type-badge, .remain-badge, .toast {
+  button, .view-toggle, .summary .card, header.topbar h1, .type-badge, .remain-badge, .toast, .cal-cell, .cal-nav {
     -webkit-user-select: none;
     user-select: none;
     touch-action: manipulation;
   }
 
   @media (hover: none) and (pointer: coarse) {
-    .icon-btn { width: 38px; height: 38px; font-size: 16px; }
+    .icon-btn { width: 40px; height: 40px; font-size: 17px; }
     .btn { padding: 10px 16px; font-size: 14px; }
-    .view-toggle button { padding: 9px 18px; font-size: 14px; }
+    .view-toggle button { padding: 10px 18px; font-size: 14px; }
   }
 
   @media (display-mode: standalone) {
-    body { background: var(--bg); }
     header.topbar { margin-top: 4px; }
   }
 
@@ -171,18 +167,19 @@
   .app {
     max-width: 1280px;
     margin: 0 auto;
-    padding: 24px 20px 60px;
+    padding: 20px 16px calc(120px + env(safe-area-inset-bottom));
     position: relative;
     z-index: 1;
   }
 
+  /* Header */
   header.topbar {
     display: flex;
     flex-wrap: wrap;
     align-items: center;
     gap: 10px;
-    padding: 14px 18px 14px 20px;
-    margin-bottom: 20px;
+    padding: 12px 16px 12px 18px;
+    margin-bottom: 16px;
     background: var(--panel);
     backdrop-filter: blur(18px);
     -webkit-backdrop-filter: blur(18px);
@@ -191,7 +188,7 @@
     box-shadow: var(--shadow);
   }
   header.topbar h1 {
-    font-size: 22px;
+    font-size: 20px;
     margin: 0;
     margin-right: auto;
     padding: 0;
@@ -217,7 +214,7 @@
     background: transparent;
     color: var(--text-sub);
     border: none;
-    padding: 7px 16px;
+    padding: 7px 14px;
     cursor: pointer;
     font-size: 13px;
     font-weight: 600;
@@ -255,22 +252,8 @@
     color: #fff;
     border: none;
     box-shadow: 0 6px 18px rgba(102,126,234,0.35);
-    padding: 9px 18px;
-    position: relative;
-    overflow: hidden;
-  }
-  .btn.primary::after {
-    content: "";
-    position: absolute;
-    top: 0;
-    left: -100%;
-    width: 100%;
-    height: 100%;
-    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.4), transparent);
-    transition: left .6s;
   }
   .btn.primary:hover { box-shadow: 0 10px 28px rgba(102,126,234,0.5); }
-  .btn.primary:hover::after { left: 100%; }
   .btn.notify-on {
     background: linear-gradient(135deg, var(--ok-1), var(--ok-2));
     color: #fff;
@@ -278,11 +261,12 @@
     box-shadow: 0 6px 18px rgba(34,197,94,0.35);
   }
 
+  /* Summary */
   .summary {
     display: grid;
     grid-template-columns: repeat(4, 1fr);
-    gap: 12px;
-    margin-bottom: 16px;
+    gap: 10px;
+    margin-bottom: 14px;
   }
   .summary .card {
     background: var(--panel);
@@ -290,20 +274,17 @@
     -webkit-backdrop-filter: blur(14px);
     border: 1px solid var(--border);
     border-radius: var(--radius);
-    padding: 14px 16px;
+    padding: 12px 14px;
     box-shadow: var(--shadow);
     position: relative;
     overflow: hidden;
     transition: transform .2s, box-shadow .2s;
-    cursor: default;
   }
   .summary .card:hover { transform: translateY(-3px) scale(1.01); box-shadow: var(--shadow-lg); }
   .summary .card::before {
     content: "";
     position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
+    top: 0; left: 0; right: 0;
     height: 4px;
   }
   .summary .card.urgent::before { background: linear-gradient(90deg, var(--urgent-1), var(--urgent-2)); }
@@ -312,24 +293,23 @@
   .summary .card.done::before { background: linear-gradient(90deg, #c3c7d4, #9aa0a6); }
   .summary .card .emoji {
     position: absolute;
-    top: 10px;
-    right: 12px;
-    font-size: 26px;
+    top: 8px; right: 10px;
+    font-size: 22px;
     opacity: 0.85;
   }
   .summary .label {
     color: var(--text-sub);
-    font-size: 12px;
+    font-size: 11px;
     font-weight: 600;
-    margin-top: 4px;
+    margin-top: 2px;
   }
   .summary .value {
-    font-size: 32px;
+    font-size: 28px;
     font-weight: 800;
     font-variant-numeric: tabular-nums;
     letter-spacing: -0.02em;
     line-height: 1.1;
-    margin-top: 2px;
+    margin-top: 6px;
   }
   .summary .urgent .value { background: linear-gradient(135deg, var(--urgent-1), var(--urgent-2)); -webkit-background-clip: text; background-clip: text; color: transparent; }
   .summary .soon .value { background: linear-gradient(135deg, var(--soon-1), var(--soon-2)); -webkit-background-clip: text; background-clip: text; color: transparent; }
@@ -342,18 +322,51 @@
   }
   .summary .urgent.has-items .emoji { animation: pulse 1.4s ease-in-out infinite; }
 
+  /* Reminder banner */
+  .reminder {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    background: linear-gradient(135deg, var(--urgent-1), var(--urgent-2));
+    color: #fff;
+    padding: 10px 16px;
+    border-radius: var(--radius);
+    margin-bottom: 14px;
+    box-shadow: 0 8px 22px rgba(255,56,96,0.3);
+    font-size: 13px;
+    font-weight: 600;
+    animation: slideDown 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+  }
+  @keyframes slideDown {
+    from { opacity: 0; transform: translateY(-10px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  .reminder .msg { flex: 1; }
+  .reminder .close-btn {
+    background: rgba(255,255,255,0.2);
+    color: #fff;
+    border: none;
+    border-radius: 999px;
+    width: 24px;
+    height: 24px;
+    cursor: pointer;
+    font-size: 14px;
+    font-weight: 700;
+  }
+
+  /* Filter bar */
   .filter-bar {
     display: flex;
     flex-wrap: wrap;
-    gap: 12px;
+    gap: 10px;
     align-items: center;
     background: var(--panel);
     backdrop-filter: blur(14px);
     -webkit-backdrop-filter: blur(14px);
     border: 1px solid var(--border);
     border-radius: var(--radius);
-    padding: 10px 16px;
-    margin-bottom: 16px;
+    padding: 10px 14px;
+    margin-bottom: 14px;
     box-shadow: var(--shadow);
   }
   .filter-bar label {
@@ -377,6 +390,7 @@
   }
   .filter-bar select:focus { outline: none; border-color: var(--accent); box-shadow: var(--shadow-glow); }
 
+  /* Gantt view */
   .gantt-wrap {
     background: var(--panel);
     backdrop-filter: blur(14px);
@@ -391,11 +405,11 @@
   .gantt-header {
     position: relative;
     display: grid;
-    grid-template-columns: 280px 1fr 120px;
+    grid-template-columns: 260px 1fr 100px;
     border-bottom: 2px solid var(--border-strong);
     padding-bottom: 10px;
     margin-bottom: 10px;
-    font-size: 12px;
+    font-size: 11px;
     color: var(--text-sub);
     font-weight: 700;
     letter-spacing: 0.04em;
@@ -420,9 +434,9 @@
 
   .gantt-row {
     display: grid;
-    grid-template-columns: 280px 1fr 120px;
+    grid-template-columns: 260px 1fr 100px;
     align-items: center;
-    min-height: 46px;
+    min-height: 48px;
     border-bottom: 1px dashed var(--border);
     position: relative;
     transition: background .15s;
@@ -456,7 +470,7 @@
   .gantt-row.done .task-label .task-title { text-decoration: line-through; color: var(--done); }
   .gantt-row.done .bar { background: linear-gradient(135deg, #b8bdcc, #9aa0a6) !important; opacity: 0.55; }
 
-  .timeline-col { position: relative; height: 100%; min-height: 46px; }
+  .timeline-col { position: relative; height: 100%; min-height: 48px; }
   .bar {
     position: absolute;
     top: 50%;
@@ -477,7 +491,6 @@
     animation: barSlide 0.6s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
     transition: transform .2s, box-shadow .2s;
   }
-  .bar:hover { box-shadow: 0 6px 18px rgba(0,0,0,0.22); }
   @keyframes barSlide {
     from { transform: translateY(-50%) scaleX(0); }
     to { transform: translateY(-50%) scaleX(1); }
@@ -537,8 +550,8 @@
     background: var(--panel-solid);
     border: 1px solid var(--border);
     border-radius: 8px;
-    width: 32px;
-    height: 32px;
+    width: 34px;
+    height: 34px;
     cursor: pointer;
     color: var(--text-sub);
     font-size: 14px;
@@ -562,158 +575,256 @@
     box-shadow: 0 4px 12px rgba(255,56,96,0.4);
   }
 
-  .card-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(290px, 1fr));
-    gap: 16px;
-  }
-  .kadai-card {
+  /* Calendar view */
+  .calendar-wrap {
     background: var(--panel);
     backdrop-filter: blur(14px);
     -webkit-backdrop-filter: blur(14px);
     border: 1px solid var(--border);
     border-radius: var(--radius);
-    padding: 16px;
     box-shadow: var(--shadow);
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-    transition: transform .2s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow .2s;
-    position: relative;
-    overflow: hidden;
-    animation: cardPop 0.45s cubic-bezier(0.34, 1.56, 0.64, 1) both;
+    padding: 16px;
   }
-  @keyframes cardPop {
-    from { opacity: 0; transform: translateY(12px) scale(0.95); }
-    to { opacity: 1; transform: translateY(0) scale(1); }
-  }
-  .kadai-card::before {
-    content: "";
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    height: 5px;
-    border-radius: var(--radius) var(--radius) 0 0;
-  }
-  .kadai-card.status-urgent::before { background: linear-gradient(90deg, var(--urgent-1), var(--urgent-2)); }
-  .kadai-card.status-soon::before { background: linear-gradient(90deg, var(--soon-1), var(--soon-2)); }
-  .kadai-card.status-ok::before { background: linear-gradient(90deg, var(--ok-1), var(--ok-2)); }
-  .kadai-card.status-past::before { background: linear-gradient(90deg, #d63856, #ff3860); }
-  .kadai-card.done::before { background: linear-gradient(90deg, #c3c7d4, #9aa0a6); }
-
-  .kadai-card:hover { transform: translateY(-4px) scale(1.01); box-shadow: var(--shadow-lg); }
-  .kadai-card.done .card-title { text-decoration: line-through; color: var(--done); }
-  .kadai-card.done { opacity: 0.7; filter: grayscale(0.3); }
-
-  .card-top {
-    display: flex;
-    justify-content: space-between;
-    align-items: flex-start;
-    gap: 10px;
-  }
-  .card-course {
-    font-size: 12px;
-    color: var(--text-sub);
-    font-weight: 600;
+  .calendar-header {
     display: flex;
     align-items: center;
-    gap: 4px;
+    gap: 10px;
+    margin-bottom: 14px;
   }
-  .card-title {
-    font-size: 15px;
+  .calendar-header .cal-title {
+    flex: 1;
+    text-align: center;
+    font-size: 17px;
     font-weight: 800;
-    margin: 3px 0 6px;
-    line-height: 1.35;
+    letter-spacing: 0.02em;
   }
-  .type-badge {
-    display: inline-flex;
+  .cal-nav {
+    background: var(--panel-solid);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    width: 38px;
+    height: 38px;
+    cursor: pointer;
+    color: var(--text);
+    font-size: 16px;
+    font-weight: 700;
+    display: flex;
     align-items: center;
+    justify-content: center;
+    transition: all .15s;
+  }
+  .cal-nav:hover { background: var(--panel-2); transform: translateY(-1px); }
+  .cal-today-btn {
+    padding: 8px 14px;
+    font-size: 12px;
+  }
+
+  .calendar-weekdays {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
     gap: 4px;
-    padding: 3px 10px;
-    border-radius: 999px;
+    margin-bottom: 6px;
+  }
+  .calendar-weekdays > div {
+    text-align: center;
     font-size: 11px;
     font-weight: 700;
-  }
-  .type-badge.report { background: var(--type-report-bg); color: var(--type-report-fg); }
-  .type-badge.memory { background: var(--type-memory-bg); color: var(--type-memory-fg); }
-  .type-badge.problem { background: var(--type-problem-bg); color: var(--type-problem-fg); }
-  .type-badge.other { background: var(--type-other-bg); color: var(--type-other-fg); }
-
-  .card-desc {
-    font-size: 12px;
     color: var(--text-sub);
-    line-height: 1.55;
-    border-left: 3px solid;
-    border-image: linear-gradient(180deg, var(--accent-1), var(--accent-2)) 1;
-    padding-left: 10px;
-    margin: 2px 0;
+    padding: 6px 0;
+    letter-spacing: 0.04em;
   }
-  .card-meta {
+  .calendar-weekdays > div:nth-child(1) { color: var(--urgent); }
+  .calendar-weekdays > div:nth-child(7) { color: var(--accent); }
+
+  .calendar-grid {
     display: grid;
-    grid-template-columns: auto 1fr;
-    gap: 4px 10px;
-    font-size: 12px;
-    color: var(--text-sub);
+    grid-template-columns: repeat(7, 1fr);
+    gap: 4px;
   }
-  .card-meta .key { font-weight: 700; }
-  .remain-badge {
-    display: inline-flex;
-    align-items: center;
-    gap: 3px;
-    padding: 4px 10px;
-    border-radius: 999px;
-    font-size: 11px;
-    font-weight: 800;
-    color: #fff;
-    white-space: nowrap;
-    box-shadow: 0 3px 8px rgba(0,0,0,0.12);
-  }
-  .remain-badge.urgent { background: linear-gradient(135deg, var(--urgent-1), var(--urgent-2)); animation: pulse 1.6s ease-in-out infinite; }
-  .remain-badge.soon { background: linear-gradient(135deg, var(--soon-1), var(--soon-2)); }
-  .remain-badge.ok { background: linear-gradient(135deg, var(--ok-1), var(--ok-2)); }
-  .remain-badge.past { background: linear-gradient(135deg, #d63856, var(--urgent-1)); }
-
-  .progress-wrap {
-    width: 100%;
-    height: 8px;
-    background: var(--panel-2);
+  .cal-cell {
+    aspect-ratio: 1 / 1.05;
     border: 1px solid var(--border);
-    border-radius: 999px;
-    overflow: hidden;
-    margin-top: 4px;
-    position: relative;
-  }
-  .progress-bar {
-    height: 100%;
-    background: linear-gradient(90deg, var(--accent-1), var(--accent-2));
-    transition: width .5s cubic-bezier(0.34, 1.56, 0.64, 1);
-    position: relative;
-    overflow: hidden;
-  }
-  .progress-bar::after {
-    content: "";
-    position: absolute;
-    inset: 0;
-    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.45), transparent);
-    animation: progressShine 2.2s linear infinite;
-  }
-  @keyframes progressShine {
-    0% { transform: translateX(-100%); }
-    100% { transform: translateX(100%); }
-  }
-  .progress-bar.urgent { background: linear-gradient(90deg, var(--soon-1), var(--urgent-1)); }
-  .progress-bar.ok { background: linear-gradient(90deg, var(--ok-1), var(--ok-2)); }
-
-  .card-actions {
+    border-radius: 10px;
+    background: var(--panel-2);
+    padding: 4px 5px;
+    cursor: pointer;
     display: flex;
-    justify-content: flex-end;
-    gap: 6px;
-    margin-top: auto;
-    padding-top: 8px;
-    border-top: 1px dashed var(--border);
+    flex-direction: column;
+    align-items: stretch;
+    position: relative;
+    transition: all .15s;
+    overflow: hidden;
+    min-height: 54px;
+  }
+  .cal-cell:hover { transform: translateY(-2px); box-shadow: var(--shadow); border-color: var(--accent); }
+  .cal-cell .day-num {
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--text);
+    line-height: 1.2;
+  }
+  .cal-cell.other-month { opacity: 0.35; }
+  .cal-cell.other-month .day-num { color: var(--text-sub); }
+  .cal-cell.sun .day-num { color: var(--urgent); }
+  .cal-cell.sat .day-num { color: var(--accent); }
+  .cal-cell.today {
+    background: linear-gradient(135deg, rgba(102,126,234,0.18), rgba(118,75,162,0.18));
+    border-color: var(--accent);
+    box-shadow: 0 0 0 2px var(--accent) inset;
+  }
+  .cal-cell.today .day-num {
+    background: linear-gradient(135deg, var(--accent-1), var(--accent-2));
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    font-weight: 800;
+  }
+  .cal-cell.selected {
+    background: linear-gradient(135deg, var(--accent-1), var(--accent-2));
+    border-color: transparent;
+    box-shadow: 0 8px 22px rgba(102,126,234,0.45);
+  }
+  .cal-cell.selected .day-num,
+  .cal-cell.selected .cal-chip { color: #fff !important; }
+  .cal-cell.selected .day-num { background: none; -webkit-text-fill-color: #fff; }
+
+  .cal-chips {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    margin-top: 3px;
+    flex: 1;
+    overflow: hidden;
+  }
+  .cal-chip {
+    font-size: 9px;
+    line-height: 1.2;
+    padding: 1px 4px;
+    border-radius: 4px;
+    font-weight: 700;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    color: #fff;
+  }
+  .cal-chip.urgent { background: linear-gradient(135deg, var(--urgent-1), var(--urgent-2)); }
+  .cal-chip.soon { background: linear-gradient(135deg, var(--soon-1), var(--soon-2)); }
+  .cal-chip.ok { background: linear-gradient(135deg, var(--ok-1), var(--ok-2)); }
+  .cal-chip.past { background: #9aa0a6; }
+  .cal-chip.more {
+    background: transparent;
+    color: var(--text-sub);
+    font-size: 10px;
+    padding: 0;
+    text-align: center;
   }
 
+  .cal-detail {
+    margin-top: 16px;
+    padding: 14px 16px;
+    background: var(--panel-solid);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    box-shadow: var(--shadow);
+  }
+  .cal-detail-header {
+    font-weight: 800;
+    font-size: 14px;
+    margin-bottom: 10px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+  .cal-detail-empty {
+    color: var(--text-sub);
+    font-size: 13px;
+    padding: 12px 0;
+    text-align: center;
+  }
+  .cal-task {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+    padding: 10px 12px;
+    border-radius: 10px;
+    background: var(--panel-2);
+    margin-bottom: 6px;
+    border-left: 4px solid;
+    transition: all .15s;
+  }
+  .cal-task.urgent { border-color: var(--urgent); }
+  .cal-task.soon { border-color: var(--soon); }
+  .cal-task.ok { border-color: var(--ok); }
+  .cal-task.past { border-color: #9aa0a6; opacity: 0.7; }
+  .cal-task.done { opacity: 0.55; }
+  .cal-task.done .cal-task-title { text-decoration: line-through; color: var(--done); }
+  .cal-task-body { flex: 1; min-width: 0; }
+  .cal-task-course {
+    font-size: 11px;
+    color: var(--text-sub);
+    font-weight: 600;
+  }
+  .cal-task-title {
+    font-size: 14px;
+    font-weight: 700;
+  }
+  .cal-task-meta {
+    font-size: 11px;
+    color: var(--text-sub);
+    margin-top: 2px;
+  }
+  .cal-task-actions {
+    display: flex;
+    gap: 4px;
+    flex-shrink: 0;
+  }
+
+  /* FAB (Floating Action Button) */
+  .fab {
+    position: fixed;
+    right: calc(20px + env(safe-area-inset-right));
+    bottom: calc(24px + env(safe-area-inset-bottom));
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    border: none;
+    background: linear-gradient(135deg, var(--accent-1), var(--accent-2));
+    color: #fff;
+    font-size: 28px;
+    font-weight: 300;
+    cursor: pointer;
+    box-shadow: 0 12px 30px rgba(102,126,234,0.55), 0 4px 10px rgba(0,0,0,0.1);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 90;
+    transition: transform .2s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow .2s;
+  }
+  .fab:hover {
+    transform: scale(1.08);
+    box-shadow: 0 16px 40px rgba(102,126,234,0.7), 0 6px 14px rgba(0,0,0,0.12);
+  }
+  .fab:active { transform: scale(0.95); }
+  .fab::before {
+    content: "+";
+    line-height: 1;
+    margin-top: -3px;
+  }
+  .fab .fab-ring {
+    position: absolute;
+    inset: -4px;
+    border-radius: 50%;
+    border: 2px solid var(--accent-1);
+    opacity: 0.4;
+    pointer-events: none;
+    animation: fabPulse 2.4s ease-out infinite;
+  }
+  @keyframes fabPulse {
+    0% { transform: scale(1); opacity: 0.5; }
+    100% { transform: scale(1.4); opacity: 0; }
+  }
+
+  /* Modal */
   .modal-overlay {
     position: fixed;
     inset: 0;
@@ -733,7 +844,7 @@
     background: var(--panel-solid);
     border: 1px solid var(--border);
     border-radius: 18px;
-    padding: 24px;
+    padding: 22px;
     width: 90%;
     max-width: 480px;
     box-shadow: var(--shadow-lg);
@@ -741,32 +852,32 @@
     transition: transform .3s cubic-bezier(0.34, 1.56, 0.64, 1);
     position: relative;
     overflow: hidden;
+    max-height: 90dvh;
+    overflow-y: auto;
   }
   .modal::before {
     content: "";
     position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
+    top: 0; left: 0; right: 0;
     height: 5px;
     background: linear-gradient(90deg, var(--accent-1), var(--accent-2));
   }
   .modal-overlay.open .modal { transform: scale(1) translateY(0); }
   .modal h2 {
-    margin: 0 0 18px;
-    font-size: 19px;
+    margin: 0 0 16px;
+    font-size: 18px;
     font-weight: 800;
     display: flex;
     align-items: center;
     gap: 8px;
   }
-  .field { margin-bottom: 14px; }
+  .field { margin-bottom: 12px; }
   .field label {
     display: block;
     font-size: 12px;
     font-weight: 700;
     color: var(--text-sub);
-    margin-bottom: 5px;
+    margin-bottom: 4px;
   }
   .field label .req { color: var(--urgent); margin-left: 2px; }
   .field input, .field select, .field textarea {
@@ -785,7 +896,7 @@
     border-color: var(--accent);
     box-shadow: var(--shadow-glow);
   }
-  .field textarea { resize: vertical; min-height: 64px; }
+  .field textarea { resize: vertical; min-height: 60px; font-size: 14px; }
   .field-row { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
   .field-error {
     color: var(--urgent);
@@ -798,9 +909,10 @@
     display: flex;
     justify-content: flex-end;
     gap: 8px;
-    margin-top: 14px;
+    margin-top: 12px;
   }
 
+  /* Toast */
   .toast-host {
     position: fixed;
     top: calc(20px + env(safe-area-inset-top));
@@ -832,9 +944,24 @@
   .toast.warn { background: linear-gradient(135deg, var(--soon-1), var(--soon-2)); color: #fff; }
   .toast.error { background: linear-gradient(135deg, var(--urgent-1), var(--urgent-2)); color: #fff; }
 
+  /* Type badge (for calendar detail, etc.) */
+  .type-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 3px;
+    padding: 2px 8px;
+    border-radius: 999px;
+    font-size: 10px;
+    font-weight: 700;
+  }
+  .type-badge.report { background: var(--type-report-bg); color: var(--type-report-fg); }
+  .type-badge.memory { background: var(--type-memory-bg); color: var(--type-memory-fg); }
+  .type-badge.problem { background: var(--type-problem-bg); color: var(--type-problem-fg); }
+  .type-badge.other { background: var(--type-other-bg); color: var(--type-other-fg); }
+
   .empty {
     text-align: center;
-    padding: 70px 20px;
+    padding: 60px 20px;
     color: var(--text-sub);
     font-size: 14px;
     background: var(--panel);
@@ -868,41 +995,21 @@
     will-change: transform, opacity;
   }
 
-  .install-hint {
-    position: fixed;
-    left: 50%;
-    bottom: calc(16px + env(safe-area-inset-bottom));
-    transform: translateX(-50%);
-    background: linear-gradient(135deg, var(--accent-1), var(--accent-2));
-    color: #fff;
-    padding: 10px 16px;
-    border-radius: 999px;
-    font-size: 12px;
-    font-weight: 700;
-    box-shadow: 0 10px 30px rgba(102,126,234,0.5);
-    z-index: 150;
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    animation: cardPop 0.45s cubic-bezier(0.34, 1.56, 0.64, 1);
-  }
-  .install-hint button {
-    background: rgba(255,255,255,0.2);
-    color: #fff;
-    border: none;
-    border-radius: 999px;
-    padding: 4px 10px;
-    font-size: 11px;
-    font-weight: 700;
-    cursor: pointer;
-  }
-  .install-hint button:hover { background: rgba(255,255,255,0.3); }
-
   @media (max-width: 700px) {
+    .app { padding: 16px 12px calc(110px + env(safe-area-inset-bottom)); }
     .summary { grid-template-columns: repeat(2, 1fr); }
-    .gantt-row, .gantt-header { grid-template-columns: 180px 1fr 90px; }
-    header.topbar h1 { font-size: 18px; flex: 1 1 100%; }
-    header.topbar { padding: 12px; }
+    .summary .value { font-size: 24px; }
+    .gantt-row, .gantt-header { grid-template-columns: 150px 1fr 80px; }
+    header.topbar { padding: 10px 14px; }
+    header.topbar h1 { font-size: 18px; }
+    .view-toggle button { padding: 7px 12px; font-size: 12px; }
+    .calendar-wrap { padding: 12px 8px; }
+    .calendar-weekdays > div { font-size: 10px; padding: 4px 0; }
+    .cal-cell { min-height: 46px; border-radius: 8px; padding: 3px; }
+    .cal-cell .day-num { font-size: 12px; }
+    .cal-chip { font-size: 8px; padding: 1px 3px; }
+    .cal-detail { padding: 12px; margin-top: 12px; }
+    .fab { width: 56px; height: 56px; right: 16px; bottom: 20px; font-size: 26px; }
   }
 </style>
 </head>
@@ -912,11 +1019,10 @@
     <h1>課題トラッカー</h1>
     <div class="view-toggle" role="tablist">
       <button id="btnViewGantt" class="active" data-view="gantt">📊 ガント</button>
-      <button id="btnViewCard" data-view="card">🗂 カード</button>
+      <button id="btnViewCalendar" data-view="calendar">📅 カレンダー</button>
     </div>
     <button id="btnTheme" class="btn" title="テーマ切り替え">🌙</button>
-    <button id="btnNotify" class="btn">🔔 通知オフ</button>
-    <button id="btnAdd" class="btn primary">＋ 追加</button>
+    <button id="btnNotify" class="btn">🔔</button>
   </header>
 
   <section class="summary">
@@ -942,6 +1048,8 @@
     </div>
   </section>
 
+  <div id="reminderHost"></div>
+
   <section class="filter-bar">
     <label for="filterCourse">🎓 講義名</label>
     <select id="filterCourse"><option value="">すべて</option></select>
@@ -955,6 +1063,10 @@
 
   <main id="viewHost"></main>
 </div>
+
+<button id="btnFab" class="fab" title="課題を追加" aria-label="課題を追加">
+  <span class="fab-ring"></span>
+</button>
 
 <div id="modalOverlay" class="modal-overlay" aria-hidden="true">
   <div class="modal" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
@@ -992,6 +1104,16 @@
           <input id="fEnd" type="date" />
         </div>
       </div>
+      <div class="field">
+        <label for="fRemindDays">🔔 通知タイミング</label>
+        <select id="fRemindDays">
+          <option value="0">締切当日のみ</option>
+          <option value="1">前日 & 当日</option>
+          <option value="3" selected>3日前・前日・当日</option>
+          <option value="7">1週間前・3日前・前日・当日</option>
+          <option value="-1">通知なし</option>
+        </select>
+      </div>
       <div class="field-error" id="formError"></div>
       <div class="modal-actions">
         <button type="button" class="btn" id="btnCancel">キャンセル</button>
@@ -1014,11 +1136,11 @@
   const TYPE_LABEL = { report: 'レポート', memory: '暗記', problem: '問題演習', other: 'その他' };
 
   const SAMPLE = [
-    {id:1,course:"細菌生物学",title:"第2回レポート",type:"report",desc:"細胞周期とチェックポイントについてA4 2枚",start:"2026-04-07",end:"2026-04-28",done:false},
-    {id:2,course:"化学Ⅰ",title:"反応速度の問題集",type:"problem",desc:"教科書p.45〜60の練習問題",start:"2026-04-10",end:"2026-04-24",done:false},
-    {id:3,course:"解剖学",title:"骨格系の暗記",type:"memory",desc:"上肢骨の全名称・起始停止",start:"2026-04-14",end:"2026-05-02",done:false},
-    {id:4,course:"倫理学Ⅰ",title:"ミル読書レポート",type:"report",desc:"功利主義の現代的意義について600字",start:"2026-04-17",end:"2026-05-09",done:false},
-    {id:5,course:"物理学Ⅰ",title:"力学小テスト対策",type:"memory",desc:"公式と例題10問",start:"2026-04-15",end:"2026-04-22",done:false}
+    {id:1,course:"細菌生物学",title:"第2回レポート",type:"report",desc:"細胞周期とチェックポイントについてA4 2枚",start:"2026-04-07",end:"2026-04-28",done:false,remindDays:3},
+    {id:2,course:"化学Ⅰ",title:"反応速度の問題集",type:"problem",desc:"教科書p.45〜60の練習問題",start:"2026-04-10",end:"2026-04-24",done:false,remindDays:3},
+    {id:3,course:"解剖学",title:"骨格系の暗記",type:"memory",desc:"上肢骨の全名称・起始停止",start:"2026-04-14",end:"2026-05-02",done:false,remindDays:3},
+    {id:4,course:"倫理学Ⅰ",title:"ミル読書レポート",type:"report",desc:"功利主義の現代的意義について600字",start:"2026-04-17",end:"2026-05-09",done:false,remindDays:3},
+    {id:5,course:"物理学Ⅰ",title:"力学小テスト対策",type:"memory",desc:"公式と例題10問",start:"2026-04-15",end:"2026-04-22",done:false,remindDays:1}
   ];
 
   let state = loadState();
@@ -1026,25 +1148,31 @@
   let filterCourse = '';
   let filterStatus = 'all';
   let notifyEnabled = state.notify === true;
+  let calCursor = new Date();
+  calCursor.setDate(1);
+  let calSelectedDate = todayStr();
 
   const $ = (id) => document.getElementById(id);
   const host = $('viewHost');
   const toastHost = $('toastHost');
+  const reminderHost = $('reminderHost');
 
   function loadState() {
     try {
       const raw = localStorage.getItem(STORAGE_KEY);
-      if (!raw) return { items: SAMPLE.slice(), notify: false };
+      if (!raw) return { items: SAMPLE.slice(), notify: false, lastNotified: {} };
       const parsed = JSON.parse(raw);
-      if (!parsed || !Array.isArray(parsed.items)) return { items: SAMPLE.slice(), notify: false };
-      return { items: parsed.items, notify: !!parsed.notify };
+      if (!parsed || !Array.isArray(parsed.items)) return { items: SAMPLE.slice(), notify: false, lastNotified: {} };
+      // Migration: ensure remindDays field exists
+      parsed.items.forEach(it => { if (it.remindDays === undefined) it.remindDays = 3; });
+      return { items: parsed.items, notify: !!parsed.notify, lastNotified: parsed.lastNotified || {} };
     } catch (e) {
-      return { items: SAMPLE.slice(), notify: false };
+      return { items: SAMPLE.slice(), notify: false, lastNotified: {} };
     }
   }
   function saveState() {
     try {
-      localStorage.setItem(STORAGE_KEY, JSON.stringify({ items: state.items, notify: notifyEnabled }));
+      localStorage.setItem(STORAGE_KEY, JSON.stringify({ items: state.items, notify: notifyEnabled, lastNotified: state.lastNotified }));
     } catch (e) {
       toast('保存に失敗しました', 'error');
     }
@@ -1059,6 +1187,9 @@
     const [y, m, d] = s.split('-').map(Number);
     return new Date(y, m - 1, d);
   }
+  function fmtYmd(d) {
+    return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
+  }
   function daysBetween(a, b) {
     const ad = new Date(a.getFullYear(), a.getMonth(), a.getDate());
     const bd = new Date(b.getFullYear(), b.getMonth(), b.getDate());
@@ -1069,9 +1200,7 @@
     if (!d) return s;
     return `${d.getMonth()+1}/${d.getDate()}`;
   }
-  function daysLeft(item) {
-    return daysBetween(parseDate(todayStr()), parseDate(item.end));
-  }
+  function daysLeft(item) { return daysBetween(parseDate(todayStr()), parseDate(item.end)); }
   function statusOf(item) {
     if (item.done) return 'done';
     const left = daysLeft(item);
@@ -1079,23 +1208,6 @@
     if (left <= 3) return 'urgent';
     if (left <= 7) return 'soon';
     return 'ok';
-  }
-  function statusLabel(item) {
-    const s = statusOf(item);
-    if (s === 'done') return { text: '✅ 完了', cls: 'past' };
-    if (s === 'past') return { text: '⚠️ 超過', cls: 'past' };
-    if (s === 'urgent') return { text: '🔥 緊急', cls: 'urgent' };
-    if (s === 'soon') return { text: '⚡ 注意', cls: 'soon' };
-    return { text: '🌱 余裕', cls: 'ok' };
-  }
-  function progressPct(item) {
-    const s = parseDate(item.start);
-    const e = parseDate(item.end);
-    const t = parseDate(todayStr());
-    if (!s || !e) return 0;
-    const total = Math.max(1, daysBetween(s, e));
-    const passed = Math.max(0, Math.min(total, daysBetween(s, t)));
-    return Math.round((passed / total) * 100);
   }
 
   function filteredItems() {
@@ -1106,7 +1218,7 @@
       return true;
     });
   }
-  function sortedForGantt(items) {
+  function sortedByDeadline(items) {
     return items.slice().sort((a, b) => {
       if (a.done !== b.done) return a.done ? 1 : -1;
       return a.end.localeCompare(b.end);
@@ -1127,8 +1239,7 @@
     $('sumOk').textContent = ok;
     $('sumDone').textContent = done;
     const uc = $('cardUrgent');
-    if (urgent > 0) uc.classList.add('has-items');
-    else uc.classList.remove('has-items');
+    if (urgent > 0) uc.classList.add('has-items'); else uc.classList.remove('has-items');
   }
 
   function refreshCourseOptions() {
@@ -1146,21 +1257,53 @@
   function render() {
     renderSummary();
     refreshCourseOptions();
+    renderReminder();
     if (currentView === 'gantt') renderGantt();
-    else renderCards();
+    else renderCalendar();
   }
 
   function emptyHtml(msg, emoji, sub) {
     return `<div class="empty"><span class="big-emoji">${emoji}</span>${msg}${sub ? `<div class="sub">${sub}</div>` : ''}</div>`;
   }
 
-  function renderGantt() {
-    const items = sortedForGantt(filteredItems());
-    if (items.length === 0) {
-      host.innerHTML = emptyHtml('課題がありません', '🌈', '「＋ 追加」から登録しよう');
+  // ===== Reminder banner =====
+  function renderReminder() {
+    const today = parseDate(todayStr());
+    const tasksToAlert = state.items.filter(it => {
+      if (it.done) return false;
+      const left = daysLeft(it);
+      return left >= 0 && left <= 1;
+    });
+    if (tasksToAlert.length === 0) {
+      reminderHost.innerHTML = '';
       return;
     }
+    if (sessionStorage.getItem('kadai_reminder_dismissed') === '1') {
+      reminderHost.innerHTML = '';
+      return;
+    }
+    const msg = tasksToAlert.length === 1
+      ? `⏰ 「${escapeHtml(tasksToAlert[0].title)}」が${daysLeft(tasksToAlert[0]) === 0 ? '今日' : '明日'}締切です`
+      : `⏰ 今日〜明日締切の課題が ${tasksToAlert.length} 件あります`;
+    reminderHost.innerHTML = `
+      <div class="reminder">
+        <span class="msg">${msg}</span>
+        <button class="close-btn" id="reminderClose" aria-label="閉じる">×</button>
+      </div>
+    `;
+    $('reminderClose').addEventListener('click', () => {
+      sessionStorage.setItem('kadai_reminder_dismissed', '1');
+      reminderHost.innerHTML = '';
+    });
+  }
 
+  // ===== Gantt =====
+  function renderGantt() {
+    const items = sortedByDeadline(filteredItems());
+    if (items.length === 0) {
+      host.innerHTML = emptyHtml('課題がありません', '🌈', '右下の「＋」から登録しよう');
+      return;
+    }
     const today = parseDate(todayStr());
     let minDate = today, maxDate = today;
     items.forEach(it => {
@@ -1172,7 +1315,6 @@
     minDate = new Date(minDate.getFullYear(), minDate.getMonth(), minDate.getDate() - 2);
     maxDate = new Date(maxDate.getFullYear(), maxDate.getMonth(), maxDate.getDate() + 2);
     const totalDays = Math.max(1, daysBetween(minDate, maxDate));
-
     const pctOfDate = (dStr) => (daysBetween(minDate, parseDate(dStr)) / totalDays) * 100;
     const todayPct = (daysBetween(minDate, today) / totalDays) * 100;
 
@@ -1197,7 +1339,7 @@
             <div class="actions-col">操作</div>
           </div>
           ${items.map((it, i) => ganttRowHtml(it, pctOfDate, i)).join('')}
-          <div class="today-line" style="left:calc(280px + (100% - 280px - 120px) * ${todayPct / 100});"></div>
+          <div class="today-line" style="left:calc(260px + (100% - 260px - 100px) * ${todayPct / 100});"></div>
         </div>
       </div>
     `;
@@ -1231,54 +1373,136 @@
     `;
   }
 
-  function renderCards() {
-    const items = filteredItems().slice().sort((a, b) => {
-      if (a.done !== b.done) return a.done ? 1 : -1;
-      return a.end.localeCompare(b.end);
-    });
-    if (items.length === 0) {
-      host.innerHTML = emptyHtml('課題がありません', '🌈', '「＋ 追加」から登録しよう');
-      return;
+  // ===== Calendar =====
+  function tasksOnDay(dateStr) {
+    return state.items.filter(it => it.end === dateStr)
+      .filter(it => {
+        if (filterCourse && it.course !== filterCourse) return false;
+        if (filterStatus === 'open' && it.done) return false;
+        if (filterStatus === 'done' && !it.done) return false;
+        return true;
+      });
+  }
+
+  function renderCalendar() {
+    const year = calCursor.getFullYear();
+    const month = calCursor.getMonth();
+    const firstDay = new Date(year, month, 1);
+    const lastDay = new Date(year, month + 1, 0);
+    const startOffset = firstDay.getDay();
+    const gridStart = new Date(year, month, 1 - startOffset);
+
+    const today = todayStr();
+    const cells = [];
+    for (let i = 0; i < 42; i++) {
+      const d = new Date(gridStart);
+      d.setDate(gridStart.getDate() + i);
+      const dateStr = fmtYmd(d);
+      const tasks = tasksOnDay(dateStr);
+      cells.push({
+        date: d,
+        dateStr,
+        isOther: d.getMonth() !== month,
+        isToday: dateStr === today,
+        isSelected: dateStr === calSelectedDate,
+        dow: d.getDay(),
+        tasks
+      });
     }
-    host.innerHTML = `<div class="card-grid">${items.map(cardHtml).join('')}</div>`;
+    // Trim last row if all other-month
+    let totalCells = 42;
+    const lastRow = cells.slice(35, 42);
+    if (lastRow.every(c => c.isOther)) totalCells = 35;
+
+    const title = `${year}年 ${month + 1}月`;
+    const selectedTasks = tasksOnDay(calSelectedDate).sort((a, b) => (a.done ? 1 : 0) - (b.done ? 1 : 0));
+    const selDate = parseDate(calSelectedDate);
+    const selDow = ['日','月','火','水','木','金','土'][selDate.getDay()];
+
+    const html = `
+      <div class="calendar-wrap">
+        <div class="calendar-header">
+          <button class="cal-nav" id="calPrev" aria-label="前月">‹</button>
+          <div class="cal-title">${title}</div>
+          <button class="cal-nav" id="calNext" aria-label="翌月">›</button>
+          <button class="btn cal-today-btn" id="calToday">今日</button>
+        </div>
+        <div class="calendar-weekdays">
+          <div>日</div><div>月</div><div>火</div><div>水</div><div>木</div><div>金</div><div>土</div>
+        </div>
+        <div class="calendar-grid">
+          ${cells.slice(0, totalCells).map(c => calCellHtml(c)).join('')}
+        </div>
+        <div class="cal-detail">
+          <div class="cal-detail-header">🗓 ${selDate.getMonth()+1}月${selDate.getDate()}日(${selDow}) 締切の課題</div>
+          ${selectedTasks.length === 0
+            ? `<div class="cal-detail-empty">この日に締切の課題はありません</div>`
+            : selectedTasks.map(it => calTaskHtml(it)).join('')}
+        </div>
+      </div>
+    `;
+    host.innerHTML = html;
+
+    $('calPrev').addEventListener('click', () => { calCursor = new Date(year, month - 1, 1); renderCalendar(); });
+    $('calNext').addEventListener('click', () => { calCursor = new Date(year, month + 1, 1); renderCalendar(); });
+    $('calToday').addEventListener('click', () => {
+      const t = new Date();
+      calCursor = new Date(t.getFullYear(), t.getMonth(), 1);
+      calSelectedDate = todayStr();
+      renderCalendar();
+    });
+    host.querySelectorAll('.cal-cell').forEach(el => {
+      el.addEventListener('click', () => {
+        calSelectedDate = el.dataset.date;
+        renderCalendar();
+      });
+    });
     bindRowActions();
   }
 
-  function cardHtml(it) {
-    const s = statusOf(it);
-    const badge = statusLabel(it);
-    const typeLabel = TYPE_LABEL[it.type] || 'その他';
-    const typeEmoji = TYPE_EMOJI[it.type] || '📎';
-    const left = daysLeft(it);
-    let remainText;
-    if (it.done) remainText = '✅ 完了';
-    else if (left < 0) remainText = `⚠️ ${Math.abs(left)}日超過`;
-    else if (left === 0) remainText = '🔥 今日締切';
-    else if (left <= 3) remainText = `🔥 残り${left}日`;
-    else if (left <= 7) remainText = `⚡ 残り${left}日`;
-    else remainText = `🌱 残り${left}日`;
+  function calCellHtml(c) {
+    const cls = [
+      'cal-cell',
+      c.isOther ? 'other-month' : '',
+      c.isToday ? 'today' : '',
+      c.isSelected ? 'selected' : '',
+      c.dow === 0 ? 'sun' : (c.dow === 6 ? 'sat' : '')
+    ].filter(Boolean).join(' ');
 
-    const pct = progressPct(it);
-    const progClass = it.done ? 'ok' : (s === 'urgent' || s === 'past' ? 'urgent' : '');
-    const statusClass = it.done ? 'done' : `status-${s}`;
-
+    const chips = c.tasks.slice(0, 2).map(t => {
+      const s = t.done ? 'past' : statusOf(t);
+      return `<div class="cal-chip ${s}" title="${escapeHtml(t.title)}">${escapeHtml(t.title)}</div>`;
+    }).join('');
+    const more = c.tasks.length > 2 ? `<div class="cal-chip more">+${c.tasks.length - 2}</div>` : '';
     return `
-      <div class="kadai-card ${it.done ? 'done' : ''} ${statusClass}" data-id="${it.id}">
-        <div class="card-top">
-          <div style="min-width:0;flex:1;">
-            <div class="card-course">🎓 ${escapeHtml(it.course)}</div>
-            <div class="card-title">${escapeHtml(it.title)}</div>
-            <span class="type-badge ${it.type}">${typeEmoji} ${typeLabel}</span>
+      <div class="${cls}" data-date="${c.dateStr}">
+        <div class="day-num">${c.date.getDate()}</div>
+        <div class="cal-chips">${chips}${more}</div>
+      </div>
+    `;
+  }
+
+  function calTaskHtml(it) {
+    const s = it.done ? 'done' : statusOf(it);
+    const emoji = TYPE_EMOJI[it.type] || '📎';
+    const typeLabel = TYPE_LABEL[it.type] || 'その他';
+    const left = daysLeft(it);
+    let leftText;
+    if (it.done) leftText = '✅ 完了';
+    else if (left < 0) leftText = `⚠️ ${Math.abs(left)}日超過`;
+    else if (left === 0) leftText = '🔥 今日締切';
+    else leftText = `残り${left}日`;
+    return `
+      <div class="cal-task ${s}" data-id="${it.id}">
+        <div class="cal-task-body">
+          <div class="cal-task-course">🎓 ${escapeHtml(it.course)}</div>
+          <div class="cal-task-title">${escapeHtml(it.title)}</div>
+          <div class="cal-task-meta">
+            <span class="type-badge ${it.type}">${emoji} ${typeLabel}</span>
+            &nbsp;${leftText}
           </div>
-          <span class="remain-badge ${badge.cls}">${escapeHtml(remainText)}</span>
         </div>
-        ${it.desc ? `<div class="card-desc">${escapeHtml(it.desc)}</div>` : ''}
-        <div class="card-meta">
-          <span class="key">🚩 出題</span><span>${escapeHtml(it.start)}</span>
-          <span class="key">🏁 締切</span><span>${escapeHtml(it.end)}</span>
-        </div>
-        <div class="progress-wrap" title="進捗 ${pct}%"><div class="progress-bar ${progClass}" style="width:${pct}%"></div></div>
-        <div class="card-actions">
+        <div class="cal-task-actions">
           <button class="icon-btn done-btn ${it.done ? 'active' : ''}" data-action="toggle" data-id="${it.id}" title="${it.done ? '未完了に戻す' : '完了にする'}">✓</button>
           <button class="icon-btn del-btn" data-action="del" data-id="${it.id}" title="削除">×</button>
         </div>
@@ -1288,7 +1512,8 @@
 
   function bindRowActions() {
     host.querySelectorAll('[data-action]').forEach(btn => {
-      btn.addEventListener('click', () => {
+      btn.addEventListener('click', (e) => {
+        e.stopPropagation();
         const id = Number(btn.dataset.id);
         const action = btn.dataset.action;
         if (action === 'toggle') toggleDone(id, btn);
@@ -1297,6 +1522,7 @@
     });
   }
 
+  // ===== Actions =====
   function toggleDone(id, btnEl) {
     const it = state.items.find(x => x.id === id);
     if (!it) return;
@@ -1326,6 +1552,7 @@
     toast('✨ 追加しました', 'success');
   }
 
+  // ===== Confetti =====
   function launchConfetti(x, y) {
     const colors = ['#667eea','#764ba2','#ff5978','#ffa726','#26d67a','#ffcd38','#4fc3f7','#ba68c8'];
     const count = 32;
@@ -1351,9 +1578,11 @@
     }
   }
 
+  // ===== Modal =====
   function openModal() {
     $('addForm').reset();
     $('fStart').value = todayStr();
+    $('fRemindDays').value = '3';
     $('formError').textContent = '';
     $('modalOverlay').classList.add('open');
     $('modalOverlay').setAttribute('aria-hidden', 'false');
@@ -1363,7 +1592,7 @@
     $('modalOverlay').classList.remove('open');
     $('modalOverlay').setAttribute('aria-hidden', 'true');
   }
-  $('btnAdd').addEventListener('click', openModal);
+  $('btnFab').addEventListener('click', openModal);
   $('btnCancel').addEventListener('click', closeModal);
   $('modalOverlay').addEventListener('click', (e) => {
     if (e.target === $('modalOverlay')) closeModal();
@@ -1380,6 +1609,7 @@
     const desc = $('fDesc').value.trim();
     const start = $('fStart').value;
     const end = $('fEnd').value;
+    const remindDays = Number($('fRemindDays').value);
     const err = $('formError');
     err.textContent = '';
     if (!course) return (err.textContent = '⚠️ 講義名を入力してください');
@@ -1387,10 +1617,11 @@
     if (!start) return (err.textContent = '⚠️ 出題日を入力してください');
     if (!end) return (err.textContent = '⚠️ 締切日を入力してください');
     if (end < start) return (err.textContent = '⚠️ 締切日は出題日以降にしてください');
-    addItem({ course, title, type, desc, start, end });
+    addItem({ course, title, type, desc, start, end, remindDays });
     closeModal();
   });
 
+  // ===== View toggle =====
   document.querySelectorAll('.view-toggle button').forEach(btn => {
     btn.addEventListener('click', () => {
       document.querySelectorAll('.view-toggle button').forEach(b => b.classList.remove('active'));
@@ -1403,6 +1634,7 @@
   $('filterCourse').addEventListener('change', (e) => { filterCourse = e.target.value; render(); });
   $('filterStatus').addEventListener('change', (e) => { filterStatus = e.target.value; render(); });
 
+  // ===== Theme =====
   const themeKey = 'kadai_tracker_theme';
   function applyTheme(t) {
     if (t === 'dark') document.documentElement.setAttribute('data-theme', 'dark');
@@ -1417,14 +1649,15 @@
     applyTheme(currentTheme);
   });
 
+  // ===== Notifications =====
   function updateNotifyBtn() {
     const btn = $('btnNotify');
     if (notifyEnabled && typeof Notification !== 'undefined' && Notification.permission === 'granted') {
       btn.classList.add('notify-on');
-      btn.textContent = '🔔 通知オン';
+      btn.textContent = '🔔 ON';
     } else {
       btn.classList.remove('notify-on');
-      btn.textContent = '🔔 通知オフ';
+      btn.textContent = '🔔';
     }
   }
   $('btnNotify').addEventListener('click', async () => {
@@ -1436,42 +1669,65 @@
       notifyEnabled = !notifyEnabled;
       saveState();
       updateNotifyBtn();
-      toast(notifyEnabled ? '🔔 通知をオンにしました' : '🔕 通知をオフにしました', notifyEnabled ? 'success' : 'warn');
-      if (notifyEnabled) fireStartupNotifications();
+      toast(notifyEnabled ? '🔔 通知オン' : '🔕 通知オフ', notifyEnabled ? 'success' : 'warn');
+      if (notifyEnabled) runScheduledNotifications();
     } else if (Notification.permission === 'denied') {
-      toast('通知がブロックされています', 'error');
+      toast('通知が端末側でブロックされています', 'error');
     } else {
       const p = await Notification.requestPermission();
       if (p === 'granted') {
         notifyEnabled = true;
         saveState();
         updateNotifyBtn();
-        toast('🔔 通知をオンにしました', 'success');
-        fireStartupNotifications();
+        toast('🔔 通知オン', 'success');
+        runScheduledNotifications();
       } else {
         toast('通知が許可されませんでした', 'warn');
       }
     }
   });
 
-  function fireStartupNotifications() {
+  function runScheduledNotifications() {
     if (!notifyEnabled || typeof Notification === 'undefined' || Notification.permission !== 'granted') return;
     const today = todayStr();
-    const tomorrow = (() => {
-      const d = parseDate(today);
-      d.setDate(d.getDate() + 1);
-      return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
-    })();
-    const targets = state.items.filter(it => !it.done && (it.end === today || it.end === tomorrow));
-    if (targets.length === 0) return;
-    try {
-      new Notification('📚 課題トラッカー', {
-        body: `本日・明日締切の課題が ${targets.length} 件あります\n` +
-              targets.slice(0, 3).map(t => `・${t.course}: ${t.title}`).join('\n'),
+    const triggerList = [];
+    state.items.forEach(it => {
+      if (it.done || it.remindDays === -1) return;
+      const left = daysLeft(it);
+      if (left < 0) return;
+      const rd = Number(it.remindDays ?? 3);
+      // Which offsets to notify on based on remindDays setting
+      const offsets = [];
+      if (rd >= 7 && left === 7) offsets.push(7);
+      if (rd >= 3 && left === 3) offsets.push(3);
+      if (rd >= 1 && left === 1) offsets.push(1);
+      if (rd >= 0 && left === 0) offsets.push(0);
+      offsets.forEach(off => {
+        const key = `${it.id}_${today}_${off}`;
+        if (state.lastNotified[key]) return;
+        state.lastNotified[key] = true;
+        triggerList.push({ item: it, offset: off });
       });
-    } catch (e) { /* noop */ }
+    });
+    // Cleanup old lastNotified entries (older than 30 days)
+    const cutoff = new Date(); cutoff.setDate(cutoff.getDate() - 30);
+    Object.keys(state.lastNotified).forEach(k => {
+      const parts = k.split('_');
+      if (parts.length >= 2) {
+        const d = parseDate(parts[1]);
+        if (d && d < cutoff) delete state.lastNotified[k];
+      }
+    });
+    saveState();
+    triggerList.forEach(({ item, offset }) => {
+      const title = offset === 0 ? `🔥 今日締切: ${item.title}` : `⏰ あと${offset}日: ${item.title}`;
+      try {
+        new Notification(title, { body: `${item.course} — ${TYPE_LABEL[item.type] || ''}` });
+      } catch (e) { /* noop */ }
+    });
   }
 
+  // ===== Toast =====
   function toast(msg, kind) {
     const el = document.createElement('div');
     el.className = 'toast' + (kind ? ' ' + kind : '');
@@ -1490,7 +1746,6 @@
     }[c]));
   }
 
-  // ===== URL action handler (for PWA shortcuts) =====
   function handleUrlAction() {
     try {
       const url = new URL(location.href);
@@ -1499,38 +1754,27 @@
         url.searchParams.delete('action');
         history.replaceState(null, '', url.pathname + (url.search || '') + url.hash);
       }
-    } catch (e) { /* noop */ }
+    } catch (e) {}
   }
 
-  // ===== Install hint for iOS =====
-  function maybeShowInstallHint() {
-    const isStandalone = window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone === true;
-    if (isStandalone) return;
-    const iOS = /iPhone|iPad|iPod/.test(navigator.userAgent) && !window.MSStream;
-    if (!iOS) return;
-    if (localStorage.getItem('kadai_install_hint_dismissed')) return;
-    const hint = document.createElement('div');
-    hint.className = 'install-hint';
-    hint.innerHTML = `📲 ホーム画面に追加でアプリ化 <button id="dismissHint">閉じる</button>`;
-    document.body.appendChild(hint);
-    hint.querySelector('#dismissHint').addEventListener('click', () => {
-      hint.remove();
-      localStorage.setItem('kadai_install_hint_dismissed', '1');
-    });
-  }
-
-  // ===== Service Worker =====
   if ('serviceWorker' in navigator) {
     window.addEventListener('load', () => {
       navigator.serviceWorker.register('sw.js').catch(() => {});
     });
   }
 
+  // Re-check notifications when app becomes visible (catches next-day transitions)
+  document.addEventListener('visibilitychange', () => {
+    if (!document.hidden) {
+      render();
+      if (notifyEnabled) runScheduledNotifications();
+    }
+  });
+
   updateNotifyBtn();
   render();
-  if (notifyEnabled) setTimeout(fireStartupNotifications, 600);
   handleUrlAction();
-  setTimeout(maybeShowInstallHint, 1500);
+  setTimeout(() => { if (notifyEnabled) runScheduledNotifications(); }, 600);
 })();
 </script>
 </body>
