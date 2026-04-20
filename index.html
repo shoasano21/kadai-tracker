@@ -328,7 +328,7 @@
     -webkit-backdrop-filter: blur(14px);
     border: 1px solid var(--border);
     border-radius: var(--radius);
-    padding: 10px 12px 10px 14px;
+    padding: 18px 14px 18px 16px;
     box-shadow: var(--shadow);
     position: relative;
     overflow: hidden;
@@ -337,6 +337,7 @@
     align-items: center;
     gap: 10px;
     text-align: left;
+    min-height: 72px;
   }
   .summary .card:hover { transform: translateY(-3px) scale(1.01); box-shadow: var(--shadow-lg); }
   .summary .card::before {
@@ -374,12 +375,12 @@
     margin-left: auto;
   }
   .summary .value {
-    font-size: 22px;
+    font-size: 30px;
     font-weight: 800;
     font-variant-numeric: tabular-nums;
     letter-spacing: -0.02em;
     line-height: 1;
-    min-width: 22px;
+    min-width: 26px;
   }
   .summary .urgent .value { background: linear-gradient(135deg, var(--urgent-1), var(--urgent-2)); -webkit-background-clip: text; background-clip: text; color: transparent; }
   .summary .soon .value { background: linear-gradient(135deg, var(--soon-1), var(--soon-2)); -webkit-background-clip: text; background-clip: text; color: transparent; }
@@ -1169,8 +1170,8 @@
   @media (max-width: 700px) {
     .app { padding: 16px 12px calc(110px + env(safe-area-inset-bottom)); }
     .summary { grid-template-columns: repeat(3, 1fr); gap: 6px; }
-    .summary .value { font-size: 20px; }
-    .summary .card { padding: 9px 10px 9px 12px; }
+    .summary .value { font-size: 26px; }
+    .summary .card { padding: 14px 10px 14px 12px; min-height: 68px; }
     .summary .label { font-size: 11px; }
     .gantt-row, .gantt-header { grid-template-columns: 120px 1fr 76px; }
     .gantt { --title-w: 120px; --action-w: 76px; }
