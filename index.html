@@ -1121,10 +1121,12 @@
   }
   .modal-actions {
     display: flex;
+    flex-wrap: wrap;
     justify-content: flex-end;
-    gap: 8px;
+    gap: 6px;
     margin-top: 12px;
   }
+  .modal-actions .btn { padding: 8px 12px; font-size: 13px; }
   .modal-done-btn {
     background: var(--ok);
     color: #fff;
@@ -1640,11 +1642,9 @@
         </select>
       </div>
       <div class="field-error" id="formError"></div>
-      <div class="modal-actions" id="modalEditActions" style="display:none;">
-        <button type="button" class="btn modal-done-btn" id="btnModalDone">✓ 完了</button>
-        <button type="button" class="btn modal-del-btn" id="btnModalDelete">× 削除</button>
-      </div>
       <div class="modal-actions">
+        <button type="button" class="btn modal-done-btn" id="btnModalDone" style="display:none;">✓ 完了</button>
+        <button type="button" class="btn modal-del-btn" id="btnModalDelete" style="display:none;">× 削除</button>
         <button type="button" class="btn" id="btnCancel">キャンセル</button>
         <button type="submit" class="btn primary">💾 保存</button>
       </div>
@@ -2201,7 +2201,8 @@
     $('modalTitle').textContent = '✨ 課題を追加';
     renderCourseChips();
     refreshTitleSelect();
-    $('modalEditActions').style.display = 'none';
+    $('btnModalDone').style.display = 'none';
+    $('btnModalDelete').style.display = 'none';
     $('modalOverlay').classList.add('open');
     $('modalOverlay').setAttribute('aria-hidden', 'false');
     setTimeout(() => $('fCourse').focus(), 100);
@@ -2224,8 +2225,9 @@
     renderCourseChips();
     refreshTitleSelect();
     // Show done/delete buttons, update done label to reflect state
-    $('modalEditActions').style.display = '';
     const doneBtn = $('btnModalDone');
+    doneBtn.style.display = '';
+    $('btnModalDelete').style.display = '';
     doneBtn.textContent = it.done ? '↩️ 未完了に戻す' : '✓ 完了';
     doneBtn.classList.toggle('active-done', !!it.done);
     $('modalOverlay').classList.add('open');
