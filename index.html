@@ -464,7 +464,12 @@
     overflow: auto;
     padding: 32px 16px 18px;
   }
-  .gantt { position: relative; min-width: 800px; }
+  .gantt {
+    position: relative;
+    min-width: 800px;
+    --title-w: 260px;
+    --action-w: 100px;
+  }
   .gantt-header {
     position: relative;
     display: grid;
@@ -1117,6 +1122,7 @@
     .summary .card { padding: 9px 10px 9px 12px; }
     .summary .label { font-size: 11px; }
     .gantt-row, .gantt-header { grid-template-columns: 150px 1fr 80px; }
+    .gantt { --title-w: 150px; --action-w: 80px; }
     header.topbar { padding: 10px 14px; }
     header.topbar h1 { font-size: 18px; }
     .view-bar .view-toggle button { padding: 13px 14px; font-size: 14px; }
@@ -1474,7 +1480,7 @@
             <div class="actions-col">操作</div>
           </div>
           ${items.map((it, i) => ganttRowHtml(it, pctOfDate, i)).join('')}
-          <div class="today-line" style="left:calc(260px + (100% - 260px - 100px) * ${todayPct / 100});"></div>
+          <div class="today-line" style="left:calc(var(--title-w) + (100% - var(--title-w) - var(--action-w)) * ${todayPct / 100});"></div>
         </div>
       </div>
     `;
