@@ -1553,9 +1553,9 @@
       const wrapRect = wrap.getBoundingClientRect();
       const lineRect = line.getBoundingClientRect();
       const todayX = lineRect.left - wrapRect.left + wrap.scrollLeft;
-      // Position today about 35% from the left edge so more of the near future
-      // is visible on screen while keeping a bit of past context.
-      const target = Math.max(0, todayX - wrapRect.width * 0.35);
+      // Position today at about 75% from the left (middle of the right half)
+      // so past progress is visible on the left and today sits on the right.
+      const target = Math.max(0, todayX - wrapRect.width * 0.75);
       wrap.scrollLeft = target;
     });
   }
