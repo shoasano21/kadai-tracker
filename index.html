@@ -1525,9 +1525,8 @@
 
   <section class="filter-bar">
     <div class="filter-row">
-      <label>🎓 講義名</label>
-      <div class="chip-suggestions" id="filterCourseChips"></div>
-      <select id="filterCourse" style="display:none"><option value="">すべて</option></select>
+      <label for="filterCourse">🎓 講義名</label>
+      <select id="filterCourse"><option value="">すべて</option></select>
     </div>
     <div class="filter-row">
       <label for="filterStatus">🔍 ステータス</label>
@@ -1794,35 +1793,6 @@
       courses.map(c => `<option value="${escapeHtml(c)}">${escapeHtml(c)}</option>`).join('');
     sel.value = courses.includes(prev) ? prev : '';
     filterCourse = sel.value;
-
-    const chipHost = $('filterCourseChips');
-    if (!chipHost) return;
-    const items = [{ key: '', label: 'すべて', isAll: true }]
-      .concat(courses.map(c => ({ key: c, label: c, isAll: false })));
-    chipHost.innerHTML = items.map(it => `
-      <span class="chip-item${it.key === filterCourse ? ' active' : ''}" data-course="${escapeHtml(it.key)}">
-        <button type="button" class="chip">${escapeHtml(it.label)}</button>
-        ${it.isAll ? '' : `<button type="button" class="chip-del" aria-label="${escapeHtml(it.key)} を候補から削除">×</button>`}
-      </span>
-    `).join('');
-    chipHost.querySelectorAll('.chip-item').forEach(el => {
-      const course = el.dataset.course;
-      el.querySelector('.chip').addEventListener('click', () => {
-        filterCourse = course;
-        sel.value = course;
-        refreshCourseOptions();
-        render();
-      });
-      const del = el.querySelector('.chip-del');
-      if (del) del.addEventListener('click', (e) => {
-        e.stopPropagation();
-        if (!state.hiddenCourses) state.hiddenCourses = [];
-        if (!state.hiddenCourses.includes(course)) state.hiddenCourses.push(course);
-        if (filterCourse === course) filterCourse = '';
-        saveState();
-        render();
-      });
-    });
   }
 
   function render() {
