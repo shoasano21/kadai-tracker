@@ -1072,13 +1072,7 @@
     max-height: 90dvh;
     overflow-y: auto;
   }
-  .modal::before {
-    content: "";
-    position: absolute;
-    top: 0; left: 0; right: 0;
-    height: 5px;
-    background: linear-gradient(90deg, var(--accent-1), var(--accent-2));
-  }
+  .modal::before { display: none; }
   .modal-overlay.open .modal { transform: scale(1) translateY(0); }
   .modal h2 {
     margin: 0 0 16px;
