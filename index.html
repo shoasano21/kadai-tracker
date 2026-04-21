@@ -2114,9 +2114,9 @@
   function loadState() {
     try {
       const raw = localStorage.getItem(STORAGE_KEY);
-      if (!raw) return { items: SAMPLE.slice(), notify: false, notifyTime: '09:00', hiddenCourses: [], lastNotified: {} };
+      if (!raw) return { items: [], notify: false, notifyTime: '09:00', hiddenCourses: [], lastNotified: {} };
       const parsed = JSON.parse(raw);
-      if (!parsed || !Array.isArray(parsed.items)) return { items: SAMPLE.slice(), notify: false, notifyTime: '09:00', hiddenCourses: [], lastNotified: {} };
+      if (!parsed || !Array.isArray(parsed.items)) return { items: [], notify: false, notifyTime: '09:00', hiddenCourses: [], lastNotified: {} };
       // Migration: ensure remindDays field exists
       parsed.items.forEach(it => { if (it.remindDays === undefined) it.remindDays = 3; });
       return {
@@ -2127,7 +2127,7 @@
         lastNotified: parsed.lastNotified || {}
       };
     } catch (e) {
-      return { items: SAMPLE.slice(), notify: false, notifyTime: '09:00', hiddenCourses: [], lastNotified: {} };
+      return { items: [], notify: false, notifyTime: '09:00', hiddenCourses: [], lastNotified: {} };
     }
   }
   function saveState() {
