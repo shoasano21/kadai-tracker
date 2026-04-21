@@ -1731,7 +1731,7 @@
   let currentView = 'gantt';
   let filterCourse = '';
   let filterStatus = 'open';
-  let notifyEnabled = state.notify === true;
+  let notifyEnabled = state.notify !== false;
   let calCursor = new Date();
   calCursor.setDate(1);
   let calSelectedDate = todayStr();
