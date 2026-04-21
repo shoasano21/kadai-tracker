@@ -2564,14 +2564,17 @@
     const tl = document.getElementById('splashTagline');
     if (tl) tl.textContent = TAGLINES[Math.floor(Math.random() * TAGLINES.length)];
   })();
+  // Switch theme-color the moment the splash begins fading so the status bar
+  // transitions from purple to the app bg without lingering behind the fade.
   setTimeout(() => {
-    const s = document.getElementById('splash');
-    if (s) s.classList.add('done');
-    // Once the splash is dismissed, shift status-bar tint to the app bg color
     const light = document.getElementById('themeColorLight');
     const dark = document.getElementById('themeColorDark');
     if (light) light.setAttribute('content', '#f5f6fb');
     if (dark) dark.setAttribute('content', '#131628');
+  }, 2400);
+  setTimeout(() => {
+    const s = document.getElementById('splash');
+    if (s) s.classList.add('done');
   }, 3100);
 
   updateNotifyBtn();
