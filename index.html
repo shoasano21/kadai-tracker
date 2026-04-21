@@ -7,7 +7,7 @@
 <meta name="description" content="講義ごとの課題を管理するトラッカー" />
 <link rel="privacy-policy" href="privacy.html" />
 
-<meta name="theme-color" content="#e3e7f0" media="(prefers-color-scheme: light)" />
+<meta name="theme-color" content="#f5f6fb" media="(prefers-color-scheme: light)" />
 <meta name="theme-color" content="#131628" media="(prefers-color-scheme: dark)" />
 <meta name="apple-mobile-web-app-capable" content="yes" />
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
@@ -141,6 +141,18 @@
     overscroll-behavior-y: none;
     -webkit-overflow-scrolling: touch;
     padding: env(safe-area-inset-top) env(safe-area-inset-right) 0 env(safe-area-inset-left);
+  }
+  /* Solid opaque cover for the status-bar inset area so its color matches
+     --bg exactly (the mesh gradient underneath is masked out). */
+  .status-bar-cover {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: env(safe-area-inset-top);
+    background: var(--bg);
+    z-index: 50;
+    pointer-events: none;
   }
 
   button, .view-toggle, .summary .card, header.topbar h1, .type-badge, .remain-badge, .toast, .cal-cell, .cal-nav {
@@ -1481,6 +1493,7 @@
 </style>
 </head>
 <body>
+<div class="status-bar-cover" aria-hidden="true"></div>
 <div class="splash" id="splash" aria-hidden="true">
   <div class="splash-particles">
     <span>📝</span><span>⚛️</span><span>🧪</span><span>🦴</span>
