@@ -249,12 +249,12 @@
     border-radius: 50%;
     background: #fff;
     color: transparent;
-    border: 1.5px solid #111;
+    border: none;
     padding: 0;
     cursor: pointer;
     font-size: 0;
-    box-shadow: 0 8px 20px -4px rgba(0,0,0,0.2);
-    transition: transform .15s ease, background .15s ease, box-shadow .15s ease;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.1), 0 14px 32px -6px rgba(0,0,0,0.22);
+    transition: transform .2s ease, box-shadow .2s ease;
   }
   .header-add-btn::before,
   .header-add-btn::after {
@@ -270,12 +270,12 @@
   }
   .header-add-btn::after { transform: translate(-50%, -50%) rotate(90deg); }
   .header-add-btn:hover {
-    background: #f4f4f4;
-    box-shadow: 0 10px 24px -4px rgba(0,0,0,0.28);
+    transform: translateY(-3px);
+    box-shadow: 0 6px 14px rgba(0,0,0,0.12), 0 18px 42px -6px rgba(0,0,0,0.28);
   }
   .header-add-btn:active {
-    transform: scale(0.94);
-    box-shadow: 0 4px 12px -4px rgba(0,0,0,0.2);
+    transform: translateY(0) scale(0.95);
+    box-shadow: 0 2px 6px rgba(0,0,0,0.1), 0 8px 18px -4px rgba(0,0,0,0.2);
   }
   header.topbar h1 {
     margin: 0;
@@ -313,10 +313,8 @@
     width: 56px;
     height: 56px;
     border-radius: 50%;
-    border: 2.5px solid transparent;
-    background:
-      linear-gradient(var(--panel-solid), var(--panel-solid)) padding-box,
-      linear-gradient(135deg, #7358d9 0%, #5e3cb8 100%) border-box;
+    border: none;
+    background: var(--panel-solid);
     font-size: 28px;
     line-height: 1;
     display: inline-flex;
@@ -324,10 +322,18 @@
     justify-content: center;
     padding: 0;
     cursor: pointer;
-    transition: transform .15s, filter .15s;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.08), 0 8px 20px -6px rgba(0,0,0,0.18);
+    transition: transform .15s, box-shadow .15s;
     z-index: 2;
   }
-  .settings-icon-btn:hover { transform: scale(1.06); filter: brightness(1.03); }
+  .settings-icon-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 10px rgba(0,0,0,0.1), 0 12px 28px -6px rgba(0,0,0,0.22);
+  }
+  .settings-icon-btn:active {
+    transform: translateY(0) scale(0.96);
+    box-shadow: 0 1px 4px rgba(0,0,0,0.08), 0 4px 12px -4px rgba(0,0,0,0.15);
+  }
   .settings-icon-btn:active { transform: scale(0.94); }
 
   .stats-bar {
