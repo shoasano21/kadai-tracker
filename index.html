@@ -1355,6 +1355,9 @@
   }
   .input-split { display: flex; gap: 10px; }
   .input-split > input, .input-split > select { flex: 1; min-width: 0; margin-top: 0; }
+  .field-inline { display: flex; align-items: center; gap: 12px; }
+  .field-inline > label { flex: 0 0 auto; display: inline-flex; align-items: center; margin: 0; white-space: nowrap; }
+  .field-inline > select, .field-inline > input, .field-inline > textarea { flex: 1; min-width: 0; }
   .chip-suggestions {
     display: flex;
     flex-wrap: nowrap;
@@ -1712,7 +1715,7 @@
         </div>
       </div>
       <div class="field-row">
-        <div class="field">
+        <div class="field field-inline">
           <label for="fType"><span data-i18n="field_type">🏷 種別</span><span class="req">*</span></label>
           <select id="fType">
             <option value="report" data-i18n-prefix="📝 " data-i18n="type_report">📝 レポート</option>
