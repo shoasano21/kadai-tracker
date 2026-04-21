@@ -2356,7 +2356,7 @@
       <div class="gantt-row ${it.done ? 'done' : ''}" data-id="${it.id}" data-action="detail">
         <div class="task-label">
           <span class="course-tag">${escapeHtml(it.course)}</span>
-          <span class="task-title">${escapeHtml(it.title)}</span>
+          <span class="task-title">${escapeHtml(TYPE_LABEL[it.type] || '')}</span>
         </div>
         <div class="timeline-col">
           <div class="bar ${barClass}" style="left:${leftPct}%;width:${widthPct}%;animation-delay:${delay}s;" title="${escapeHtml(label)}">${label}</div>
@@ -2496,8 +2496,7 @@
     return `
       <div class="cal-task ${s}" data-id="${it.id}" data-action="detail" style="cursor:pointer;">
         <div class="cal-task-body">
-          <div class="cal-task-course">🎓 ${escapeHtml(it.course)}</div>
-          <div class="cal-task-title">${escapeHtml(it.title)}</div>
+          <div class="cal-task-course">${escapeHtml(it.course)}</div>
           <div class="cal-task-meta">
             <span class="type-badge ${it.type}">${emoji} ${typeLbl}</span>
             &nbsp;${leftText}
@@ -2723,14 +2722,11 @@
     if (!course) return (err.textContent = t('err_course'));
     if (!start) return (err.textContent = t('err_start'));
     if (!end) return (err.textContent = t('err_end'));
-    const title = (desc || t('type_' + type) || course).slice(0, 60);
+    const title = `${course} - ${t('type_' + type) || ''}`.slice(0, 60);
     if (end < start) return (err.textContent = t('err_end_before_start'));
     if (editingId !== null) {
       const it = state.items.find(x => x.id === editingId);
-      if (it) {
-        const keptTitle = it.title && !desc ? it.title : title;
-        Object.assign(it, { course, title: keptTitle, type, desc, start, end, remindDays });
-      }
+      if (it) Object.assign(it, { course, title, type, desc, start, end, remindDays });
       saveState();
       render();
       syncNativeNotifications();
