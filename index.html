@@ -160,7 +160,7 @@
     left: 0;
     right: 0;
     height: env(safe-area-inset-bottom);
-    background: #ffeef2;
+    background: #ffffff;
     z-index: 9000;
     pointer-events: none;
   }
@@ -454,11 +454,13 @@
     bottom: 0;
     z-index: 80;
     padding: 10px 16px calc(10px + env(safe-area-inset-bottom)) 16px;
-    background: #ffeef2;
-    border-top: 1px solid rgba(0,0,0,0.05);
+    background: var(--panel);
+    backdrop-filter: blur(18px);
+    -webkit-backdrop-filter: blur(18px);
+    border-top: 1px solid var(--border);
     display: flex;
     justify-content: center;
-    box-shadow: 0 -4px 20px rgba(190,120,150,0.08);
+    box-shadow: 0 -4px 20px rgba(40,50,90,0.08);
   }
   .bottom-bar .view-toggle {
     width: 100%;
