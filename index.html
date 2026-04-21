@@ -220,11 +220,11 @@
     gap: 12px;
     padding: 14px 14px 14px 18px;
     margin-bottom: 16px;
-    background: var(--panel);
-    backdrop-filter: blur(18px);
-    -webkit-backdrop-filter: blur(18px);
-    border: 1px solid var(--border);
+    border: 2px solid transparent;
     border-radius: 18px;
+    background:
+      linear-gradient(var(--panel-solid), var(--panel-solid)) padding-box,
+      linear-gradient(135deg, #7358d9, #4c2db0) border-box;
     box-shadow: var(--shadow);
   }
   .topbar-main {
