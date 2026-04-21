@@ -303,11 +303,14 @@
     line-height: 1.05;
   }
   header.topbar h1 .title-sub {
-    font-size: 10px;
-    font-weight: 800;
-    letter-spacing: 0.3em;
+    font-size: 13px;
+    font-weight: 600;
+    letter-spacing: 0.01em;
     color: var(--text-sub);
-    margin-top: 4px;
+    margin-top: 6px;
+    white-space: normal;
+    max-width: 340px;
+    line-height: 1.35;
   }
   .settings-icon-btn {
     position: absolute;
@@ -1599,7 +1602,7 @@
 <div class="app">
   <header class="topbar">
     <div class="topbar-main">
-      <h1><span class="title-main" data-i18n="app_title">課題トラッカー</span><span class="title-sub">KADAI TRACKER</span></h1>
+      <h1><span class="title-main" data-i18n="app_title">課題トラッカー</span><span class="title-sub" id="topbarTagline"></span></h1>
       <div class="topbar-stats">
         <div class="stat urgent" id="cardUrgent">
           <span class="stat-value" id="sumUrgent">0</span>
@@ -1851,7 +1854,27 @@
       cal_detail_header: (m, d, dow) => `${m}月${d}日(${dow}) 締切の課題`,
       lang_name: '日本語',
       lang_switch_to: 'English',
-      cal_today_btn: '今日'
+      cal_today_btn: '今日',
+      taglines: [
+        '今日の一歩が、明日の自分をつくる。',
+        '締切を制す者、学問を制す。',
+        '昨日の自分より、ちょっと前へ。',
+        '勉強は裏切らない。',
+        '一課題、一成長。',
+        '今日もおつかれさま ☕',
+        '焦らずに、着実に。',
+        'がんばる君に、エールを。',
+        '小さな積み重ねが、大きな差になる。',
+        '未来の自分が、今日の自分に感謝する。',
+        'やる気は、やり始めから生まれる。',
+        '慌てない、諦めない、投げ出さない。',
+        '一休みも、大事な勉強のうち 🍵',
+        '締切は、最高の先生。',
+        'ひとつずつ、片付けていこう。',
+        'きみの努力は、必ず報われる。',
+        '今日やるべきことに、集中しよう。',
+        '完璧じゃなくていい、まず終わらせよう。'
+      ]
     },
     en: {
       app_title: 'Kadai Tracker',
@@ -1940,11 +1963,32 @@
       cal_detail_header: (m, d, dow) => `Tasks due ${['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'][m-1]} ${d} (${dow})`,
       lang_name: 'English',
       lang_switch_to: '日本語',
-      cal_today_btn: 'Today'
+      cal_today_btn: 'Today',
+      taglines: [
+        'Today\'s step shapes tomorrow\'s you.',
+        'Who masters deadlines masters study.',
+        'A little better than yesterday.',
+        'Study never betrays you.',
+        'One task, one bit of growth.',
+        'Great work today ☕',
+        'Slow and steady does it.',
+        'Cheering you on.',
+        'Small steps add up to a big difference.',
+        'Future-you will thank present-you.',
+        'Motivation follows action.',
+        'Don\'t panic, don\'t give up.',
+        'A break counts as study too 🍵',
+        'Deadlines are the best teachers.',
+        'One thing at a time.',
+        'Your effort will pay off.',
+        'Focus on what matters today.',
+        'Done is better than perfect.'
+      ]
     }
   };
 
   let currentLang = localStorage.getItem(LANG_KEY) || 'ja';
+  const taglineIdx = Math.floor(Math.random() * (STRINGS.ja.taglines.length));
   function t(key, ...args) {
     const v = (STRINGS[currentLang] || STRINGS.ja)[key];
     if (typeof v === 'function') return v(...args);
@@ -1970,6 +2014,11 @@
     const langBtn = document.getElementById('btnLang');
     if (langBtn) langBtn.textContent = STRINGS[currentLang].lang_name;
     document.documentElement.style.setProperty('--today-label', `"${t('today')}"`);
+    const taglineEl = document.getElementById('topbarTagline');
+    if (taglineEl) {
+      const list = STRINGS[currentLang].taglines || [];
+      taglineEl.textContent = list[taglineIdx % list.length] || '';
+    }
   }
 
   const COMMON_COURSES = [
