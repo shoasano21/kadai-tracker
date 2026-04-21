@@ -1295,12 +1295,13 @@
     will-change: transform, opacity;
   }
 
-  /* Splash screen — visually identical to native LaunchScreen */
+  /* Splash screen — starts identical to native LaunchScreen, then animates */
   .splash {
     position: fixed;
     inset: 0;
     z-index: 9999;
     background: #ffffff;
+    overflow: hidden;
     transition: opacity 0.4s ease;
   }
   .splash.done { opacity: 0; pointer-events: none; }
@@ -1312,10 +1313,12 @@
     display: flex;
     flex-direction: column;
     align-items: center;
+    z-index: 2;
   }
   .splash-icon {
     font-size: 76px;
     line-height: 1;
+    animation: splashIconFloat 2.4s 0.6s ease-in-out infinite;
   }
   .splash-title {
     margin-top: 20px;
@@ -1323,6 +1326,61 @@
     font-weight: 700;
     color: #000;
     letter-spacing: 0;
+  }
+  .splash-bar {
+    margin-top: 26px;
+    width: 180px;
+    height: 3px;
+    background: rgba(0,0,0,0.08);
+    border-radius: 999px;
+    overflow: hidden;
+    opacity: 0;
+    animation: splashFadeIn 0.4s 0.3s forwards;
+  }
+  .splash-bar-fill {
+    width: 100%;
+    height: 100%;
+    background: #000;
+    transform-origin: left center;
+    transform: scaleX(0);
+    animation: splashBar 1.4s 0.5s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+  }
+  .splash-particles {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    z-index: 1;
+  }
+  .splash-particles span {
+    position: absolute;
+    opacity: 0;
+    will-change: transform, opacity;
+    animation: splashParticle 2.6s ease-out forwards;
+  }
+  .splash-particles span:nth-child(1)  { left: 6%;  top: 110%; animation-delay: 0.10s; font-size: 30px; }
+  .splash-particles span:nth-child(2)  { left: 20%; top: 110%; animation-delay: 0.35s; font-size: 24px; }
+  .splash-particles span:nth-child(3)  { left: 38%; top: 110%; animation-delay: 0.55s; font-size: 32px; }
+  .splash-particles span:nth-child(4)  { left: 56%; top: 110%; animation-delay: 0.20s; font-size: 26px; }
+  .splash-particles span:nth-child(5)  { left: 72%; top: 110%; animation-delay: 0.45s; font-size: 30px; }
+  .splash-particles span:nth-child(6)  { left: 88%; top: 110%; animation-delay: 0.70s; font-size: 22px; }
+  .splash-particles span:nth-child(7)  { left: 14%; top: 110%; animation-delay: 0.90s; font-size: 28px; }
+  .splash-particles span:nth-child(8)  { left: 48%; top: 110%; animation-delay: 1.10s; font-size: 26px; }
+  .splash-particles span:nth-child(9)  { left: 32%; top: 110%; animation-delay: 0.00s; font-size: 22px; }
+  .splash-particles span:nth-child(10) { left: 82%; top: 110%; animation-delay: 0.30s; font-size: 28px; }
+  @keyframes splashIconFloat {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-8px); }
+  }
+  @keyframes splashFadeIn {
+    to { opacity: 1; }
+  }
+  @keyframes splashBar {
+    to { transform: scaleX(1); }
+  }
+  @keyframes splashParticle {
+    0%   { opacity: 0; transform: translateY(0) rotate(0deg); }
+    15%  { opacity: 0.9; }
+    100% { opacity: 0; transform: translateY(-120vh) rotate(320deg); }
   }
 
   @media (max-width: 700px) {
@@ -1354,9 +1412,14 @@
 <body>
 <div class="status-bar-cover" aria-hidden="true"></div>
 <div class="splash" id="splash" aria-hidden="true">
+  <div class="splash-particles">
+    <span>📝</span><span>⚛️</span><span>🧪</span><span>🦴</span><span>📊</span>
+    <span>🎓</span><span>✅</span><span>💡</span><span>📖</span><span>🧬</span>
+  </div>
   <div class="splash-inner">
     <div class="splash-icon">📚</div>
     <div class="splash-title">課題トラッカー</div>
+    <div class="splash-bar"><div class="splash-bar-fill"></div></div>
   </div>
 </div>
 
@@ -2379,11 +2442,11 @@
     }
   });
 
-  // Hold splash for ~1.5s so the LaunchScreen → HTML splash handoff feels continuous.
+  // Hold splash long enough for the loading bar + particles to play out.
   setTimeout(() => {
     const s = document.getElementById('splash');
     if (s) s.classList.add('done');
-  }, 1500);
+  }, 2400);
 
   updateNotifyBtn();
   render();
