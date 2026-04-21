@@ -175,7 +175,6 @@
   /* Calendar-only mode: hide header banner / summary / filters / reminder
      so the grid is the main focus and can breathe. */
   body[data-view="calendar"] header.topbar,
-  body[data-view="calendar"] .summary,
   body[data-view="calendar"] .filter-bar,
   body[data-view="calendar"] #reminderHost {
     display: none;
@@ -274,6 +273,85 @@
     color: var(--text-sub);
     margin-top: 4px;
   }
+
+  .topbar-stats {
+    display: flex;
+    gap: 14px;
+    margin-top: 10px;
+    flex-wrap: wrap;
+  }
+  .topbar-stats .stat {
+    display: inline-flex;
+    align-items: baseline;
+    gap: 8px;
+    padding: 4px 2px;
+  }
+  .topbar-stats .stat-value {
+    font-size: 30px;
+    font-weight: 900;
+    font-variant-numeric: tabular-nums;
+    letter-spacing: -0.02em;
+    line-height: 1;
+    min-width: 24px;
+  }
+  .topbar-stats .stat.urgent .stat-value { color: var(--urgent); }
+  .topbar-stats .stat.ok .stat-value { color: var(--ok); }
+  .topbar-stats .stat-label {
+    font-size: 14px;
+    font-weight: 800;
+    color: var(--text);
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+  }
+  .topbar-stats .stat-emoji {
+    font-size: 16px;
+    line-height: 1;
+  }
+  .topbar-stats .stat.urgent.has-items .stat-emoji { animation: pulse 1.4s ease-in-out infinite; }
+
+  /* Settings panel */
+  .settings-panel {
+    display: none;
+    background: var(--panel);
+    border-radius: var(--radius);
+    padding: 8px 6px;
+    box-shadow: var(--shadow);
+  }
+  .settings-title {
+    margin: 8px 12px 12px;
+    font-size: 18px;
+    font-weight: 800;
+    letter-spacing: -0.01em;
+  }
+  .setting-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    padding: 14px 14px;
+    border-top: 1px solid var(--border);
+  }
+  .setting-info { display: flex; flex-direction: column; gap: 2px; min-width: 0; flex: 1; }
+  .setting-label {
+    font-size: 15px;
+    font-weight: 700;
+    color: var(--text);
+  }
+  .setting-desc {
+    font-size: 12px;
+    color: var(--text-sub);
+    font-weight: 500;
+  }
+  .setting-btn {
+    min-width: 72px;
+    justify-content: center;
+  }
+
+  body[data-view="settings"] .filter-bar,
+  body[data-view="settings"] #viewHost,
+  body[data-view="settings"] .topbar-stats { display: none; }
+  body[data-view="settings"] #settingsHost { display: block; }
 
   .bottom-bar {
     position: fixed;
@@ -1295,7 +1373,7 @@
     will-change: transform, opacity;
   }
 
-  /* Splash screen — starts identical to native LaunchScreen, then animates */
+  /* Splash — only particles + loading bar */
   .splash {
     position: fixed;
     inset: 0;
@@ -1305,37 +1383,57 @@
     transition: opacity 0.4s ease;
   }
   .splash.done { opacity: 0; pointer-events: none; }
-  .splash-inner {
+  .splash-title {
     position: absolute;
     left: 50%;
     top: 50%;
     transform: translate(-50%, calc(-50% - 60px));
-    display: flex;
-    flex-direction: column;
-    align-items: center;
+    display: inline-flex;
+    gap: 4px;
+    font-size: 44px;
+    font-weight: 900;
+    letter-spacing: -0.01em;
+    color: #000;
     z-index: 2;
   }
-  .splash-icon {
-    font-size: 76px;
-    line-height: 1;
-    animation: splashIconFloat 2.4s 0.6s ease-in-out infinite;
+  .splash-title span {
+    display: inline-block;
+    opacity: 0;
+    transform: translateY(24px) scale(0.6);
+    animation: splashLetter 0.6s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
   }
-  .splash-title {
-    margin-top: 20px;
-    font-size: 36px;
-    font-weight: 700;
-    color: #000;
-    letter-spacing: 0;
+  .splash-title span:nth-child(1) { animation-delay: 0.10s; }
+  .splash-title span:nth-child(2) { animation-delay: 0.18s; }
+  .splash-title span:nth-child(3) { animation-delay: 0.26s; }
+  .splash-title span:nth-child(4) { animation-delay: 0.34s; }
+  .splash-title span:nth-child(5) { animation-delay: 0.42s; }
+  .splash-title span:nth-child(6) { animation-delay: 0.50s; }
+  .splash-title span:nth-child(7) { animation-delay: 0.58s; }
+  .splash-sub {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, calc(-50% - 8px));
+    font-size: 11px;
+    font-weight: 800;
+    letter-spacing: 0.55em;
+    color: rgba(0,0,0,0.45);
+    padding-left: 0.55em;
+    opacity: 0;
+    animation: splashSubIn 0.5s 0.8s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+    z-index: 2;
   }
   .splash-bar {
-    margin-top: 26px;
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, calc(-50% + 40px));
     width: 180px;
     height: 3px;
     background: rgba(0,0,0,0.08);
     border-radius: 999px;
     overflow: hidden;
-    opacity: 0;
-    animation: splashFadeIn 0.4s 0.3s forwards;
+    z-index: 2;
   }
   .splash-bar-fill {
     width: 100%;
@@ -1343,7 +1441,7 @@
     background: #000;
     transform-origin: left center;
     transform: scaleX(0);
-    animation: splashBar 1.4s 0.5s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+    animation: splashBar 1.8s 0.1s cubic-bezier(0.4, 0, 0.2, 1) forwards;
   }
   .splash-particles {
     position: absolute;
@@ -1367,15 +1465,14 @@
   .splash-particles span:nth-child(8)  { left: 48%; top: 110%; animation-delay: 1.10s; font-size: 26px; }
   .splash-particles span:nth-child(9)  { left: 32%; top: 110%; animation-delay: 0.00s; font-size: 22px; }
   .splash-particles span:nth-child(10) { left: 82%; top: 110%; animation-delay: 0.30s; font-size: 28px; }
-  @keyframes splashIconFloat {
-    0%, 100% { transform: translateY(0); }
-    50% { transform: translateY(-8px); }
-  }
-  @keyframes splashFadeIn {
-    to { opacity: 1; }
-  }
   @keyframes splashBar {
     to { transform: scaleX(1); }
+  }
+  @keyframes splashLetter {
+    to { opacity: 1; transform: translateY(0) scale(1); }
+  }
+  @keyframes splashSubIn {
+    to { opacity: 1; }
   }
   @keyframes splashParticle {
     0%   { opacity: 0; transform: translateY(0) rotate(0deg); }
@@ -1416,37 +1513,31 @@
     <span>📝</span><span>⚛️</span><span>🧪</span><span>🦴</span><span>📊</span>
     <span>🎓</span><span>✅</span><span>💡</span><span>📖</span><span>🧬</span>
   </div>
-  <div class="splash-inner">
-    <div class="splash-icon">📚</div>
-    <div class="splash-title">課題トラッカー</div>
-    <div class="splash-bar"><div class="splash-bar-fill"></div></div>
+  <div class="splash-title" aria-label="課題トラッカー">
+    <span>課</span><span>題</span><span>ト</span><span>ラ</span><span>ッ</span><span>カ</span><span>ー</span>
   </div>
+  <div class="splash-sub">KADAI TRACKER</div>
+  <div class="splash-bar"><div class="splash-bar-fill"></div></div>
 </div>
 
 <div class="app">
   <header class="topbar">
     <div class="topbar-main">
       <h1><span class="title-main">課題トラッカー</span><span class="title-sub">KADAI TRACKER</span></h1>
-      <div class="topbar-controls">
-        <button id="btnNotifyTime" class="btn notify-time-btn" title="通知時刻を変更">⏰ <span id="notifyTimeLabel">09:00</span></button>
-        <button id="btnNotify" class="btn">🔔</button>
-        <button id="btnTheme" class="btn" title="テーマ切り替え">🌙</button>
+      <div class="topbar-stats">
+        <div class="stat urgent" id="cardUrgent">
+          <span class="stat-value" id="sumUrgent">0</span>
+          <span class="stat-label">緊急<span class="stat-emoji">🔥</span></span>
+        </div>
+        <div class="stat ok">
+          <span class="stat-value" id="sumOk">0</span>
+          <span class="stat-label">余裕あり<span class="stat-emoji">🌱</span></span>
+        </div>
       </div>
     </div>
     <button id="btnAddHeader" class="btn header-add-btn" title="課題を追加">＋</button>
     <input type="time" id="notifyTimeInput" class="notify-time-input" />
   </header>
-
-  <section class="summary">
-    <div class="card urgent" id="cardUrgent">
-      <div class="value" id="sumUrgent">0</div>
-      <div class="label">緊急<span class="label-emoji">🔥</span></div>
-    </div>
-    <div class="card ok">
-      <div class="value" id="sumOk">0</div>
-      <div class="label">余裕あり<span class="label-emoji">🌱</span></div>
-    </div>
-  </section>
 
   <div id="reminderHost"></div>
 
@@ -1466,6 +1557,31 @@
   </section>
 
   <main id="viewHost"></main>
+
+  <section id="settingsHost" class="settings-panel">
+    <h2 class="settings-title">⚙️ 設定</h2>
+    <div class="setting-row">
+      <div class="setting-info">
+        <div class="setting-label">🔔 通知</div>
+        <div class="setting-desc">締切が近づくと通知します</div>
+      </div>
+      <button id="btnNotify" class="btn setting-btn">🔔</button>
+    </div>
+    <div class="setting-row">
+      <div class="setting-info">
+        <div class="setting-label">⏰ 通知時刻</div>
+        <div class="setting-desc">毎日この時刻に通知を送信</div>
+      </div>
+      <button id="btnNotifyTime" class="btn setting-btn notify-time-btn" title="通知時刻を変更">⏰ <span id="notifyTimeLabel">09:00</span></button>
+    </div>
+    <div class="setting-row">
+      <div class="setting-info">
+        <div class="setting-label">🌙 テーマ</div>
+        <div class="setting-desc">ダーク/ライトモード切替</div>
+      </div>
+      <button id="btnTheme" class="btn setting-btn" title="テーマ切り替え">🌙</button>
+    </div>
+  </section>
 </div>
 
 
@@ -1473,6 +1589,7 @@
   <div class="view-toggle" role="tablist">
     <button id="btnViewGantt" class="active" data-view="gantt">📊 Timeline</button>
     <button id="btnViewCalendar" data-view="calendar">📅 Calendar</button>
+    <button id="btnViewSettings" data-view="settings">⚙️ Settings</button>
   </div>
 </nav>
 
@@ -1734,7 +1851,8 @@
     renderReminder();
     document.body.dataset.view = currentView;
     if (currentView === 'gantt') renderGantt();
-    else renderCalendar();
+    else if (currentView === 'calendar') renderCalendar();
+    else if (currentView === 'settings') { host.innerHTML = ''; }
   }
 
   function emptyHtml(msg, _unused, sub) {
@@ -2442,7 +2560,7 @@
     }
   });
 
-  // Hold splash long enough for the loading bar + particles to play out.
+  // Dismiss splash after particles + bar finish playing.
   setTimeout(() => {
     const s = document.getElementById('splash');
     if (s) s.classList.add('done');
