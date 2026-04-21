@@ -7,7 +7,7 @@
 <meta name="description" content="講義ごとの課題を管理するトラッカー" />
 <link rel="privacy-policy" href="privacy.html" />
 
-<meta name="theme-color" content="#f5f6fb" media="(prefers-color-scheme: light)" />
+<meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)" />
 <meta name="theme-color" content="#131628" media="(prefers-color-scheme: dark)" />
 <meta name="apple-mobile-web-app-capable" content="yes" />
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
@@ -23,17 +23,17 @@
 
 <style>
   :root {
-    --bg: #f5f6fb;
-    --bg-grad-1: #f5dfec;
-    --bg-grad-2: #d8e3fb;
-    --bg-grad-3: #dff0e4;
-    --panel: rgba(255,255,255,0.82);
+    --bg: #ffffff;
+    --bg-grad-1: #ffffff;
+    --bg-grad-2: #ffffff;
+    --bg-grad-3: #ffffff;
+    --panel: #ffffff;
     --panel-solid: #ffffff;
-    --panel-2: #f8f9fc;
-    --text: #1d2236;
-    --text-sub: #5a6480;
-    --border: rgba(196,201,222,0.65);
-    --border-strong: #c4c9de;
+    --panel-2: #ffffff;
+    --text: #000000;
+    --text-sub: #5a5a5a;
+    --border: #000000;
+    --border-strong: #000000;
     --accent-1: #5a72e0;
     --accent-2: #8561cf;
     --accent: #5a72e0;
@@ -150,7 +150,7 @@
     left: 0;
     right: 0;
     height: env(safe-area-inset-top);
-    background: #f5f6fb;
+    background: #ffffff;
     z-index: 9000;
     pointer-events: none;
   }
@@ -188,29 +188,7 @@
     padding: 2px 4px;
   }
 
-  body::before {
-    content: "";
-    position: fixed;
-    inset: -20%;
-    background:
-      radial-gradient(circle at 15% 20%, var(--bg-grad-1) 0%, transparent 45%),
-      radial-gradient(circle at 85% 15%, var(--bg-grad-2) 0%, transparent 50%),
-      radial-gradient(circle at 50% 85%, var(--bg-grad-3) 0%, transparent 55%);
-    filter: blur(60px);
-    opacity: 0.7;
-    z-index: -2;
-    animation: meshFloat 28s ease-in-out infinite;
-    pointer-events: none;
-  }
-  body::after {
-    content: "";
-    position: fixed;
-    inset: 0;
-    background: var(--bg);
-    opacity: 0.65;
-    z-index: -1;
-    pointer-events: none;
-  }
+  body::before, body::after { display: none; }
   @keyframes meshFloat {
     0%, 100% { transform: translate(0, 0) rotate(0deg); }
     33% { transform: translate(-3%, 2%) rotate(1deg); }
@@ -1324,7 +1302,7 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    background: #f5f6fb;
+    background: #ffffff;
     overflow: hidden;
     animation: splashFade 0.6s 2.4s forwards;
   }
