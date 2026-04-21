@@ -297,13 +297,9 @@
     color: var(--text-sub);
     margin-top: 4px;
   }
-  .title-with-settings {
-    display: inline-flex;
-    align-items: center;
-    gap: 18px;
-  }
   .settings-icon-btn {
     flex-shrink: 0;
+    margin-left: auto;
     width: 56px;
     height: 56px;
     border-radius: 50%;
@@ -1591,10 +1587,7 @@
 <div class="app">
   <header class="topbar">
     <div class="topbar-main">
-      <div class="title-with-settings">
-        <h1><span class="title-main">課題トラッカー</span><span class="title-sub">KADAI TRACKER</span></h1>
-        <button id="btnOpenSettings" class="settings-icon-btn" title="設定" aria-label="設定">⚙️</button>
-      </div>
+      <h1><span class="title-main">課題トラッカー</span><span class="title-sub">KADAI TRACKER</span></h1>
       <div class="topbar-stats">
         <div class="stat urgent" id="cardUrgent">
           <span class="stat-value" id="sumUrgent">0</span>
@@ -1605,6 +1598,7 @@
           <span class="stat-label">Coming Up<span class="stat-emoji">🌱</span></span>
         </div>
       </div>
+      <button id="btnOpenSettings" class="settings-icon-btn" title="設定" aria-label="設定">⚙️</button>
     </div>
     <input type="time" id="notifyTimeInput" class="notify-time-input" />
   </header>
