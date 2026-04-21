@@ -273,5 +273,44 @@ extension ViewController: WKScriptMessageHandler {
         if message.name == "schedule-local" {
             handleScheduleLocal(message: message)
         }
+        if message.name == "haptic" {
+            handleHaptic(message: message)
+        }
+  }
+
+  func handleHaptic(message: WKScriptMessage) {
+      let style = (message.body as? String) ?? "light"
+      DispatchQueue.main.async {
+          switch style {
+          case "light":
+              UIImpactFeedbackGenerator(style: .light).impactOccurred()
+          case "medium":
+              UIImpactFeedbackGenerator(style: .medium).impactOccurred()
+          case "heavy":
+              UIImpactFeedbackGenerator(style: .heavy).impactOccurred()
+          case "soft":
+              if #available(iOS 13.0, *) {
+                  UIImpactFeedbackGenerator(style: .soft).impactOccurred()
+              } else {
+                  UIImpactFeedbackGenerator(style: .light).impactOccurred()
+              }
+          case "rigid":
+              if #available(iOS 13.0, *) {
+                  UIImpactFeedbackGenerator(style: .rigid).impactOccurred()
+              } else {
+                  UIImpactFeedbackGenerator(style: .medium).impactOccurred()
+              }
+          case "success":
+              UINotificationFeedbackGenerator().notificationOccurred(.success)
+          case "warning":
+              UINotificationFeedbackGenerator().notificationOccurred(.warning)
+          case "error":
+              UINotificationFeedbackGenerator().notificationOccurred(.error)
+          case "selection":
+              UISelectionFeedbackGenerator().selectionChanged()
+          default:
+              UIImpactFeedbackGenerator(style: .light).impactOccurred()
+          }
+      }
   }
 }
