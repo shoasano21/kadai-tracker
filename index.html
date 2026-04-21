@@ -150,10 +150,11 @@
     left: 0;
     right: 0;
     height: env(safe-area-inset-top);
-    background: var(--bg);
-    z-index: 50;
+    background: #f5f6fb;
+    z-index: 9000;
     pointer-events: none;
   }
+  [data-theme="dark"] .status-bar-cover { background: #131628; }
 
   button, .view-toggle, .summary .card, header.topbar h1, .type-badge, .remain-badge, .toast, .cal-cell, .cal-nav {
     -webkit-user-select: none;
@@ -1335,10 +1336,11 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    background: var(--bg);
+    background: #f5f6fb;
     overflow: hidden;
     animation: splashFade 0.6s 2.4s forwards;
   }
+  [data-theme="dark"] .splash { background: #131628; }
   .splash-content {
     position: relative;
     z-index: 2;
