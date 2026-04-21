@@ -1295,6 +1295,35 @@
     will-change: transform, opacity;
   }
 
+  /* Splash screen — visually identical to native LaunchScreen */
+  .splash {
+    position: fixed;
+    inset: 0;
+    z-index: 9999;
+    background: #ffffff;
+    transition: opacity 0.4s ease;
+  }
+  .splash.done { opacity: 0; pointer-events: none; }
+  .splash-inner {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, calc(-50% - 60px));
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+  .splash-icon {
+    font-size: 76px;
+    line-height: 1;
+  }
+  .splash-title {
+    margin-top: 20px;
+    font-size: 36px;
+    font-weight: 700;
+    color: #000;
+    letter-spacing: 0;
+  }
 
   @media (max-width: 700px) {
     .app { padding: 16px 12px calc(110px + env(safe-area-inset-bottom)); }
@@ -1324,6 +1353,12 @@
 </head>
 <body>
 <div class="status-bar-cover" aria-hidden="true"></div>
+<div class="splash" id="splash" aria-hidden="true">
+  <div class="splash-inner">
+    <div class="splash-icon">📚</div>
+    <div class="splash-title">課題トラッカー</div>
+  </div>
+</div>
 
 <div class="app">
   <header class="topbar">
@@ -2343,6 +2378,12 @@
       if (notifyEnabled) runScheduledNotifications();
     }
   });
+
+  // Hold splash for ~1.5s so the LaunchScreen → HTML splash handoff feels continuous.
+  setTimeout(() => {
+    const s = document.getElementById('splash');
+    if (s) s.classList.add('done');
+  }, 1500);
 
   updateNotifyBtn();
   render();
