@@ -204,6 +204,7 @@
 
   /* Header */
   header.topbar {
+    position: relative;
     display: flex;
     align-items: flex-start;
     gap: 12px;
@@ -220,10 +221,8 @@
     flex: 1;
     min-width: 0;
     display: flex;
-    flex-direction: row;
-    align-items: center;
-    gap: 20px;
-    flex-wrap: wrap;
+    flex-direction: column;
+    gap: 12px;
   }
   .topbar-controls {
     display: flex;
@@ -298,8 +297,9 @@
     margin-top: 4px;
   }
   .settings-icon-btn {
-    flex-shrink: 0;
-    margin-left: auto;
+    position: absolute;
+    top: 12px;
+    right: 12px;
     width: 56px;
     height: 56px;
     border-radius: 50%;
@@ -313,6 +313,7 @@
     padding: 0;
     cursor: pointer;
     transition: transform .15s, box-shadow .15s;
+    z-index: 2;
   }
   .settings-icon-btn:hover { transform: scale(1.06); box-shadow: var(--shadow); }
   .settings-icon-btn:active { transform: scale(0.94); }
@@ -870,7 +871,7 @@
     pointer-events: none;
   }
   .today-line::before {
-    content: "今日";
+    content: var(--today-label, "今日");
     position: absolute;
     top: -24px;
     left: 50%;
@@ -1457,7 +1458,11 @@
     font-size: 44px;
     font-weight: 900;
     letter-spacing: -0.01em;
-    color: #000;
+    background: linear-gradient(135deg, #7358d9 0%, #5e3cb8 100%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+    color: transparent;
     z-index: 2;
   }
   .splash-title span {
@@ -1587,7 +1592,7 @@
 <div class="app">
   <header class="topbar">
     <div class="topbar-main">
-      <h1><span class="title-main">課題トラッカー</span><span class="title-sub">KADAI TRACKER</span></h1>
+      <h1><span class="title-main" data-i18n="app_title">課題トラッカー</span><span class="title-sub">KADAI TRACKER</span></h1>
       <div class="topbar-stats">
         <div class="stat urgent" id="cardUrgent">
           <span class="stat-value" id="sumUrgent">0</span>
@@ -1598,25 +1603,25 @@
           <span class="stat-label">Coming Up<span class="stat-emoji">🌱</span></span>
         </div>
       </div>
-      <button id="btnOpenSettings" class="settings-icon-btn" title="設定" aria-label="設定">⚙️</button>
     </div>
+    <button id="btnOpenSettings" class="settings-icon-btn" data-i18n-title="open_settings" data-i18n-aria="open_settings">⚙️</button>
     <input type="time" id="notifyTimeInput" class="notify-time-input" />
   </header>
-  <button id="btnAddHeader" class="btn header-add-btn" title="課題を追加">＋</button>
+  <button id="btnAddHeader" class="header-add-btn" data-i18n-title="add_task" data-i18n-aria="add_task">＋</button>
 
   <div id="reminderHost"></div>
 
   <section class="filter-bar">
     <div class="filter-row">
-      <label for="filterCourse">🎓 Lecture</label>
-      <select id="filterCourse"><option value="">すべて</option></select>
+      <label for="filterCourse" data-i18n="filter_lecture">🎓 Lecture</label>
+      <select id="filterCourse"><option value="" data-i18n="filter_all_courses">すべて</option></select>
     </div>
     <div class="filter-row">
-      <label for="filterStatus">🔍 Status</label>
+      <label for="filterStatus" data-i18n="filter_status">🔍 Status</label>
       <select id="filterStatus">
-        <option value="open" selected>未提出のみ</option>
-        <option value="all">全件</option>
-        <option value="done">提出済のみ</option>
+        <option value="open" selected data-i18n="filter_open">未提出のみ</option>
+        <option value="all" data-i18n="filter_all">全件</option>
+        <option value="done" data-i18n="filter_done">提出済のみ</option>
       </select>
     </div>
   </section>
@@ -1625,29 +1630,36 @@
 
   <section id="settingsHost" class="settings-panel">
     <div class="settings-header">
-      <h2 class="settings-title">⚙️ 設定</h2>
-      <button id="btnCloseSettings" class="btn settings-close-btn" title="閉じる" aria-label="閉じる">✕</button>
+      <h2 class="settings-title" data-i18n="settings_heading">⚙️ 設定</h2>
+      <button id="btnCloseSettings" class="btn settings-close-btn" data-i18n-title="close_settings" data-i18n-aria="close_settings">✕</button>
     </div>
     <div class="setting-row">
       <div class="setting-info">
-        <div class="setting-label">🔔 通知</div>
-        <div class="setting-desc">締切が近づくと通知します</div>
+        <div class="setting-label" data-i18n="setting_notify">🔔 通知</div>
+        <div class="setting-desc" data-i18n="setting_notify_desc">締切が近づくと通知します</div>
       </div>
       <button id="btnNotify" class="btn setting-btn">🔔</button>
     </div>
     <div class="setting-row">
       <div class="setting-info">
-        <div class="setting-label">⏰ 通知時刻</div>
-        <div class="setting-desc">毎日この時刻に通知を送信</div>
+        <div class="setting-label" data-i18n="setting_notify_time">⏰ 通知時刻</div>
+        <div class="setting-desc" data-i18n="setting_notify_time_desc">毎日この時刻に通知を送信</div>
       </div>
-      <button id="btnNotifyTime" class="btn setting-btn notify-time-btn" title="通知時刻を変更">⏰ <span id="notifyTimeLabel">09:00</span></button>
+      <button id="btnNotifyTime" class="btn setting-btn notify-time-btn" data-i18n-title="setting_notify_time_title">⏰ <span id="notifyTimeLabel">09:00</span></button>
     </div>
     <div class="setting-row">
       <div class="setting-info">
-        <div class="setting-label">🌙 テーマ</div>
-        <div class="setting-desc">ダーク/ライトモード切替</div>
+        <div class="setting-label" data-i18n="setting_theme">🌙 テーマ</div>
+        <div class="setting-desc" data-i18n="setting_theme_desc">ダーク/ライトモード切替</div>
       </div>
-      <button id="btnTheme" class="btn setting-btn" title="テーマ切り替え">🌙</button>
+      <button id="btnTheme" class="btn setting-btn" data-i18n-title="setting_theme_title">🌙</button>
+    </div>
+    <div class="setting-row">
+      <div class="setting-info">
+        <div class="setting-label" data-i18n="setting_lang">🌐 言語</div>
+        <div class="setting-desc" data-i18n="setting_lang_desc">表示言語を切り替え</div>
+      </div>
+      <button id="btnLang" class="btn setting-btn">日本語</button>
     </div>
   </section>
 </div>
@@ -1662,67 +1674,67 @@
 
 <div id="modalOverlay" class="modal-overlay" aria-hidden="true">
   <div class="modal" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
-    <h2 id="modalTitle">✨ 課題を追加</h2>
+    <h2 id="modalTitle" data-i18n="modal_add_title">✨ 課題を追加</h2>
     <form id="addForm" novalidate>
       <div class="field">
-        <label for="fCourse">🎓 講義名<span class="req">*</span></label>
-        <input id="fCourse" type="text" maxlength="40" autocomplete="off" placeholder="新しい講義名を入力..." />
+        <label for="fCourse"><span data-i18n="field_course">🎓 講義名</span><span class="req">*</span></label>
+        <input id="fCourse" type="text" maxlength="40" autocomplete="off" data-i18n-ph="ph_course" placeholder="新しい講義名を入力..." />
         <select id="fCourseSelect" class="course-select">
-          <option value="">既存から選択...</option>
+          <option value="" data-i18n="ph_existing">既存から選択...</option>
         </select>
       </div>
       <div class="field">
-        <label for="fTitle">📌 課題名<span class="req">*</span></label>
-        <input id="fTitle" type="text" maxlength="60" placeholder="新しい課題名を入力..." />
+        <label for="fTitle"><span data-i18n="field_title">📌 課題名</span><span class="req">*</span></label>
+        <input id="fTitle" type="text" maxlength="60" data-i18n-ph="ph_title" placeholder="新しい課題名を入力..." />
         <select id="fTitleSelect" class="course-select">
-          <option value="">既存から選択...</option>
+          <option value="" data-i18n="ph_existing">既存から選択...</option>
         </select>
       </div>
       <div class="field">
-        <label for="fType">🏷 種別<span class="req">*</span></label>
+        <label for="fType"><span data-i18n="field_type">🏷 種別</span><span class="req">*</span></label>
         <select id="fType">
-          <option value="report">📝 レポート</option>
-          <option value="problem">✏️ 問題演習</option>
-          <option value="memory">📖 暗記</option>
-          <option value="reading">📚 予習・読書</option>
-          <option value="lab">🔬 実習・実験</option>
-          <option value="presentation">🎤 発表・プレゼン</option>
-          <option value="quiz">✅ 小テスト</option>
-          <option value="exam">📊 試験対策</option>
-          <option value="group">👥 グループワーク</option>
-          <option value="other">📎 その他</option>
+          <option value="report" data-i18n-prefix="📝 " data-i18n="type_report">📝 レポート</option>
+          <option value="problem" data-i18n-prefix="✏️ " data-i18n="type_problem">✏️ 問題演習</option>
+          <option value="memory" data-i18n-prefix="📖 " data-i18n="type_memory">📖 暗記</option>
+          <option value="reading" data-i18n-prefix="📚 " data-i18n="type_reading">📚 予習・読書</option>
+          <option value="lab" data-i18n-prefix="🔬 " data-i18n="type_lab">🔬 実習・実験</option>
+          <option value="presentation" data-i18n-prefix="🎤 " data-i18n="type_presentation">🎤 発表・プレゼン</option>
+          <option value="quiz" data-i18n-prefix="✅ " data-i18n="type_quiz">✅ 小テスト</option>
+          <option value="exam" data-i18n-prefix="📊 " data-i18n="type_exam">📊 試験対策</option>
+          <option value="group" data-i18n-prefix="👥 " data-i18n="type_group">👥 グループワーク</option>
+          <option value="other" data-i18n-prefix="📎 " data-i18n="type_other">📎 その他</option>
         </select>
       </div>
       <div class="field">
-        <label for="fDesc">💬 詳細</label>
-        <textarea id="fDesc" maxlength="400" placeholder="任意"></textarea>
+        <label for="fDesc" data-i18n="field_desc">💬 詳細</label>
+        <textarea id="fDesc" maxlength="400" data-i18n-ph="ph_desc" placeholder="任意"></textarea>
       </div>
       <div class="field-row">
         <div class="field">
-          <label for="fStart">🚩 出題日<span class="req">*</span></label>
+          <label for="fStart"><span data-i18n="field_start">🚩 出題日</span><span class="req">*</span></label>
           <input id="fStart" type="date" />
         </div>
         <div class="field">
-          <label for="fEnd">🏁 締切日<span class="req">*</span></label>
+          <label for="fEnd"><span data-i18n="field_end">🏁 締切日</span><span class="req">*</span></label>
           <input id="fEnd" type="date" />
         </div>
       </div>
       <div class="field">
-        <label for="fRemindDays">🔔 通知タイミング</label>
+        <label for="fRemindDays" data-i18n="field_remind">🔔 通知タイミング</label>
         <select id="fRemindDays">
-          <option value="0">締切当日のみ</option>
-          <option value="1">前日 & 当日</option>
-          <option value="3" selected>3日前・前日・当日</option>
-          <option value="7">1週間前・3日前・前日・当日</option>
-          <option value="-1">通知なし</option>
+          <option value="0" data-i18n="remind_0">締切当日のみ</option>
+          <option value="1" data-i18n="remind_1">前日 & 当日</option>
+          <option value="3" selected data-i18n="remind_3">3日前・前日・当日</option>
+          <option value="7" data-i18n="remind_7">1週間前・3日前・前日・当日</option>
+          <option value="-1" data-i18n="remind_never">通知なし</option>
         </select>
       </div>
       <div class="field-error" id="formError"></div>
       <div class="modal-actions">
-        <button type="button" class="btn modal-done-btn" id="btnModalDone" style="display:none;">✓ 完了</button>
-        <button type="button" class="btn modal-del-btn" id="btnModalDelete" style="display:none;">× 削除</button>
-        <button type="button" class="btn" id="btnCancel">キャンセル</button>
-        <button type="submit" class="btn primary">💾 保存</button>
+        <button type="button" class="btn modal-done-btn" id="btnModalDone" style="display:none;" data-i18n="btn_done">✓ 完了</button>
+        <button type="button" class="btn modal-del-btn" id="btnModalDelete" style="display:none;" data-i18n="btn_delete">× 削除</button>
+        <button type="button" class="btn" id="btnCancel" data-i18n="btn_cancel">キャンセル</button>
+        <button type="submit" class="btn primary" data-i18n="btn_save">💾 保存</button>
       </div>
     </form>
   </div>
@@ -1735,6 +1747,7 @@
   'use strict';
 
   const STORAGE_KEY = 'kadai_tracker_v2';
+  const LANG_KEY = 'kadai_tracker_lang';
   const DAY_MS = 86400000;
 
   const TYPE_EMOJI = {
@@ -1742,6 +1755,215 @@
     lab: '🔬', presentation: '🎤', quiz: '✅', exam: '📊',
     group: '👥', other: '📎'
   };
+
+  const STRINGS = {
+    ja: {
+      app_title: '課題トラッカー',
+      open_settings: '設定',
+      close_settings: '閉じる',
+      add_task: '課題を追加',
+      filter_lecture: '🎓 講義',
+      filter_status: '🔍 状態',
+      filter_all_courses: 'すべて',
+      filter_open: '未提出のみ',
+      filter_all: '全件',
+      filter_done: '提出済のみ',
+      settings_heading: '⚙️ 設定',
+      setting_notify: '🔔 通知',
+      setting_notify_desc: '締切が近づくと通知します',
+      setting_notify_time: '⏰ 通知時刻',
+      setting_notify_time_desc: '毎日この時刻に通知を送信',
+      setting_notify_time_title: '通知時刻を変更',
+      setting_theme: '🌙 テーマ',
+      setting_theme_desc: 'ダーク/ライトモード切替',
+      setting_theme_title: 'テーマ切り替え',
+      setting_lang: '🌐 言語',
+      setting_lang_desc: '表示言語を切り替え',
+      modal_add_title: '✨ 課題を追加',
+      modal_edit_title: '✏️ 課題を編集',
+      field_course: '🎓 講義名',
+      field_title: '📌 課題名',
+      field_type: '🏷 種別',
+      field_desc: '💬 詳細',
+      field_start: '🚩 出題日',
+      field_end: '🏁 締切日',
+      field_remind: '🔔 通知タイミング',
+      ph_course: '新しい講義名を入力...',
+      ph_title: '新しい課題名を入力...',
+      ph_desc: '任意',
+      ph_existing: '既存から選択...',
+      remind_0: '締切当日のみ',
+      remind_1: '前日 & 当日',
+      remind_3: '3日前・前日・当日',
+      remind_7: '1週間前・3日前・前日・当日',
+      remind_never: '通知なし',
+      btn_done: '✓ 完了',
+      btn_delete: '× 削除',
+      btn_cancel: 'キャンセル',
+      btn_save: '💾 保存',
+      btn_toggle_undo: '↩️ 未完了に戻す',
+      btn_toggle_done: '✓ 完了',
+      type_report: 'レポート', type_problem: '問題演習', type_memory: '暗記', type_reading: '予習・読書',
+      type_lab: '実習・実験', type_presentation: '発表・プレゼン', type_quiz: '小テスト', type_exam: '試験対策',
+      type_group: 'グループワーク', type_other: 'その他',
+      today: '今日',
+      task_col: '課題',
+      empty_msg: '課題がありません',
+      empty_sub: '右下の「＋」から登録しよう',
+      cal_empty: 'この日に締切の課題はありません',
+      cal_prev: '前月',
+      cal_next: '翌月',
+      done_label: '✅ 完了',
+      overdue: (n) => `⚠️ ${n}日超過`,
+      due_today: '🔥 今日締切',
+      days_left: (n) => `残り${n}日`,
+      title_undone: '未完了に戻す',
+      title_done: '完了にする',
+      title_delete: '削除',
+      toast_added: '✨ 追加しました',
+      toast_updated: '💾 更新しました',
+      toast_deleted: '🗑 削除しました',
+      toast_done: (t) => `🎉 「${t}」を完了！`,
+      toast_undone: (t) => `↩️ 「${t}」を未完了に`,
+      toast_marked_done: '🎉 完了にしました',
+      toast_marked_undone: '↩️ 未完了に戻しました',
+      toast_save_failed: '保存に失敗しました',
+      toast_notify_on: '🔔 リマインダーON',
+      toast_notify_off: '🔕 リマインダーOFF',
+      toast_notify_time: (v) => `⏰ 通知時刻を ${v} に変更しました`,
+      confirm_delete: (t) => `「${t}」を削除しますか？`,
+      err_course: '⚠️ 講義名を入力してください',
+      err_title: '⚠️ 課題名を入力してください',
+      err_start: '⚠️ 出題日を入力してください',
+      err_end: '⚠️ 締切日を入力してください',
+      err_end_before_start: '⚠️ 締切日は出題日以降にしてください',
+      notif_today: (t) => `🔥 今日締切: ${t}`,
+      notif_future: (n, t) => `⏰ あと${n}日: ${t}`,
+      dow_short: ['日','月','火','水','木','金','土'],
+      year_month: (y, m) => `${y}年 ${m}月`,
+      cal_detail_header: (m, d, dow) => `${m}月${d}日(${dow}) 締切の課題`,
+      lang_name: '日本語',
+      lang_switch_to: 'English',
+      cal_today_btn: '今日'
+    },
+    en: {
+      app_title: 'Kadai Tracker',
+      open_settings: 'Settings',
+      close_settings: 'Close',
+      add_task: 'Add task',
+      filter_lecture: '🎓 Lecture',
+      filter_status: '🔍 Status',
+      filter_all_courses: 'All',
+      filter_open: 'Open only',
+      filter_all: 'All',
+      filter_done: 'Done only',
+      settings_heading: '⚙️ Settings',
+      setting_notify: '🔔 Notifications',
+      setting_notify_desc: 'Notify when deadlines approach',
+      setting_notify_time: '⏰ Notify time',
+      setting_notify_time_desc: 'Send notifications at this time daily',
+      setting_notify_time_title: 'Change notification time',
+      setting_theme: '🌙 Theme',
+      setting_theme_desc: 'Toggle dark / light mode',
+      setting_theme_title: 'Toggle theme',
+      setting_lang: '🌐 Language',
+      setting_lang_desc: 'Change display language',
+      modal_add_title: '✨ Add task',
+      modal_edit_title: '✏️ Edit task',
+      field_course: '🎓 Course',
+      field_title: '📌 Task name',
+      field_type: '🏷 Type',
+      field_desc: '💬 Details',
+      field_start: '🚩 Start date',
+      field_end: '🏁 Due date',
+      field_remind: '🔔 Reminder timing',
+      ph_course: 'Enter course name...',
+      ph_title: 'Enter task name...',
+      ph_desc: 'Optional',
+      ph_existing: 'Pick an existing one...',
+      remind_0: 'Due date only',
+      remind_1: '1 day before & due date',
+      remind_3: '3 / 1 day before & due date',
+      remind_7: '1 wk / 3 / 1 day before & due',
+      remind_never: 'No reminders',
+      btn_done: '✓ Done',
+      btn_delete: '× Delete',
+      btn_cancel: 'Cancel',
+      btn_save: '💾 Save',
+      btn_toggle_undo: '↩️ Mark undone',
+      btn_toggle_done: '✓ Mark done',
+      type_report: 'Report', type_problem: 'Problem Set', type_memory: 'Memorization', type_reading: 'Reading',
+      type_lab: 'Lab', type_presentation: 'Presentation', type_quiz: 'Quiz', type_exam: 'Exam Prep',
+      type_group: 'Group Work', type_other: 'Other',
+      today: 'Today',
+      task_col: 'Task',
+      empty_msg: 'No tasks yet',
+      empty_sub: 'Tap the + button to add one',
+      cal_empty: 'No tasks due on this day',
+      cal_prev: 'Previous month',
+      cal_next: 'Next month',
+      done_label: '✅ Done',
+      overdue: (n) => `⚠️ ${n} day${n !== 1 ? 's' : ''} overdue`,
+      due_today: '🔥 Due today',
+      days_left: (n) => `${n} day${n !== 1 ? 's' : ''} left`,
+      title_undone: 'Mark undone',
+      title_done: 'Mark done',
+      title_delete: 'Delete',
+      toast_added: '✨ Added',
+      toast_updated: '💾 Updated',
+      toast_deleted: '🗑 Deleted',
+      toast_done: (t) => `🎉 Completed "${t}"!`,
+      toast_undone: (t) => `↩️ Reopened "${t}"`,
+      toast_marked_done: '🎉 Marked as done',
+      toast_marked_undone: '↩️ Marked as undone',
+      toast_save_failed: 'Save failed',
+      toast_notify_on: '🔔 Reminders ON',
+      toast_notify_off: '🔕 Reminders OFF',
+      toast_notify_time: (v) => `⏰ Notification time changed to ${v}`,
+      confirm_delete: (t) => `Delete "${t}"?`,
+      err_course: '⚠️ Please enter a course name',
+      err_title: '⚠️ Please enter a task name',
+      err_start: '⚠️ Please enter the start date',
+      err_end: '⚠️ Please enter the due date',
+      err_end_before_start: '⚠️ Due date must be on or after the start date',
+      notif_today: (t) => `🔥 Due today: ${t}`,
+      notif_future: (n, t) => `⏰ ${n} day${n !== 1 ? 's' : ''} left: ${t}`,
+      dow_short: ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'],
+      year_month: (y, m) => `${['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'][m-1]} ${y}`,
+      cal_detail_header: (m, d, dow) => `Tasks due ${['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'][m-1]} ${d} (${dow})`,
+      lang_name: 'English',
+      lang_switch_to: '日本語',
+      cal_today_btn: 'Today'
+    }
+  };
+
+  let currentLang = localStorage.getItem(LANG_KEY) || 'ja';
+  function t(key, ...args) {
+    const v = (STRINGS[currentLang] || STRINGS.ja)[key];
+    if (typeof v === 'function') return v(...args);
+    return v != null ? v : key;
+  }
+  function applyStaticI18n() {
+    document.documentElement.lang = currentLang;
+    document.title = t('app_title');
+    document.querySelectorAll('[data-i18n]').forEach(el => {
+      const key = el.getAttribute('data-i18n');
+      const prefix = el.getAttribute('data-i18n-prefix') || '';
+      el.textContent = prefix + t(key);
+    });
+    document.querySelectorAll('[data-i18n-title]').forEach(el => {
+      el.title = t(el.getAttribute('data-i18n-title'));
+    });
+    document.querySelectorAll('[data-i18n-aria]').forEach(el => {
+      el.setAttribute('aria-label', t(el.getAttribute('data-i18n-aria')));
+    });
+    document.querySelectorAll('[data-i18n-ph]').forEach(el => {
+      el.placeholder = t(el.getAttribute('data-i18n-ph'));
+    });
+    const langBtn = document.getElementById('btnLang');
+    if (langBtn) langBtn.textContent = STRINGS[currentLang].lang_name;
+    document.documentElement.style.setProperty('--today-label', `"${t('today')}"`);
+  }
 
   const COMMON_COURSES = [
     '物理学', '化学', '生化学', '生物学',
@@ -1777,11 +1999,8 @@
     if (/組織/.test(s)) return '🔬';
     return '🎓';
   }
-  const TYPE_LABEL = {
-    report: 'レポート', problem: '問題演習', memory: '暗記', reading: '予習・読書',
-    lab: '実習・実験', presentation: '発表・プレゼン', quiz: '小テスト', exam: '試験対策',
-    group: 'グループワーク', other: 'その他'
-  };
+  function typeLabel(key) { return t('type_' + key) || key; }
+  const TYPE_LABEL = new Proxy({}, { get: (_, k) => typeLabel(k) });
 
   const SAMPLE = [
     {id:1,course:"細胞生物学",title:"第2回レポート",type:"report",desc:"細胞周期とチェックポイントについてA4 2枚",start:"2026-04-07",end:"2026-04-28",done:false,remindDays:3},
@@ -1834,7 +2053,7 @@
         lastNotified: state.lastNotified
       }));
     } catch (e) {
-      toast('保存に失敗しました', 'error');
+      toast(t('toast_save_failed'), 'error');
     }
   }
 
@@ -1906,7 +2125,7 @@
       .filter(c => !hidden.has(c));
     const sel = $('filterCourse');
     const prev = sel.value;
-    sel.innerHTML = '<option value="">すべて</option>' +
+    sel.innerHTML = `<option value="">${t('filter_all_courses')}</option>` +
       courses.map(c => `<option value="${escapeHtml(c)}">${escapeHtml(c)}</option>`).join('');
     sel.value = courses.includes(prev) ? prev : '';
     filterCourse = sel.value;
@@ -1935,7 +2154,7 @@
   function renderGantt() {
     const items = sortedByDeadline(filteredItems());
     if (items.length === 0) {
-      host.innerHTML = emptyHtml('課題がありません', null, '右上の「＋」から登録しよう');
+      host.innerHTML = emptyHtml(t('empty_msg'), null, t('empty_sub'));
       return;
     }
     const today = parseDate(todayStr());
@@ -1964,7 +2183,7 @@
 
     // Day-level tick labels so users can see the near-future dates at a glance.
     const dayStep = 1;
-    const DOW = ['日','月','火','水','木','金','土'];
+    const DOW = t('dow_short');
     const days = [];
     for (let i = 0; i <= totalDays; i += dayStep) {
       const d = new Date(minDate);
@@ -1978,7 +2197,7 @@
       <div class="gantt-wrap">
         <div class="gantt">
           <div class="gantt-header">
-            <div class="title-col">📋 課題</div>
+            <div class="title-col">${t('task_col')}</div>
             <div class="timeline-col">
               ${months.map(m => `<div class="gantt-month" style="left:${m.pct}%">${m.label}</div>`).join('')}
               ${days.map(d => `<div class="gantt-day-tick${d.dowIdx === 0 ? ' sun' : d.dowIdx === 6 ? ' sat' : ''}" style="left:${d.pct}%"><span class="day-num">${d.label}</span><span class="day-dow">${d.dow}</span></div>`).join('')}
@@ -2070,10 +2289,11 @@
     const lastRow = cells.slice(35, 42);
     if (lastRow.every(c => c.isOther)) totalCells = 35;
 
-    const title = `${year}年 ${month + 1}月`;
+    const title = t('year_month', year, month + 1);
     const selectedTasks = tasksOnDay(calSelectedDate).sort((a, b) => (a.done ? 1 : 0) - (b.done ? 1 : 0));
     const selDate = parseDate(calSelectedDate);
-    const selDow = ['日','月','火','水','木','金','土'][selDate.getDay()];
+    const dowArr = t('dow_short');
+    const selDow = dowArr[selDate.getDay()];
 
     // Chunk cells into rows of 7 for the table body.
     const rows = [];
@@ -2082,15 +2302,15 @@
     const html = `
       <div class="calendar-wrap">
         <div class="calendar-header">
-          <button class="cal-nav" id="calPrev" aria-label="前月">‹</button>
+          <button class="cal-nav" id="calPrev" aria-label="${t('cal_prev')}">‹</button>
           <div class="cal-title">${title}</div>
-          <button class="cal-nav" id="calNext" aria-label="翌月">›</button>
-          <button class="btn cal-today-btn" id="calToday">今日</button>
+          <button class="cal-nav" id="calNext" aria-label="${t('cal_next')}">›</button>
+          <button class="btn cal-today-btn" id="calToday">${t('cal_today_btn')}</button>
         </div>
         <table class="cal-table">
           <thead>
             <tr>
-              <th class="dow-sun">日</th><th>月</th><th>火</th><th>水</th><th>木</th><th>金</th><th class="dow-sat">土</th>
+              <th class="dow-sun">${dowArr[0]}</th><th>${dowArr[1]}</th><th>${dowArr[2]}</th><th>${dowArr[3]}</th><th>${dowArr[4]}</th><th>${dowArr[5]}</th><th class="dow-sat">${dowArr[6]}</th>
             </tr>
           </thead>
           <tbody>
@@ -2098,9 +2318,9 @@
           </tbody>
         </table>
         <div class="cal-detail">
-          <div class="cal-detail-header">${selDate.getMonth()+1}月${selDate.getDate()}日(${selDow}) 締切の課題</div>
+          <div class="cal-detail-header">${t('cal_detail_header', selDate.getMonth()+1, selDate.getDate(), selDow)}</div>
           ${selectedTasks.length === 0
-            ? `<div class="cal-detail-empty">この日に締切の課題はありません</div>`
+            ? `<div class="cal-detail-empty">${t('cal_empty')}</div>`
             : selectedTasks.map(it => calTaskHtml(it)).join('')}
         </div>
       </div>
@@ -2149,26 +2369,26 @@
   function calTaskHtml(it) {
     const s = it.done ? 'done' : statusOf(it);
     const emoji = TYPE_EMOJI[it.type] || '📎';
-    const typeLabel = TYPE_LABEL[it.type] || 'その他';
+    const typeLbl = TYPE_LABEL[it.type] || t('type_other');
     const left = daysLeft(it);
     let leftText;
-    if (it.done) leftText = '✅ 完了';
-    else if (left < 0) leftText = `⚠️ ${Math.abs(left)}日超過`;
-    else if (left === 0) leftText = '🔥 今日締切';
-    else leftText = `残り${left}日`;
+    if (it.done) leftText = t('done_label');
+    else if (left < 0) leftText = t('overdue', Math.abs(left));
+    else if (left === 0) leftText = t('due_today');
+    else leftText = t('days_left', left);
     return `
       <div class="cal-task ${s}" data-id="${it.id}" data-action="detail" style="cursor:pointer;">
         <div class="cal-task-body">
           <div class="cal-task-course">🎓 ${escapeHtml(it.course)}</div>
           <div class="cal-task-title">${escapeHtml(it.title)}</div>
           <div class="cal-task-meta">
-            <span class="type-badge ${it.type}">${emoji} ${typeLabel}</span>
+            <span class="type-badge ${it.type}">${emoji} ${typeLbl}</span>
             &nbsp;${leftText}
           </div>
         </div>
         <div class="cal-task-actions">
-          <button class="icon-btn done-btn ${it.done ? 'active' : ''}" data-action="toggle" data-id="${it.id}" title="${it.done ? '未完了に戻す' : '完了にする'}">✓</button>
-          <button class="icon-btn del-btn" data-action="del" data-id="${it.id}" title="削除">×</button>
+          <button class="icon-btn done-btn ${it.done ? 'active' : ''}" data-action="toggle" data-id="${it.id}" title="${it.done ? t('title_undone') : t('title_done')}">✓</button>
+          <button class="icon-btn del-btn" data-action="del" data-id="${it.id}" data-i18n-title="title_delete" title="${t('title_delete')}">×</button>
         </div>
       </div>
     `;
@@ -2202,17 +2422,17 @@
     }
     render();
     syncNativeNotifications();
-    toast(it.done ? `🎉 「${it.title}」を完了！` : `↩️ 「${it.title}」を未完了に`, it.done ? 'success' : 'warn');
+    toast(it.done ? t('toast_done', it.title) : t('toast_undone', it.title), it.done ? 'success' : 'warn');
   }
   function deleteItem(id) {
     const it = state.items.find(x => x.id === id);
     if (!it) return;
-    if (!confirm(`「${it.title}」を削除しますか？`)) return;
+    if (!confirm(t('confirm_delete', it.title))) return;
     state.items = state.items.filter(x => x.id !== id);
     saveState();
     render();
     syncNativeNotifications();
-    toast('🗑 削除しました', 'warn');
+    toast(t('toast_deleted'), 'warn');
   }
   function addItem(data) {
     const maxId = state.items.reduce((m, x) => Math.max(m, x.id), 0);
@@ -2220,7 +2440,7 @@
     saveState();
     render();
     syncNativeNotifications();
-    toast('✨ 追加しました', 'success');
+    toast(t('toast_added'), 'success');
   }
 
   // ===== Confetti =====
@@ -2260,7 +2480,7 @@
 
     const sel = $('fCourseSelect');
     if (sel) {
-      sel.innerHTML = '<option value="">既存から選択...</option>' +
+      sel.innerHTML = `<option value="">${t('ph_existing')}</option>` +
         merged.map(c => `<option value="${escapeHtml(c)}">${escapeHtml(c)}</option>`).join('');
     }
   }
@@ -2274,7 +2494,7 @@
     $('fStart').value = todayStr();
     $('fRemindDays').value = '3';
     $('formError').textContent = '';
-    $('modalTitle').textContent = '✨ 課題を追加';
+    $('modalTitle').textContent = t('modal_add_title');
     renderCourseChips();
     refreshTitleSelect();
     $('btnModalDone').style.display = 'none';
@@ -2297,14 +2517,14 @@
     $('fEnd').value = it.end || '';
     $('fRemindDays').value = String(it.remindDays ?? 3);
     $('formError').textContent = '';
-    $('modalTitle').textContent = '✏️ 課題を編集';
+    $('modalTitle').textContent = t('modal_edit_title');
     renderCourseChips();
     refreshTitleSelect();
     // Show done/delete buttons, update done label to reflect state
     const doneBtn = $('btnModalDone');
     doneBtn.style.display = '';
     $('btnModalDelete').style.display = '';
-    doneBtn.textContent = it.done ? '↩️ 未完了に戻す' : '✓ 完了';
+    doneBtn.textContent = it.done ? t('btn_toggle_undo') : t('btn_toggle_done');
     doneBtn.classList.toggle('active-done', !!it.done);
     $('modalOverlay').classList.add('open');
     $('modalOverlay').setAttribute('aria-hidden', 'false');
@@ -2331,8 +2551,8 @@
     const sel = $('fTitleSelect');
     if (!sel) return;
     const titles = Array.from(new Set(state.items.map(i => i.title).filter(Boolean))).sort();
-    sel.innerHTML = '<option value="">既存から選択...</option>' +
-      titles.map(t => `<option value="${escapeHtml(t)}">${escapeHtml(t)}</option>`).join('');
+    sel.innerHTML = `<option value="">${t('ph_existing')}</option>` +
+      titles.map(tt => `<option value="${escapeHtml(tt)}">${escapeHtml(tt)}</option>`).join('');
   }
   $('fTitleSelect').addEventListener('change', (e) => {
     const v = e.target.value;
@@ -2351,19 +2571,19 @@
     saveState();
     render();
     syncNativeNotifications();
-    toast(it.done ? '🎉 完了にしました' : '↩️ 未完了に戻しました', it.done ? 'success' : 'warn');
+    toast(it.done ? t('toast_marked_done') : t('toast_marked_undone'), it.done ? 'success' : 'warn');
     closeModal();
   });
   $('btnModalDelete').addEventListener('click', () => {
     if (editingId === null) return;
     const it = state.items.find(x => x.id === editingId);
     if (!it) return;
-    if (!confirm(`「${it.title}」を削除しますか？`)) return;
+    if (!confirm(t('confirm_delete', it.title))) return;
     state.items = state.items.filter(x => x.id !== editingId);
     saveState();
     render();
     syncNativeNotifications();
-    toast('🗑 削除しました', 'warn');
+    toast(t('toast_deleted'), 'warn');
     closeModal();
   });
   $('modalOverlay').addEventListener('click', (e) => {
@@ -2384,18 +2604,18 @@
     const remindDays = Number($('fRemindDays').value);
     const err = $('formError');
     err.textContent = '';
-    if (!course) return (err.textContent = '⚠️ 講義名を入力してください');
-    if (!title) return (err.textContent = '⚠️ 課題名を入力してください');
-    if (!start) return (err.textContent = '⚠️ 出題日を入力してください');
-    if (!end) return (err.textContent = '⚠️ 締切日を入力してください');
-    if (end < start) return (err.textContent = '⚠️ 締切日は出題日以降にしてください');
+    if (!course) return (err.textContent = t('err_course'));
+    if (!title) return (err.textContent = t('err_title'));
+    if (!start) return (err.textContent = t('err_start'));
+    if (!end) return (err.textContent = t('err_end'));
+    if (end < start) return (err.textContent = t('err_end_before_start'));
     if (editingId !== null) {
       const it = state.items.find(x => x.id === editingId);
       if (it) Object.assign(it, { course, title, type, desc, start, end, remindDays });
       saveState();
       render();
       syncNativeNotifications();
-      toast('💾 更新しました', 'success');
+      toast(t('toast_updated'), 'success');
       editingId = null;
     } else {
       addItem({ course, title, type, desc, start, end, remindDays });
@@ -2428,6 +2648,12 @@
   });
   $('btnCloseSettings').addEventListener('click', () => {
     switchView(previousView || 'gantt');
+  });
+  $('btnLang').addEventListener('click', () => {
+    currentLang = currentLang === 'ja' ? 'en' : 'ja';
+    localStorage.setItem(LANG_KEY, currentLang);
+    applyStaticI18n();
+    render();
   });
 
   $('filterCourse').addEventListener('change', (e) => { filterCourse = e.target.value; render(); });
@@ -2501,7 +2727,7 @@
         if (when.getTime() <= now) return;
         out.push({
           id: `${it.id}-${off}`,
-          title: off === 0 ? `🔥 今日締切: ${it.title}` : `⏰ あと${off}日: ${it.title}`,
+          title: off === 0 ? t('notif_today', it.title) : t('notif_future', off, it.title),
           body: `${it.course} — ${TYPE_LABEL[it.type] || ''}`,
           when: when.toISOString()
         });
@@ -2543,7 +2769,7 @@
     saveState();
     updateNotifyBtn();
     syncNativeNotifications();
-    toast(`⏰ 通知時刻を ${v} に変更しました`, 'success');
+    toast(t('toast_notify_time', v), 'success');
   });
 
   $('btnNotify').addEventListener('click', async () => {
@@ -2556,11 +2782,11 @@
     updateNotifyBtn();
     render();
     if (notifyEnabled) {
-      toast('🔔 リマインダーON', 'success');
+      toast(t('toast_notify_on'), 'success');
       runScheduledNotifications();
       syncNativeNotifications();
     } else {
-      toast('🔕 リマインダーOFF', 'warn');
+      toast(t('toast_notify_off'), 'warn');
       syncNativeNotifications();
     }
   });
@@ -2598,7 +2824,7 @@
     });
     saveState();
     triggerList.forEach(({ item, offset }) => {
-      const title = offset === 0 ? `🔥 今日締切: ${item.title}` : `⏰ あと${offset}日: ${item.title}`;
+      const title = offset === 0 ? t('notif_today', item.title) : t('notif_future', offset, item.title);
       try {
         new Notification(title, { body: `${item.course} — ${TYPE_LABEL[item.type] || ''}` });
       } catch (e) { /* noop */ }
@@ -2668,6 +2894,7 @@
     if (s) s.classList.add('done');
   }, 2400);
 
+  applyStaticI18n();
   updateNotifyBtn();
   render();
   handleUrlAction();
