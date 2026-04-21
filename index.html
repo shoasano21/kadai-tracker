@@ -387,8 +387,9 @@
     white-space: nowrap;
   }
   .stats-bar .stat-emoji {
-    font-size: 20px;
+    font-size: 22px;
     line-height: 1;
+    margin-left: 4px;
   }
   .stats-bar .stat.urgent.has-items .stat-emoji { animation: pulse 1.4s ease-in-out infinite; }
 
@@ -1657,10 +1658,12 @@
     <div class="stat urgent" id="cardUrgent">
       <span class="stat-value" id="sumUrgent">0</span><span class="stat-unit" data-i18n="stat_unit">個</span>
       <span class="stat-label" data-i18n="stat_urgent">Urgent</span>
+      <span class="stat-emoji">🔥</span>
     </div>
     <div class="stat ok">
       <span class="stat-value" id="sumOk">0</span><span class="stat-unit" data-i18n="stat_unit">個</span>
       <span class="stat-label" data-i18n="stat_coming_up">Coming Up</span>
+      <span class="stat-emoji">🌱</span>
     </div>
   </section>
   <button id="btnAddHeader" class="header-add-btn" data-i18n-title="add_task" data-i18n-aria="add_task">＋</button>
