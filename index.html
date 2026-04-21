@@ -402,7 +402,7 @@
   /* Summary */
   .summary {
     display: grid;
-    grid-template-columns: repeat(3, 1fr);
+    grid-template-columns: repeat(2, 1fr);
     gap: 10px;
     margin-bottom: 14px;
   }
@@ -707,7 +707,13 @@
     text-overflow: ellipsis;
   }
   .gantt-row.done .task-label .task-title { text-decoration: line-through; color: var(--done); }
-  .gantt-row.done .bar { background: var(--done) !important; opacity: 0.55; }
+  .gantt-row.done .bar {
+    background: transparent !important;
+    height: 3px;
+    box-shadow: none;
+    border-top: 2px solid var(--done);
+    opacity: 1;
+  }
 
   .timeline-col { position: relative; height: 100%; min-height: 48px; }
   .bar {
@@ -738,7 +744,13 @@
   .bar.soon { background: var(--ok); }
   .bar.ok { background: var(--ok); }
   .bar.past { background: var(--urgent); }
-  .bar.done { background: var(--done); opacity: 0.6; }
+  .bar.done {
+    background: transparent;
+    height: 3px;
+    box-shadow: none;
+    border-top: 2px solid var(--done);
+    color: var(--done);
+  }
 
   .today-line {
     position: absolute;
@@ -1468,7 +1480,7 @@
 
   @media (max-width: 700px) {
     .app { padding: 16px 12px calc(110px + env(safe-area-inset-bottom)); }
-    .summary { grid-template-columns: repeat(3, 1fr); gap: 6px; }
+    .summary { grid-template-columns: repeat(2, 1fr); gap: 8px; }
     .summary .value { font-size: 26px; }
     .summary .card { padding: 14px 10px 14px 12px; min-height: 68px; }
     .summary .label { font-size: 13px; }
@@ -1537,10 +1549,6 @@
     <div class="card ok">
       <div class="value" id="sumOk">0</div>
       <div class="label">余裕あり<span class="label-emoji">🌱</span></div>
-    </div>
-    <div class="card done">
-      <div class="value" id="sumDone">0</div>
-      <div class="label">済み<span class="label-emoji">🎉</span></div>
     </div>
   </section>
 
@@ -1807,7 +1815,6 @@
     });
     $('sumUrgent').textContent = urgent;
     $('sumOk').textContent = ok;
-    $('sumDone').textContent = done;
     const uc = $('cardUrgent');
     if (urgent > 0) uc.classList.add('has-items'); else uc.classList.remove('has-items');
   }
