@@ -1917,7 +1917,7 @@
               ${months.map(m => `<div class="gantt-month" style="left:${m.pct}%">${m.label}</div>`).join('')}
               ${days.map(d => `<div class="gantt-day-tick${d.dowIdx === 0 ? ' sun' : d.dowIdx === 6 ? ' sat' : ''}" style="left:${d.pct}%"><span class="day-num">${d.label}</span><span class="day-dow">${d.dow}</span></div>`).join('')}
             </div>
-            <div class="actions-col">操作</div>
+            <div class="actions-col"></div>
           </div>
           ${items.map((it, i) => ganttRowHtml(it, pctOfDate, i)).join('')}
           <div class="today-line" style="left:calc(var(--title-w) + (100% - var(--title-w) - var(--action-w)) * ${todayPct / 100});"></div>
