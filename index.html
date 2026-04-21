@@ -307,14 +307,15 @@
     line-height: 1.35;
   }
   .settings-icon-btn {
-    position: absolute;
-    top: 12px;
-    right: 12px;
-    width: 56px;
-    height: 56px;
+    position: fixed;
+    right: calc(20px + env(safe-area-inset-right));
+    bottom: calc(176px + env(safe-area-inset-bottom));
+    z-index: 90;
+    width: 60px;
+    height: 60px;
     border-radius: 50%;
     border: none;
-    background: var(--panel-solid);
+    background: #fff;
     font-size: 28px;
     line-height: 1;
     display: inline-flex;
@@ -322,17 +323,16 @@
     justify-content: center;
     padding: 0;
     cursor: pointer;
-    box-shadow: 0 2px 6px rgba(0,0,0,0.08), 0 8px 20px -6px rgba(0,0,0,0.18);
-    transition: transform .15s, box-shadow .15s;
-    z-index: 2;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.1), 0 14px 32px -6px rgba(0,0,0,0.22);
+    transition: transform .2s ease, box-shadow .2s ease;
   }
   .settings-icon-btn:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 4px 10px rgba(0,0,0,0.1), 0 12px 28px -6px rgba(0,0,0,0.22);
+    transform: translateY(-3px);
+    box-shadow: 0 6px 14px rgba(0,0,0,0.12), 0 18px 42px -6px rgba(0,0,0,0.28);
   }
   .settings-icon-btn:active {
-    transform: translateY(0) scale(0.96);
-    box-shadow: 0 1px 4px rgba(0,0,0,0.08), 0 4px 12px -4px rgba(0,0,0,0.15);
+    transform: translateY(0) scale(0.95);
+    box-shadow: 0 2px 6px rgba(0,0,0,0.1), 0 8px 18px -4px rgba(0,0,0,0.2);
   }
   .settings-icon-btn:active { transform: scale(0.94); }
 
@@ -450,6 +450,7 @@
   body[data-view="settings"] .stats-bar,
   body[data-view="settings"] .filter-bar,
   body[data-view="settings"] #viewHost,
+  body[data-view="settings"] .settings-icon-btn,
   body[data-view="settings"] .header-add-btn { display: none; }
   body[data-view="settings"] #settingsHost { display: block; }
 
