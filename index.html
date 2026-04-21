@@ -346,8 +346,17 @@
     line-height: 1;
     min-width: 20px;
   }
-  .stats-bar .stat.urgent .stat-value { color: var(--urgent); }
-  .stats-bar .stat.ok .stat-value { color: var(--ok); }
+  .stats-bar .stat.urgent .stat-value,
+  .stats-bar .stat.urgent .stat-unit { color: var(--urgent); }
+  .stats-bar .stat.ok .stat-value,
+  .stats-bar .stat.ok .stat-unit { color: var(--ok); }
+  .stats-bar .stat-unit {
+    font-size: 14px;
+    font-weight: 700;
+    margin-left: 1px;
+    line-height: 1;
+  }
+  .stats-bar .stat-unit:empty { display: none; }
   .stats-bar .stat-label {
     font-size: 22px;
     font-weight: 800;
@@ -1613,11 +1622,11 @@
   </header>
   <section class="stats-bar">
     <div class="stat urgent" id="cardUrgent">
-      <span class="stat-value" id="sumUrgent">0</span>
+      <span class="stat-value" id="sumUrgent">0</span><span class="stat-unit" data-i18n="stat_unit">個</span>
       <span class="stat-label" data-i18n="stat_urgent">Urgent</span>
     </div>
     <div class="stat ok">
-      <span class="stat-value" id="sumOk">0</span>
+      <span class="stat-value" id="sumOk">0</span><span class="stat-unit" data-i18n="stat_unit">個</span>
       <span class="stat-label" data-i18n="stat_coming_up">Coming Up</span>
     </div>
   </section>
@@ -1867,6 +1876,7 @@
       cal_today_btn: '今日',
       stat_urgent: '緊急',
       stat_coming_up: '近日',
+      stat_unit: '個',
       tab_timeline: 'タイムライン',
       tab_calendar: 'カレンダー',
       taglines: [
@@ -1980,6 +1990,7 @@
       cal_today_btn: 'Today',
       stat_urgent: 'Urgent',
       stat_coming_up: 'Coming Up',
+      stat_unit: '',
       tab_timeline: 'Timeline',
       tab_calendar: 'Calendar',
       taglines: [
