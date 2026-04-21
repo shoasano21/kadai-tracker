@@ -320,25 +320,22 @@
   .settings-icon-btn:active { transform: scale(0.94); }
 
   .stats-bar {
-    display: flex;
-    gap: 24px;
-    flex-wrap: nowrap;
-    justify-content: flex-start;
-    align-items: center;
-    padding: 14px 18px;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
     margin-bottom: 16px;
+  }
+  .stats-bar .stat {
+    display: flex;
+    align-items: baseline;
+    gap: 10px;
+    padding: 14px 16px;
     background: var(--panel);
     backdrop-filter: blur(18px);
     -webkit-backdrop-filter: blur(18px);
     border: 1px solid var(--border);
     border-radius: 18px;
     box-shadow: var(--shadow);
-  }
-  .stats-bar .stat {
-    display: inline-flex;
-    align-items: baseline;
-    gap: 8px;
-    padding: 2px;
   }
   .stats-bar .stat-value {
     font-size: 26px;
