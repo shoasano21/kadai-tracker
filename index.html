@@ -238,13 +238,13 @@
     width: 60px;
     height: 60px;
     border-radius: 50%;
-    background: #111;
+    background: #fff;
     color: transparent;
-    border: none;
+    border: 1.5px solid #111;
     padding: 0;
     cursor: pointer;
     font-size: 0;
-    box-shadow: 0 8px 20px -4px rgba(0,0,0,0.35);
+    box-shadow: 0 8px 20px -4px rgba(0,0,0,0.2);
     transition: transform .15s ease, background .15s ease, box-shadow .15s ease;
   }
   .header-add-btn::before,
@@ -255,18 +255,18 @@
     top: 50%;
     width: 22px;
     height: 2px;
-    background: #fff;
+    background: #111;
     border-radius: 2px;
     transform: translate(-50%, -50%);
   }
   .header-add-btn::after { transform: translate(-50%, -50%) rotate(90deg); }
   .header-add-btn:hover {
-    background: #000;
-    box-shadow: 0 10px 24px -4px rgba(0,0,0,0.45);
+    background: #f4f4f4;
+    box-shadow: 0 10px 24px -4px rgba(0,0,0,0.28);
   }
   .header-add-btn:active {
     transform: scale(0.94);
-    box-shadow: 0 4px 12px -4px rgba(0,0,0,0.35);
+    box-shadow: 0 4px 12px -4px rgba(0,0,0,0.2);
   }
   header.topbar h1 {
     margin: 0;
