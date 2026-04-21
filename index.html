@@ -1728,15 +1728,10 @@
           </select>
         </div>
       </div>
-      <div class="field">
-        <label for="fTitle"><span data-i18n="field_title">📌 課題名</span><span class="req">*</span></label>
-        <div class="input-split">
-          <input id="fTitle" type="text" maxlength="60" data-i18n-ph="ph_title" placeholder="新しい課題名を入力..." />
-          <select id="fTitleSelect" class="course-select">
-            <option value="" data-i18n="ph_existing">既存から選択...</option>
-          </select>
-        </div>
-      </div>
+      <input id="fTitle" type="hidden" />
+      <select id="fTitleSelect" class="course-select" style="display:none;">
+        <option value=""></option>
+      </select>
       <div class="field-row">
         <div class="field">
           <label for="fType"><span data-i18n="field_type">🏷 種別</span><span class="req">*</span></label>
@@ -2718,7 +2713,6 @@
   $('addForm').addEventListener('submit', (e) => {
     e.preventDefault();
     const course = $('fCourse').value.trim();
-    const title = $('fTitle').value.trim();
     const type = $('fType').value;
     const desc = $('fDesc').value.trim();
     const start = $('fStart').value;
@@ -2727,13 +2721,16 @@
     const err = $('formError');
     err.textContent = '';
     if (!course) return (err.textContent = t('err_course'));
-    if (!title) return (err.textContent = t('err_title'));
     if (!start) return (err.textContent = t('err_start'));
     if (!end) return (err.textContent = t('err_end'));
+    const title = (desc || t('type_' + type) || course).slice(0, 60);
     if (end < start) return (err.textContent = t('err_end_before_start'));
     if (editingId !== null) {
       const it = state.items.find(x => x.id === editingId);
-      if (it) Object.assign(it, { course, title, type, desc, start, end, remindDays });
+      if (it) {
+        const keptTitle = it.title && !desc ? it.title : title;
+        Object.assign(it, { course, title: keptTitle, type, desc, start, end, remindDays });
+      }
       saveState();
       render();
       syncNativeNotifications();
