@@ -2297,7 +2297,11 @@
       btn.classList.add('active');
       currentView = btn.dataset.view;
       render();
-      window.scrollTo({ top: 0, behavior: 'smooth' });
+      requestAnimationFrame(() => {
+        try { window.scrollTo({ top: 0, left: 0, behavior: 'smooth' }); } catch (e) { window.scrollTo(0, 0); }
+        document.documentElement.scrollTop = 0;
+        document.body.scrollTop = 0;
+      });
     });
   });
 
