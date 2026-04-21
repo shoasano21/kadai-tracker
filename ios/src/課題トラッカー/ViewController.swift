@@ -41,6 +41,8 @@ class ViewController: UIViewController, WKNavigationDelegate, UIDocumentInteract
         initWebView()
         initToolbarView()
         loadRootUrl()
+        // Hide the native loading screen — the HTML has its own splash.
+        loadingView.isHidden = true
     
         NotificationCenter.default.addObserver(self, selector: #selector(self.keyboardWillHide(_:)), name: UIResponder.keyboardWillHideNotification , object: nil)
         
