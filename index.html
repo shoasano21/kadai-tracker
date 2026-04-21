@@ -1353,6 +1353,8 @@
   .course-select {
     margin-top: 6px;
   }
+  .input-split { display: flex; gap: 10px; }
+  .input-split > input, .input-split > select { flex: 1; min-width: 0; margin-top: 0; }
   .chip-suggestions {
     display: flex;
     flex-wrap: nowrap;
@@ -1681,17 +1683,21 @@
     <form id="addForm" novalidate>
       <div class="field">
         <label for="fCourse"><span data-i18n="field_course">🎓 講義名</span><span class="req">*</span></label>
-        <input id="fCourse" type="text" maxlength="40" autocomplete="off" data-i18n-ph="ph_course" placeholder="新しい講義名を入力..." />
-        <select id="fCourseSelect" class="course-select">
-          <option value="" data-i18n="ph_existing">既存から選択...</option>
-        </select>
+        <div class="input-split">
+          <input id="fCourse" type="text" maxlength="40" autocomplete="off" data-i18n-ph="ph_course" placeholder="新しい講義名を入力..." />
+          <select id="fCourseSelect" class="course-select">
+            <option value="" data-i18n="ph_existing">既存から選択...</option>
+          </select>
+        </div>
       </div>
       <div class="field">
         <label for="fTitle"><span data-i18n="field_title">📌 課題名</span><span class="req">*</span></label>
-        <input id="fTitle" type="text" maxlength="60" data-i18n-ph="ph_title" placeholder="新しい課題名を入力..." />
-        <select id="fTitleSelect" class="course-select">
-          <option value="" data-i18n="ph_existing">既存から選択...</option>
-        </select>
+        <div class="input-split">
+          <input id="fTitle" type="text" maxlength="60" data-i18n-ph="ph_title" placeholder="新しい課題名を入力..." />
+          <select id="fTitleSelect" class="course-select">
+            <option value="" data-i18n="ph_existing">既存から選択...</option>
+          </select>
+        </div>
       </div>
       <div class="field">
         <label for="fType"><span data-i18n="field_type">🏷 種別</span><span class="req">*</span></label>
