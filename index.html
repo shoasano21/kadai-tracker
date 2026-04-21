@@ -533,12 +533,12 @@
   .btn:hover { transform: translateY(-1px); box-shadow: var(--shadow); }
   .btn:active { transform: translateY(0); }
   .btn.primary {
-    background: linear-gradient(135deg, #7358d9, #4c2db0);
-    color: #fff;
-    border: none;
-    box-shadow: 0 6px 18px rgba(76,45,176,0.4);
+    background: var(--panel-solid);
+    color: var(--text);
+    border: 1px solid var(--border-strong);
+    box-shadow: none;
   }
-  .btn.primary:hover { box-shadow: 0 10px 28px rgba(76,45,176,0.55); }
+  .btn.primary:hover { box-shadow: var(--shadow); }
   .btn.notify-on {
     background: var(--ok);
     color: #fff;
