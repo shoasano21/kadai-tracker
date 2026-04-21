@@ -1072,7 +1072,13 @@
     max-height: 90dvh;
     overflow-y: auto;
   }
-  .modal::before { content: none; }
+  .modal::before {
+    content: "";
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 5px;
+    background: linear-gradient(90deg, var(--accent-1), var(--accent-2));
+  }
   .modal-overlay.open .modal { transform: scale(1) translateY(0); }
   .modal h2 {
     margin: 0 0 16px;
@@ -1275,24 +1281,20 @@
   .empty {
     text-align: center;
     padding: 60px 20px;
-    color: var(--text-sub);
-    font-size: 14px;
+    color: var(--text);
+    font-size: 22px;
+    font-weight: 800;
     background: var(--panel);
     backdrop-filter: blur(14px);
     border: 1px solid var(--border);
     border-radius: var(--radius);
     box-shadow: var(--shadow);
   }
-  .empty .big-emoji {
-    font-size: 56px;
-    display: block;
-    margin-bottom: 12px;
-    animation: float 3s ease-in-out infinite;
-  }
   .empty .sub {
-    font-size: 12px;
+    font-size: 14px;
+    font-weight: 500;
     color: var(--text-sub);
-    margin-top: 4px;
+    margin-top: 10px;
   }
   @keyframes float {
     0%, 100% { transform: translateY(0); }
@@ -1856,8 +1858,8 @@
     else renderCalendar();
   }
 
-  function emptyHtml(msg, emoji, sub) {
-    return `<div class="empty"><span class="big-emoji">${emoji}</span>${msg}${sub ? `<div class="sub">${sub}</div>` : ''}</div>`;
+  function emptyHtml(msg, _unused, sub) {
+    return `<div class="empty">${msg}${sub ? `<div class="sub">${sub}</div>` : ''}</div>`;
   }
 
   // ===== Reminder banner (disabled; OS notifications handle alerts) =====
@@ -1869,7 +1871,7 @@
   function renderGantt() {
     const items = sortedByDeadline(filteredItems());
     if (items.length === 0) {
-      host.innerHTML = emptyHtml('課題がありません', '🌈', '右下の「＋」から登録しよう');
+      host.innerHTML = emptyHtml('課題がありません', null, '右上の「＋」から登録しよう');
       return;
     }
     const today = parseDate(todayStr());
