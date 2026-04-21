@@ -7,8 +7,8 @@
 <meta name="description" content="講義ごとの課題を管理するトラッカー" />
 <link rel="privacy-policy" href="privacy.html" />
 
-<meta name="theme-color" content="#667eea" media="(prefers-color-scheme: light)" />
-<meta name="theme-color" content="#0f1120" media="(prefers-color-scheme: dark)" />
+<meta name="theme-color" content="#f5f6fb" media="(prefers-color-scheme: light)" />
+<meta name="theme-color" content="#131628" media="(prefers-color-scheme: dark)" />
 <meta name="apple-mobile-web-app-capable" content="yes" />
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
 <meta name="apple-mobile-web-app-title" content="課題トラッカー" />
@@ -244,19 +244,19 @@
     width: 82px;
     height: 82px;
     border-radius: 20px;
-    background: linear-gradient(135deg, var(--accent-1), var(--accent-2));
-    color: #fff;
-    border: none;
+    background: var(--panel-solid);
+    color: var(--text);
+    border: 1px solid var(--border);
     font-size: 40px;
     font-weight: 300;
     line-height: 1;
     padding: 0;
-    box-shadow: 0 6px 18px rgba(102,126,234,0.35);
+    box-shadow: var(--shadow);
     display: flex;
     align-items: center;
     justify-content: center;
   }
-  .header-add-btn:hover { box-shadow: 0 10px 28px rgba(102,126,234,0.5); transform: translateY(-1px); }
+  .header-add-btn:hover { box-shadow: var(--shadow-lg); transform: translateY(-1px); }
   header.topbar h1 {
     margin: 0;
     margin-right: auto;
