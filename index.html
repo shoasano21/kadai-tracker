@@ -281,6 +281,29 @@
     color: var(--text-sub);
     margin-top: 4px;
   }
+  .title-with-settings {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .settings-icon-btn {
+    flex-shrink: 0;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    border: 1px solid var(--border);
+    background: var(--panel-solid);
+    font-size: 20px;
+    line-height: 1;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0;
+    cursor: pointer;
+    transition: transform .15s, box-shadow .15s;
+  }
+  .settings-icon-btn:hover { transform: scale(1.06); box-shadow: var(--shadow); }
+  .settings-icon-btn:active { transform: scale(0.94); }
 
   .topbar-stats {
     display: flex;
@@ -326,11 +349,28 @@
     padding: 8px 6px;
     box-shadow: var(--shadow);
   }
+  .settings-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 4px 10px 8px;
+  }
   .settings-title {
-    margin: 8px 12px 12px;
-    font-size: 18px;
+    margin: 4px 2px 4px;
+    font-size: 20px;
     font-weight: 800;
     letter-spacing: -0.01em;
+  }
+  .settings-close-btn {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    padding: 0;
+    font-size: 18px;
+    font-weight: 700;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
   }
   .setting-row {
     display: flex;
@@ -1535,7 +1575,10 @@
 <div class="app">
   <header class="topbar">
     <div class="topbar-main">
-      <h1><span class="title-main">課題トラッカー</span><span class="title-sub">KADAI TRACKER</span></h1>
+      <div class="title-with-settings">
+        <h1><span class="title-main">課題トラッカー</span><span class="title-sub">KADAI TRACKER</span></h1>
+        <button id="btnOpenSettings" class="settings-icon-btn" title="設定" aria-label="設定">⚙️</button>
+      </div>
       <div class="topbar-stats">
         <div class="stat urgent" id="cardUrgent">
           <span class="stat-value" id="sumUrgent">0</span>
@@ -1571,7 +1614,10 @@
   <main id="viewHost"></main>
 
   <section id="settingsHost" class="settings-panel">
-    <h2 class="settings-title">⚙️ 設定</h2>
+    <div class="settings-header">
+      <h2 class="settings-title">⚙️ 設定</h2>
+      <button id="btnCloseSettings" class="btn settings-close-btn" title="閉じる" aria-label="閉じる">✕</button>
+    </div>
     <div class="setting-row">
       <div class="setting-info">
         <div class="setting-label">🔔 通知</div>
@@ -1601,7 +1647,6 @@
   <div class="view-toggle" role="tablist">
     <button id="btnViewGantt" class="active" data-view="gantt">📊 Timeline</button>
     <button id="btnViewCalendar" data-view="calendar">📅 Calendar</button>
-    <button id="btnViewSettings" data-view="settings">⚙️ Settings</button>
   </div>
 </nav>
 
@@ -2349,18 +2394,30 @@
   });
 
   // ===== View toggle =====
+  let previousView = 'gantt';
+  function switchView(view) {
+    const btns = document.querySelectorAll('.view-toggle button');
+    btns.forEach(b => b.classList.toggle('active', b.dataset.view === view));
+    currentView = view;
+    render();
+    requestAnimationFrame(() => {
+      try { window.scrollTo({ top: 0, left: 0, behavior: 'smooth' }); } catch (e) { window.scrollTo(0, 0); }
+      document.documentElement.scrollTop = 0;
+      document.body.scrollTop = 0;
+    });
+  }
   document.querySelectorAll('.view-toggle button').forEach(btn => {
     btn.addEventListener('click', () => {
-      document.querySelectorAll('.view-toggle button').forEach(b => b.classList.remove('active'));
-      btn.classList.add('active');
-      currentView = btn.dataset.view;
-      render();
-      requestAnimationFrame(() => {
-        try { window.scrollTo({ top: 0, left: 0, behavior: 'smooth' }); } catch (e) { window.scrollTo(0, 0); }
-        document.documentElement.scrollTop = 0;
-        document.body.scrollTop = 0;
-      });
+      previousView = btn.dataset.view;
+      switchView(btn.dataset.view);
     });
+  });
+  $('btnOpenSettings').addEventListener('click', () => {
+    previousView = currentView === 'settings' ? previousView : currentView;
+    switchView('settings');
+  });
+  $('btnCloseSettings').addEventListener('click', () => {
+    switchView(previousView || 'gantt');
   });
 
   $('filterCourse').addEventListener('change', (e) => { filterCourse = e.target.value; render(); });
