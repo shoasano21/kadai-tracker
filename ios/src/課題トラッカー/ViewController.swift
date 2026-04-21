@@ -155,14 +155,10 @@ class ViewController: UIViewController, WKNavigationDelegate, UIDocumentInteract
         self.setProgress(1.0, true)
         self.animateConnectionProblem(false)
         
-        DispatchQueue.main.asyncAfter(deadline: .now() + 0.8) {
-            課題トラッカー.webView.isHidden = false
-            self.loadingView.isHidden = true
-           
-            self.setProgress(0.0, false)
-            
-            self.overrideUIStyle()
-        }
+        課題トラッカー.webView.isHidden = false
+        self.loadingView.isHidden = true
+        self.setProgress(0.0, false)
+        self.overrideUIStyle()
     }
     
     func webView(_ webView: WKWebView, didFailProvisionalNavigation navigation: WKNavigation!, withError error: Error) {

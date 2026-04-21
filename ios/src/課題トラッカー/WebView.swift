@@ -28,6 +28,9 @@ func createWebView(container: UIView, WKSMH: WKScriptMessageHandler, WKND: WKNav
 
     webView.autoresizingMask = [.flexibleWidth, .flexibleHeight]
     webView.isHidden = true;
+    webView.backgroundColor = UIColor.white
+    webView.scrollView.backgroundColor = UIColor.white
+    webView.isOpaque = true
     webView.navigationDelegate = WKND
     webView.scrollView.bounces = false
     webView.scrollView.contentInsetAdjustmentBehavior = .never
