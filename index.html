@@ -220,8 +220,10 @@
     flex: 1;
     min-width: 0;
     display: flex;
-    flex-direction: column;
-    gap: 8px;
+    flex-direction: row;
+    align-items: center;
+    gap: 20px;
+    flex-wrap: wrap;
   }
   .topbar-controls {
     display: flex;
@@ -277,7 +279,6 @@
   .topbar-stats {
     display: flex;
     gap: 14px;
-    margin-top: 10px;
     flex-wrap: wrap;
   }
   .topbar-stats .stat {
@@ -1528,11 +1529,11 @@
       <div class="topbar-stats">
         <div class="stat urgent" id="cardUrgent">
           <span class="stat-value" id="sumUrgent">0</span>
-          <span class="stat-label">緊急<span class="stat-emoji">🔥</span></span>
+          <span class="stat-label">Urgent<span class="stat-emoji">🔥</span></span>
         </div>
         <div class="stat ok">
           <span class="stat-value" id="sumOk">0</span>
-          <span class="stat-label">余裕あり<span class="stat-emoji">🌱</span></span>
+          <span class="stat-label">Coming Soon<span class="stat-emoji">🌱</span></span>
         </div>
       </div>
     </div>
