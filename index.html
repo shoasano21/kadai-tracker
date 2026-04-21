@@ -708,13 +708,7 @@
     text-overflow: ellipsis;
   }
   .gantt-row.done .task-label .task-title { text-decoration: line-through; color: var(--done); }
-  .gantt-row.done .bar {
-    background: transparent !important;
-    height: 3px;
-    box-shadow: none;
-    border-top: 2px solid var(--done);
-    opacity: 1;
-  }
+  .gantt-row.done .bar { background: var(--done) !important; opacity: 0.55; }
 
   .timeline-col { position: relative; height: 100%; min-height: 48px; }
   .bar {
@@ -745,13 +739,7 @@
   .bar.soon { background: var(--ok); }
   .bar.ok { background: var(--ok); }
   .bar.past { background: var(--urgent); }
-  .bar.done {
-    background: transparent;
-    height: 3px;
-    box-shadow: none;
-    border-top: 2px solid var(--done);
-    color: var(--done);
-  }
+  .bar.done { background: var(--done); opacity: 0.6; }
 
   .today-line {
     position: absolute;
