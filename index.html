@@ -819,16 +819,26 @@
     display: grid;
     grid-template-columns: 200px 1fr;
     align-items: center;
-    min-height: 56px;
-    border-bottom: 1px dashed var(--border);
+    min-height: 60px;
     position: relative;
-    transition: background .15s;
+    background: #fafafa;
+    border-radius: 12px;
+    margin: 6px 4px;
+    cursor: pointer;
+    transition: background .15s, box-shadow .15s, transform .15s;
+    box-shadow: 0 1px 2px rgba(0,0,0,0.04);
   }
-  .gantt-row { cursor: pointer; }
-  .gantt-row:hover { background: rgba(102,126,234,0.06); }
-  .gantt-row:active { background: rgba(102,126,234,0.12); }
+  .gantt-row:hover {
+    background: #fff;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.08), 0 8px 18px -6px rgba(0,0,0,0.12);
+    transform: translateY(-1px);
+  }
+  .gantt-row:active {
+    transform: translateY(0) scale(0.995);
+    box-shadow: 0 1px 3px rgba(0,0,0,0.06);
+  }
   .gantt-row .task-label {
-    padding: 8px 18px 8px 14px;
+    padding: 10px 28px 10px 16px;
     display: flex;
     flex-direction: column;
     gap: 2px;
@@ -837,17 +847,17 @@
   .gantt-row .task-label::after {
     content: "›";
     position: absolute;
-    right: 6px;
+    right: 10px;
     top: 50%;
     transform: translateY(-50%);
     color: var(--text-sub);
-    font-size: 18px;
+    font-size: 24px;
     line-height: 1;
     font-weight: 700;
-    opacity: 0.55;
+    opacity: 0.8;
   }
-  .gantt-row:hover .task-label::after,
-  .gantt-row:active .task-label::after { opacity: 1; color: var(--accent); }
+  .gantt-row:hover .task-label::after { opacity: 1; color: var(--text); transform: translateY(-50%) translateX(2px); }
+  .gantt-row:active .task-label::after { color: var(--text); }
   .task-label .course-tag {
     font-size: 13px;
     color: var(--text);

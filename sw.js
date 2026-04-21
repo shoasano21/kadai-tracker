@@ -1,4 +1,4 @@
-const CACHE = 'kadai-tracker-v109';
+const CACHE = 'kadai-tracker-v110';
 const ASSETS = [
   './',
   './index.html',
