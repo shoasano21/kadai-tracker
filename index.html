@@ -3006,19 +3006,6 @@
     }
   });
 
-  // Global haptic feedback on any button press
-  document.addEventListener('pointerdown', (e) => {
-    const btn = e.target.closest('button, .btn, .cal-cell, .gantt-row, .cal-task');
-    if (!btn || btn.disabled) return;
-    let style = 'light';
-    if (btn.id === 'btnAddHeader' || btn.classList.contains('fab')) style = 'medium';
-    else if (btn.classList.contains('done-btn') || btn.classList.contains('modal-done-btn')) style = 'success';
-    else if (btn.classList.contains('del-btn') || btn.classList.contains('modal-del-btn')) style = 'warning';
-    else if (btn.classList.contains('primary')) style = 'success';
-    else if (btn.matches('.view-toggle button')) style = 'selection';
-    else if (btn.classList.contains('gantt-row') || btn.classList.contains('cal-task')) style = 'selection';
-    haptic(style);
-  }, { passive: true });
 
   // Dismiss splash after particles + bar finish playing.
   setTimeout(() => {
