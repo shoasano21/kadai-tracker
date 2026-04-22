@@ -283,33 +283,33 @@ extension ViewController: WKScriptMessageHandler {
       DispatchQueue.main.async {
           switch style {
           case "light":
-              UIImpactFeedbackGenerator(style: .light).impactOccurred()
+              let g = UIImpactFeedbackGenerator(style: .light); g.prepare(); g.impactOccurred()
           case "medium":
-              UIImpactFeedbackGenerator(style: .medium).impactOccurred()
+              let g = UIImpactFeedbackGenerator(style: .medium); g.prepare(); g.impactOccurred()
           case "heavy":
-              UIImpactFeedbackGenerator(style: .heavy).impactOccurred()
+              let g = UIImpactFeedbackGenerator(style: .heavy); g.prepare(); g.impactOccurred()
           case "soft":
               if #available(iOS 13.0, *) {
-                  UIImpactFeedbackGenerator(style: .soft).impactOccurred()
+                  let g = UIImpactFeedbackGenerator(style: .soft); g.prepare(); g.impactOccurred()
               } else {
-                  UIImpactFeedbackGenerator(style: .light).impactOccurred()
+                  let g = UIImpactFeedbackGenerator(style: .light); g.prepare(); g.impactOccurred()
               }
           case "rigid":
               if #available(iOS 13.0, *) {
-                  UIImpactFeedbackGenerator(style: .rigid).impactOccurred()
+                  let g = UIImpactFeedbackGenerator(style: .rigid); g.prepare(); g.impactOccurred()
               } else {
-                  UIImpactFeedbackGenerator(style: .medium).impactOccurred()
+                  let g = UIImpactFeedbackGenerator(style: .medium); g.prepare(); g.impactOccurred()
               }
           case "success":
-              UINotificationFeedbackGenerator().notificationOccurred(.success)
+              let g = UINotificationFeedbackGenerator(); g.prepare(); g.notificationOccurred(.success)
           case "warning":
-              UINotificationFeedbackGenerator().notificationOccurred(.warning)
+              let g = UINotificationFeedbackGenerator(); g.prepare(); g.notificationOccurred(.warning)
           case "error":
-              UINotificationFeedbackGenerator().notificationOccurred(.error)
+              let g = UINotificationFeedbackGenerator(); g.prepare(); g.notificationOccurred(.error)
           case "selection":
-              UISelectionFeedbackGenerator().selectionChanged()
+              let g = UISelectionFeedbackGenerator(); g.prepare(); g.selectionChanged()
           default:
-              UIImpactFeedbackGenerator(style: .light).impactOccurred()
+              let g = UIImpactFeedbackGenerator(style: .light); g.prepare(); g.impactOccurred()
           }
       }
   }
