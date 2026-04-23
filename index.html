@@ -1000,7 +1000,15 @@
     font-weight: 800;
     letter-spacing: 0.01em;
     color: var(--text);
+    background: transparent;
+    border: none;
+    padding: 8px 4px;
+    cursor: pointer;
+    font-family: inherit;
+    transition: transform .15s, color .15s;
   }
+  .calendar-header .cal-title:hover { color: var(--accent); transform: scale(1.02); }
+  .calendar-header .cal-title:active { transform: scale(0.98); }
   .cal-nav {
     background: var(--panel-2);
     border: 1px solid var(--border);
@@ -2472,9 +2480,8 @@
       <div class="calendar-wrap">
         <div class="calendar-header">
           <button class="cal-nav" id="calPrev" aria-label="${t('cal_prev')}">‹</button>
-          <div class="cal-title">${title}</div>
+          <button class="cal-title" id="calToday" title="${t('cal_today_btn')}" aria-label="${t('cal_today_btn')}">${title}</button>
           <button class="cal-nav" id="calNext" aria-label="${t('cal_next')}">›</button>
-          <button class="btn cal-today-btn" id="calToday">${t('cal_today_btn')}</button>
         </div>
         <table class="cal-table">
           <thead>
