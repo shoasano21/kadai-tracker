@@ -1404,7 +1404,29 @@
     margin-top: 6px;
   }
   .input-split { display: flex; gap: 10px; }
-  .input-split > input, .input-split > select { flex: 1; min-width: 0; margin-top: 0; }
+  .input-split > input, .input-split > select, .input-split > .select-with-delete { flex: 1; min-width: 0; margin-top: 0; }
+  .select-with-delete { position: relative; display: flex; }
+  .select-with-delete select { flex: 1; min-width: 0; padding-right: 36px; margin-top: 0; }
+  .course-delete-btn {
+    position: absolute;
+    right: 4px;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 26px;
+    height: 26px;
+    border: none;
+    background: transparent;
+    color: var(--urgent);
+    font-size: 20px;
+    font-weight: 700;
+    cursor: pointer;
+    padding: 0;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+  }
+  .course-delete-btn:hover { background: rgba(231,76,92,0.12); }
   .chip-suggestions {
     display: flex;
     flex-wrap: nowrap;
@@ -1756,9 +1778,12 @@
         <label for="fCourse"><span data-i18n="field_course">🎓 講義名</span><span class="req">*</span></label>
         <div class="input-split">
           <input id="fCourse" type="text" maxlength="40" autocomplete="off" data-i18n-ph="ph_course" placeholder="新しい講義名を入力..." />
-          <select id="fCourseSelect" class="course-select">
-            <option value="" data-i18n="ph_existing">既存から選択...</option>
-          </select>
+          <div class="select-with-delete">
+            <select id="fCourseSelect" class="course-select">
+              <option value="" data-i18n="ph_existing">既存から選択...</option>
+            </select>
+            <button type="button" id="btnDeleteCourse" class="course-delete-btn" data-i18n-title="delete_course_title" data-i18n-aria="delete_course_title" hidden>×</button>
+          </div>
         </div>
       </div>
       <input id="fTitle" type="hidden" />
@@ -1859,6 +1884,9 @@
       setting_haptic_desc: 'ボタン操作時の触覚フィードバック',
       toast_haptic_on: '📳 振動ON',
       toast_haptic_off: '📴 振動OFF',
+      delete_course_title: '選択した講義を削除',
+      confirm_delete_course: (c) => `「${c}」を候補から削除しますか？既に登録した課題には影響しません。`,
+      toast_course_deleted: (c) => `🗑 「${c}」を候補から削除しました`,
       modal_add_title: '課題を追加',
       modal_edit_title: '課題を編集',
       field_course: '講義名',
@@ -1977,6 +2005,9 @@
       setting_haptic_desc: 'Vibrate on button presses',
       toast_haptic_on: '📳 Haptics ON',
       toast_haptic_off: '📴 Haptics OFF',
+      delete_course_title: 'Remove selected course',
+      confirm_delete_course: (c) => `Remove "${c}" from suggestions? Existing tasks are not affected.`,
+      toast_course_deleted: (c) => `🗑 Removed "${c}" from suggestions`,
       modal_add_title: 'Add task',
       modal_edit_title: 'Edit task',
       field_course: 'Course',
@@ -2683,6 +2714,8 @@
       sel.innerHTML = `<option value="">${t('ph_existing')}</option>` +
         merged.map(c => `<option value="${escapeHtml(c)}">${escapeHtml(c)}</option>`).join('');
     }
+    const delBtn = document.getElementById('btnDeleteCourse');
+    if (delBtn) delBtn.hidden = true;
   }
   function updateChipActiveState() {}
 
@@ -2739,11 +2772,25 @@
   $('fCourse').addEventListener('input', updateChipActiveState);
   $('fCourseSelect').addEventListener('change', (e) => {
     const v = e.target.value;
-    if (!v) return;
+    const delBtn = $('btnDeleteCourse');
+    if (!v) { if (delBtn) delBtn.hidden = true; return; }
     $('fCourse').value = v;
     updateChipActiveState();
-    e.target.value = '';
-    $('fCourse').focus();
+    if (delBtn) delBtn.hidden = false;
+  });
+  $('btnDeleteCourse').addEventListener('click', () => {
+    const sel = $('fCourseSelect');
+    const c = sel.value;
+    if (!c) return;
+    if (!confirm(t('confirm_delete_course', c))) return;
+    if (!Array.isArray(state.hiddenCourses)) state.hiddenCourses = [];
+    if (!state.hiddenCourses.includes(c)) state.hiddenCourses.push(c);
+    saveState();
+    renderCourseChips();
+    sel.value = '';
+    $('btnDeleteCourse').hidden = true;
+    if ($('fCourse').value === c) $('fCourse').value = '';
+    toast(t('toast_course_deleted', c), 'warn');
   });
 
   // Populate task title dropdown from existing titles, honoring course filter
