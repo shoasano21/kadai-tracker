@@ -43,6 +43,13 @@ workflows:
             --key-id "$APP_STORE_CONNECT_KEY_IDENTIFIER" \
             --type IOS_APP_STORE \
             --create
+          app-store-connect fetch-signing-files "$BUNDLE_ID.widget" \
+            --private-key @file:/tmp/auth_key.p8 \
+            --certificate-key @file:/tmp/cert_key.pem \
+            --issuer-id "$APP_STORE_CONNECT_ISSUER_ID" \
+            --key-id "$APP_STORE_CONNECT_KEY_IDENTIFIER" \
+            --type IOS_APP_STORE \
+            --create
           keychain add-certificates
           cd ios/src
           xcode-project use-profiles
