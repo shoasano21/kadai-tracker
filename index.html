@@ -2825,11 +2825,20 @@
   // ===== Modal =====
   function renderCourseChips() {
     const hidden = new Set(state.hiddenCourses || []);
+    const subjectNames = Array.from(new Set((state.subjects || []).map(s => s.name).filter(Boolean)));
     const existing = Array.from(new Set(state.items.map(i => i.course).filter(Boolean)));
-    const existingSorted = existing.slice().sort();
-    const merged = existingSorted
-      .concat(COMMON_COURSES.filter(c => !existing.includes(c)))
-      .filter(c => !hidden.has(c));
+    const hasSubjects = subjectNames.length > 0;
+    let merged;
+    if (hasSubjects) {
+      // When a timetable exists, prioritize registered subjects, then any other course
+      // used in existing tasks that isn't in the timetable.
+      const existingExtra = existing.filter(c => !subjectNames.includes(c));
+      merged = subjectNames.concat(existingExtra);
+    } else {
+      merged = existing.slice().sort()
+        .concat(COMMON_COURSES.filter(c => !existing.includes(c)));
+    }
+    merged = merged.filter(c => !hidden.has(c));
 
     const sel = $('fCourseSelect');
     if (sel) {
@@ -3038,6 +3047,14 @@
 
   function getSubjectAt(day, period) {
     return (state.subjects || []).find(s => s.day === day && s.period === period);
+  }
+  function getSubjectByName(name) {
+    if (!name) return null;
+    return (state.subjects || []).find(s => s.name === name) || null;
+  }
+  function getSubjectSlots(name) {
+    if (!name) return [];
+    return (state.subjects || []).filter(s => s.name === name);
   }
 
   function renderTimetable() {
