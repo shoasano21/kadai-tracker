@@ -7,8 +7,6 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		AA0001000000000000000006 /* KadaiTrackerWidget.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA0001000000000000000002 /* KadaiTrackerWidget.swift */; };
-		AA0001000000000000000007 /* 課題トラッカーWidget.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = AA0001000000000000000005 /* 課題トラッカーWidget.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 		25D3517F267A48E0002E5DC0 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 25D3517E267A48E0002E5DC0 /* GoogleService-Info.plist */; };
 		595F23A525CEFBFE0053416C /* Settings.swift in Sources */ = {isa = PBXBuildFile; fileRef = 595F239A25CEFBFD0053416C /* Settings.swift */; };
 		595F23A625CEFBFE0053416C /* Entitlements in Resources */ = {isa = PBXBuildFile; fileRef = 595F239B25CEFBFD0053416C /* Entitlements */; };
@@ -24,10 +22,6 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
-		AA0001000000000000000002 /* KadaiTrackerWidget.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = KadaiTrackerWidget.swift; path = "課題トラッカーWidget/KadaiTrackerWidget.swift"; sourceTree = "<group>"; };
-		AA0001000000000000000003 /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = Info.plist; path = "課題トラッカーWidget/Info.plist"; sourceTree = "<group>"; };
-		AA0001000000000000000004 /* KadaiTrackerWidget.entitlements */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.entitlements; name = KadaiTrackerWidget.entitlements; path = "課題トラッカーWidget/KadaiTrackerWidget.entitlements"; sourceTree = "<group>"; };
-		AA0001000000000000000005 /* 課題トラッカーWidget.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = "課題トラッカーWidget.appex"; sourceTree = BUILT_PRODUCTS_DIR; };
 		25D3517E267A48E0002E5DC0 /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = "GoogleService-Info.plist"; path = "課題トラッカー/GoogleService-Info.plist"; sourceTree = "<group>"; };
 		59333BAA25CFF706003392A4 /* 課題トラッカー.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "課題トラッカー.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		595F239A25CEFBFD0053416C /* Settings.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = Settings.swift; path = "課題トラッカー/Settings.swift"; sourceTree = "<group>"; };
@@ -44,29 +38,8 @@
 		CDC0FE282388222B002C8D56 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = "課題トラッカー/Base.lproj/LaunchScreen.storyboard"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
-/* Begin PBXCopyFilesBuildPhase section */
-		AA000100000000000000000B /* Embed Foundation Extensions */ = {
-			isa = PBXCopyFilesBuildPhase;
-			buildActionMask = 2147483647;
-			dstPath = "";
-			dstSubfolderSpec = 13;
-			files = (
-				AA0001000000000000000007 /* 課題トラッカーWidget.appex in Embed Foundation Extensions */,
-			);
-			name = "Embed Foundation Extensions";
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-/* End PBXCopyFilesBuildPhase section */
-
 /* Begin PBXFrameworksBuildPhase section */
 		CD89F886237E9D9200C436A1 /* Frameworks */ = {
-			isa = PBXFrameworksBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-		AA0001000000000000000009 /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -92,20 +65,8 @@
 				CDC0FE272388222B002C8D56 /* LaunchScreen.storyboard */,
 				CDC0FE252388222B002C8D56 /* Main.storyboard */,
 				595F23A425CEFBFE0053416C /* WebView.swift */,
-				AA0001000000000000000001 /* 課題トラッカーWidget */,
 				59333BAA25CFF706003392A4 /* 課題トラッカー.app */,
-				AA0001000000000000000005 /* 課題トラッカーWidget.appex */,
 			);
-			sourceTree = "<group>";
-		};
-		AA0001000000000000000001 /* 課題トラッカーWidget */ = {
-			isa = PBXGroup;
-			children = (
-				AA0001000000000000000002 /* KadaiTrackerWidget.swift */,
-				AA0001000000000000000003 /* Info.plist */,
-				AA0001000000000000000004 /* KadaiTrackerWidget.entitlements */,
-			);
-			name = "課題トラッカーWidget";
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -118,34 +79,15 @@
 				CD89F885237E9D9200C436A1 /* Sources */,
 				CD89F886237E9D9200C436A1 /* Frameworks */,
 				CD89F887237E9D9200C436A1 /* Resources */,
-				AA000100000000000000000B /* Embed Foundation Extensions */,
 			);
 			buildRules = (
 			);
 			dependencies = (
-				AA0001000000000000000010 /* PBXTargetDependency */,
 			);
 			name = "課題トラッカー";
 			productName = "課題トラッカー";
 			productReference = 59333BAA25CFF706003392A4 /* 課題トラッカー.app */;
 			productType = "com.apple.product-type.application";
-		};
-		AA000100000000000000000C /* 課題トラッカーWidget */ = {
-			isa = PBXNativeTarget;
-			buildConfigurationList = AA000100000000000000000D /* Build configuration list for PBXNativeTarget "課題トラッカーWidget" */;
-			buildPhases = (
-				AA0001000000000000000008 /* Sources */,
-				AA0001000000000000000009 /* Frameworks */,
-				AA000100000000000000000A /* Resources */,
-			);
-			buildRules = (
-			);
-			dependencies = (
-			);
-			name = "課題トラッカーWidget";
-			productName = "課題トラッカーWidget";
-			productReference = AA0001000000000000000005 /* 課題トラッカーWidget.appex */;
-			productType = "com.apple.product-type.app-extension";
 		};
 /* End PBXNativeTarget section */
 
@@ -160,9 +102,6 @@
 					CD89F888237E9D9200C436A1 = {
 						CreatedOnToolsVersion = 11.2.1;
 						LastSwiftMigration = 1120;
-					};
-					AA000100000000000000000C = {
-						CreatedOnToolsVersion = 15.0;
 					};
 				};
 			};
@@ -180,7 +119,6 @@
 			projectRoot = "";
 			targets = (
 				CD89F888237E9D9200C436A1 /* 課題トラッカー */,
-				AA000100000000000000000C /* 課題トラッカーWidget */,
 			);
 		};
 /* End PBXProject section */
@@ -195,13 +133,6 @@
 				CDC0FE2A2388222C002C8D56 /* LaunchScreen.storyboard in Resources */,
 				595F23A725CEFBFE0053416C /* Assets.xcassets in Resources */,
 				25D3517F267A48E0002E5DC0 /* GoogleService-Info.plist in Resources */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-		AA000100000000000000000A /* Resources */ = {
-			isa = PBXResourcesBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -222,33 +153,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-		AA0001000000000000000008 /* Sources */ = {
-			isa = PBXSourcesBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-				AA0001000000000000000006 /* KadaiTrackerWidget.swift in Sources */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
 /* End PBXSourcesBuildPhase section */
-
-/* Begin PBXTargetDependency section */
-		AA0001000000000000000010 /* PBXTargetDependency */ = {
-			isa = PBXTargetDependency;
-			target = AA000100000000000000000C /* 課題トラッカーWidget */;
-			targetProxy = AA0001000000000000000011 /* PBXContainerItemProxy */;
-		};
-/* End PBXTargetDependency section */
-
-/* Begin PBXContainerItemProxy section */
-		AA0001000000000000000011 /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = CD89F881237E9D9200C436A1 /* Project object */;
-			proxyType = 1;
-			remoteGlobalIDString = AA000100000000000000000C;
-			remoteInfo = "課題トラッカーWidget";
-		};
-/* End PBXContainerItemProxy section */
 
 /* Begin PBXVariantGroup section */
 		CDC0FE252388222B002C8D56 /* Main.storyboard */ = {
@@ -444,55 +349,6 @@
 			};
 			name = Release;
 		};
-		AA000100000000000000000E /* Debug */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				CODE_SIGN_ENTITLEMENTS = "課題トラッカーWidget/KadaiTrackerWidget.entitlements";
-				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_TEAM = "";
-				INFOPLIST_FILE = "課題トラッカーWidget/Info.plist";
-				IPHONEOS_DEPLOYMENT_TARGET = 16.0;
-				LD_RUNPATH_SEARCH_PATHS = (
-					"$(inherited)",
-					"@executable_path/Frameworks",
-					"@executable_path/../../Frameworks",
-				);
-				MARKETING_VERSION = 1.1;
-				PRODUCT_BUNDLE_IDENTIFIER = "com.shoasano21.kadaitracker.widget";
-				PRODUCT_NAME = "$(TARGET_NAME)";
-				PROVISIONING_PROFILE_SPECIFIER = "";
-				SKIP_INSTALL = YES;
-				SUPPORTS_MACCATALYST = NO;
-				SWIFT_VERSION = 5.0;
-				TARGETED_DEVICE_FAMILY = "1,2";
-			};
-			name = Debug;
-		};
-		AA000100000000000000000F /* Release */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				CODE_SIGN_ENTITLEMENTS = "課題トラッカーWidget/KadaiTrackerWidget.entitlements";
-				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_TEAM = "";
-				INFOPLIST_FILE = "課題トラッカーWidget/Info.plist";
-				IPHONEOS_DEPLOYMENT_TARGET = 16.0;
-				LD_RUNPATH_SEARCH_PATHS = (
-					"$(inherited)",
-					"@executable_path/Frameworks",
-					"@executable_path/../../Frameworks",
-				);
-				MARKETING_VERSION = 1.1;
-				PRODUCT_BUNDLE_IDENTIFIER = "com.shoasano21.kadaitracker.widget";
-				PRODUCT_NAME = "$(TARGET_NAME)";
-				SKIP_INSTALL = YES;
-				SUPPORTS_MACCATALYST = NO;
-				SWIFT_VERSION = 5.0;
-				TARGETED_DEVICE_FAMILY = "1,2";
-			};
-			name = Release;
-		};
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
@@ -510,15 +366,6 @@
 			buildConfigurations = (
 				CD89F89E237E9D9300C436A1 /* Debug */,
 				CD89F89F237E9D9300C436A1 /* Release */,
-			);
-			defaultConfigurationIsVisible = 0;
-			defaultConfigurationName = Release;
-		};
-		AA000100000000000000000D /* Build configuration list for PBXNativeTarget "課題トラッカーWidget" */ = {
-			isa = XCConfigurationList;
-			buildConfigurations = (
-				AA000100000000000000000E /* Debug */,
-				AA000100000000000000000F /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
