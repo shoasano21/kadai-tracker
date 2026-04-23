@@ -545,20 +545,21 @@
     border: none;
     box-shadow: none;
   }
-  .notify-time-btn {
-    display: inline-flex;
-    align-items: center;
-    gap: 4px;
-    padding: 8px 10px;
+  .setting-time-input {
+    background: var(--panel-solid);
+    color: var(--text);
+    border: 1px solid var(--border-strong);
+    border-radius: 10px;
+    padding: 8px 12px;
+    font-size: 15px;
+    font-weight: 700;
     font-variant-numeric: tabular-nums;
+    font-family: inherit;
+    min-width: 96px;
+    text-align: center;
+    cursor: pointer;
   }
-  .notify-time-input {
-    position: absolute;
-    opacity: 0;
-    pointer-events: none;
-    width: 1px;
-    height: 1px;
-  }
+  .setting-time-input:focus { outline: none; border-color: var(--accent); box-shadow: var(--shadow-glow); }
 
   /* Summary */
   .summary {
@@ -1653,7 +1654,6 @@
     <div class="topbar-main">
       <h1><span class="title-main" data-i18n="app_title">課題トラッカー</span><span class="title-sub" id="topbarTagline"></span></h1>
     </div>
-    <input type="time" id="notifyTimeInput" class="notify-time-input" />
   </header>
   <button id="btnOpenSettings" class="settings-icon-btn" data-i18n-title="open_settings" data-i18n-aria="open_settings">⚙️</button>
   <section class="stats-bar">
@@ -1705,7 +1705,8 @@
         <div class="setting-label" data-i18n="setting_notify_time">⏰ 通知時刻</div>
         <div class="setting-desc" data-i18n="setting_notify_time_desc">毎日この時刻に通知を送信</div>
       </div>
-      <button id="btnNotifyTime" class="btn setting-btn notify-time-btn" data-i18n-title="setting_notify_time_title">⏰ <span id="notifyTimeLabel">09:00</span></button>
+      <input type="time" id="notifyTimeInput" class="setting-time-input" step="60" value="09:00" />
+      <span id="notifyTimeLabel" hidden></span>
     </div>
     <div class="setting-row">
       <div class="setting-info">
@@ -2952,17 +2953,6 @@
     if (input) input.value = state.notifyTime || '09:00';
   }
 
-  // Time picker: the native <input type="time"> is visually hidden; tapping
-  // the ⏰ pill triggers it. On change, persist and resync notifications.
-  $('btnNotifyTime').addEventListener('click', () => {
-    const input = $('notifyTimeInput');
-    input.value = state.notifyTime || '09:00';
-    input.focus();
-    input.click();
-    if (typeof input.showPicker === 'function') {
-      try { input.showPicker(); } catch (e) {}
-    }
-  });
   $('notifyTimeInput').addEventListener('change', (e) => {
     const v = e.target.value;
     if (!/^\d{2}:\d{2}$/.test(v)) return;
