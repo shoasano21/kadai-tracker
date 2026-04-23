@@ -1,5 +1,8 @@
 import UIKit
 import WebKit
+#if canImport(WidgetKit)
+import WidgetKit
+#endif
 
 var webView: WKWebView! = nil
 
@@ -276,6 +279,19 @@ extension ViewController: WKScriptMessageHandler {
         if message.name == "haptic" {
             handleHaptic(message: message)
         }
+        if message.name == "widget-sync" {
+            handleWidgetSync(message: message)
+        }
+  }
+
+  func handleWidgetSync(message: WKScriptMessage) {
+      guard let json = message.body as? String,
+            let data = json.data(using: .utf8) else { return }
+      let defaults = UserDefaults(suiteName: "group.com.shoasano21.kadaitracker")
+      defaults?.set(data, forKey: "kadai_tracker_widget_snapshot")
+      if #available(iOS 14.0, *) {
+          WidgetCenter.shared.reloadAllTimelines()
+      }
   }
 
   func handleHaptic(message: WKScriptMessage) {

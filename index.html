@@ -2188,6 +2188,25 @@
     } catch (e) {
       toast(t('toast_save_failed'), 'error');
     }
+    syncWidget();
+  }
+
+  function syncWidget() {
+    try {
+      const payload = {
+        items: (state.items || []).map(it => ({
+          id: it.id,
+          course: it.course || '',
+          title: it.title || '',
+          type: it.type || 'other',
+          start: it.start || '',
+          end: it.end || '',
+          done: !!it.done
+        })),
+        updatedAt: Date.now() / 1000
+      };
+      postToNative('widget-sync', JSON.stringify(payload));
+    } catch (e) { /* noop */ }
   }
 
   function todayStr() {

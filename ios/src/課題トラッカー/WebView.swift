@@ -16,6 +16,7 @@ func createWebView(container: UIView, WKSMH: WKScriptMessageHandler, WKND: WKNav
     userContentController.add(WKSMH, name: "push-token")
     userContentController.add(WKSMH, name: "schedule-local")
     userContentController.add(WKSMH, name: "haptic")
+    userContentController.add(WKSMH, name: "widget-sync")
 
     config.userContentController = userContentController
 
