@@ -1692,7 +1692,6 @@
   <section id="settingsHost" class="settings-panel">
     <div class="settings-header">
       <h2 class="settings-title" data-i18n="settings_heading">⚙️ 設定</h2>
-      <button id="btnCloseSettings" class="btn settings-close-btn" data-i18n-title="close_settings" data-i18n-aria="close_settings">✕</button>
     </div>
     <div class="setting-row">
       <div class="setting-info">
@@ -2837,9 +2836,6 @@
   $('btnOpenSettings').addEventListener('click', () => {
     previousView = currentView === 'settings' ? previousView : currentView;
     switchView('settings');
-  });
-  $('btnCloseSettings').addEventListener('click', () => {
-    switchView(previousView || 'gantt');
   });
   $('btnLang').addEventListener('click', () => {
     currentLang = currentLang === 'ja' ? 'en' : 'ja';
