@@ -456,6 +456,60 @@
   body[data-view="settings"] .header-add-btn { display: none; }
   body[data-view="settings"] #settingsHost { display: block; }
 
+  body[data-view="timetable"] header.topbar,
+  body[data-view="timetable"] .stats-bar,
+  body[data-view="timetable"] .filter-bar,
+  body[data-view="timetable"] #viewHost,
+  body[data-view="timetable"] .settings-icon-btn,
+  body[data-view="timetable"] .header-add-btn { display: none; }
+  body[data-view="timetable"] #timetableHost { display: block; }
+
+  .timetable-panel { display: none; background: var(--panel); border-radius: var(--radius); padding: 8px 6px 16px; box-shadow: var(--shadow); }
+  .timetable-grid {
+    display: grid;
+    grid-template-columns: 36px repeat(6, 1fr);
+    gap: 4px;
+    padding: 4px 8px;
+  }
+  .tt-corner, .tt-daylabel, .tt-periodlabel {
+    font-size: 11px;
+    font-weight: 700;
+    color: var(--text-sub);
+    text-align: center;
+    padding: 6px 2px;
+  }
+  .tt-cell {
+    background: var(--panel-2);
+    border: 1px dashed var(--border);
+    border-radius: 8px;
+    min-height: 56px;
+    padding: 6px 4px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 11px;
+    font-weight: 700;
+    text-align: center;
+    line-height: 1.2;
+    word-break: break-all;
+    transition: background .15s, transform .15s;
+    color: var(--text);
+  }
+  .tt-cell:hover { background: var(--panel-solid); transform: scale(1.02); }
+  .tt-cell.filled { border-style: solid; color: #fff; }
+  .tt-cell.empty { color: var(--text-sub); font-size: 18px; }
+
+  .color-palette { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 4px; }
+  .color-swatch {
+    width: 36px; height: 36px; border-radius: 50%;
+    border: 3px solid transparent;
+    cursor: pointer;
+    transition: transform .15s;
+  }
+  .color-swatch:hover { transform: scale(1.1); }
+  .color-swatch.selected { border-color: var(--text); }
+
   .bottom-bar {
     position: fixed;
     left: 0;
@@ -1754,11 +1808,26 @@
     </div>
     <div class="setting-row">
       <div class="setting-info">
+        <div class="setting-label" data-i18n="setting_timetable">📅 時間割</div>
+        <div class="setting-desc" data-i18n="setting_timetable_desc">曜日と限の科目を登録</div>
+      </div>
+      <button id="btnOpenTimetable" class="btn setting-btn" data-i18n="btn_edit">編集</button>
+    </div>
+    <div class="setting-row">
+      <div class="setting-info">
         <div class="setting-label" data-i18n="setting_haptic">📳 振動</div>
         <div class="setting-desc" data-i18n="setting_haptic_desc">ボタン操作時の触覚フィードバック</div>
       </div>
       <button id="btnHaptic" class="btn setting-btn">📳</button>
     </div>
+  </section>
+
+  <section id="timetableHost" class="timetable-panel">
+    <div class="settings-header">
+      <h2 class="settings-title" data-i18n="timetable_heading">📅 時間割</h2>
+      <button id="btnCloseTimetable" class="btn" data-i18n="btn_done">完了</button>
+    </div>
+    <div id="timetableGrid" class="timetable-grid"></div>
   </section>
 </div>
 
@@ -1769,6 +1838,26 @@
     <button id="btnViewCalendar" data-view="calendar" data-i18n="tab_calendar" data-i18n-prefix="📅 ">📅 Calendar</button>
   </div>
 </nav>
+
+<div id="subjectEditOverlay" class="modal-overlay" aria-hidden="true">
+  <div class="modal" style="max-width:420px;">
+    <h2 id="subjectEditTitle" data-i18n="subject_edit_title">科目を登録</h2>
+    <div class="field">
+      <label for="subjectName" data-i18n="subject_name_label">科目名</label>
+      <input id="subjectName" type="text" maxlength="30" autocomplete="off" />
+    </div>
+    <div class="field">
+      <label data-i18n="subject_color_label">色</label>
+      <div id="subjectColorPalette" class="color-palette"></div>
+    </div>
+    <div class="field-error" id="subjectEditSlot" style="color:var(--text-sub);"></div>
+    <div class="modal-actions">
+      <button type="button" id="btnSubjectDelete" class="btn" style="display:none;color:var(--urgent);" data-i18n="btn_delete">削除</button>
+      <button type="button" id="btnSubjectCancel" class="btn" data-i18n="btn_cancel">キャンセル</button>
+      <button type="button" id="btnSubjectSave" class="btn primary" data-i18n="btn_save">保存</button>
+    </div>
+  </div>
+</div>
 
 <div id="modalOverlay" class="modal-overlay" aria-hidden="true">
   <div class="modal" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
@@ -1887,6 +1976,20 @@
       delete_course_title: '選択した講義を削除',
       confirm_delete_course: (c) => `「${c}」を候補から削除しますか？既に登録した課題には影響しません。`,
       toast_course_deleted: (c) => `🗑 「${c}」を候補から削除しました`,
+      setting_timetable: '📅 時間割',
+      setting_timetable_desc: '曜日と限の科目を登録',
+      btn_edit: '編集',
+      timetable_heading: '📅 時間割',
+      subject_edit_title: '科目を登録',
+      subject_edit_title_edit: '科目を編集',
+      subject_name_label: '科目名',
+      subject_color_label: '色',
+      subject_slot: (day, period) => `${day}曜 ${period}限`,
+      subject_day_short: ['月','火','水','木','金','土'],
+      subject_period_short: (n) => `${n}限`,
+      confirm_delete_subject: (n) => `「${n}」を時間割から削除しますか？`,
+      toast_subject_saved: '📅 時間割を更新しました',
+      toast_subject_deleted: '🗑 時間割から削除しました',
       modal_add_title: '課題を追加',
       modal_edit_title: '課題を編集',
       field_course: '講義名',
@@ -2008,6 +2111,20 @@
       delete_course_title: 'Remove selected course',
       confirm_delete_course: (c) => `Remove "${c}" from suggestions? Existing tasks are not affected.`,
       toast_course_deleted: (c) => `🗑 Removed "${c}" from suggestions`,
+      setting_timetable: '📅 Timetable',
+      setting_timetable_desc: 'Register courses by day and period',
+      btn_edit: 'Edit',
+      timetable_heading: '📅 Timetable',
+      subject_edit_title: 'Add Course',
+      subject_edit_title_edit: 'Edit Course',
+      subject_name_label: 'Course Name',
+      subject_color_label: 'Color',
+      subject_slot: (day, period) => `${day} P${period}`,
+      subject_day_short: ['Mon','Tue','Wed','Thu','Fri','Sat'],
+      subject_period_short: (n) => `P${n}`,
+      confirm_delete_subject: (n) => `Remove "${n}" from the timetable?`,
+      toast_subject_saved: '📅 Timetable updated',
+      toast_subject_deleted: '🗑 Removed from timetable',
       modal_add_title: 'Add task',
       modal_edit_title: 'Edit task',
       field_course: 'Course',
@@ -2212,23 +2329,26 @@
   const toastHost = $('toastHost');
   const reminderHost = $('reminderHost');
 
+  function defaultState() {
+    return { items: [], notify: false, notifyTime: '09:00', hiddenCourses: [], lastNotified: {}, subjects: [] };
+  }
   function loadState() {
     try {
       const raw = localStorage.getItem(STORAGE_KEY);
-      if (!raw) return { items: [], notify: false, notifyTime: '09:00', hiddenCourses: [], lastNotified: {} };
+      if (!raw) return defaultState();
       const parsed = JSON.parse(raw);
-      if (!parsed || !Array.isArray(parsed.items)) return { items: [], notify: false, notifyTime: '09:00', hiddenCourses: [], lastNotified: {} };
-      // Migration: ensure remindDays field exists
+      if (!parsed || !Array.isArray(parsed.items)) return defaultState();
       parsed.items.forEach(it => { if (it.remindDays === undefined) it.remindDays = 3; });
       return {
         items: parsed.items,
         notify: !!parsed.notify,
         notifyTime: typeof parsed.notifyTime === 'string' && /^\d{2}:\d{2}$/.test(parsed.notifyTime) ? parsed.notifyTime : '09:00',
         hiddenCourses: Array.isArray(parsed.hiddenCourses) ? parsed.hiddenCourses : [],
-        lastNotified: parsed.lastNotified || {}
+        lastNotified: parsed.lastNotified || {},
+        subjects: Array.isArray(parsed.subjects) ? parsed.subjects : []
       };
     } catch (e) {
-      return { items: [], notify: false, notifyTime: '09:00', hiddenCourses: [], lastNotified: {} };
+      return defaultState();
     }
   }
   function saveState() {
@@ -2238,7 +2358,8 @@
         notify: notifyEnabled,
         notifyTime: state.notifyTime,
         hiddenCourses: state.hiddenCourses || [],
-        lastNotified: state.lastNotified
+        lastNotified: state.lastNotified,
+        subjects: state.subjects || []
       }));
     } catch (e) {
       toast(t('toast_save_failed'), 'error');
@@ -2346,6 +2467,7 @@
     if (currentView === 'gantt') renderGantt();
     else if (currentView === 'calendar') renderCalendar();
     else if (currentView === 'settings') { host.innerHTML = ''; }
+    else if (currentView === 'timetable') { host.innerHTML = ''; renderTimetable(); }
   }
 
   function emptyHtml(msg, _unused, sub) {
@@ -2904,6 +3026,120 @@
     updateHapticBtn();
     if (hapticEnabled) haptic('success');
     toast(hapticEnabled ? t('toast_haptic_on') : t('toast_haptic_off'), hapticEnabled ? 'success' : 'warn');
+  });
+
+  // ===== Timetable =====
+  const SUBJECT_COLORS = ['#7358d9','#e53935','#f06675','#eaa93c','#43a047','#1e88e5','#00acc1','#8e24aa','#5e3cb8','#ef6c00'];
+  const NUM_PERIODS = 6;
+  const DAYS = [1, 2, 3, 4, 5, 6]; // Mon-Sat
+  let editingSubjectId = null;
+  let editingDay = 1, editingPeriod = 1;
+  let selectedColor = SUBJECT_COLORS[0];
+
+  function getSubjectAt(day, period) {
+    return (state.subjects || []).find(s => s.day === day && s.period === period);
+  }
+
+  function renderTimetable() {
+    const grid = document.getElementById('timetableGrid');
+    if (!grid) return;
+    const dayNames = t('subject_day_short');
+    let html = '<div class="tt-corner"></div>';
+    for (let i = 0; i < DAYS.length; i++) {
+      html += `<div class="tt-daylabel">${dayNames[i]}</div>`;
+    }
+    for (let p = 1; p <= NUM_PERIODS; p++) {
+      html += `<div class="tt-periodlabel">${t('subject_period_short', p)}</div>`;
+      for (const d of DAYS) {
+        const sub = getSubjectAt(d, p);
+        if (sub) {
+          html += `<div class="tt-cell filled" data-day="${d}" data-period="${p}" style="background:${sub.color};">${escapeHtml(sub.name)}</div>`;
+        } else {
+          html += `<div class="tt-cell empty" data-day="${d}" data-period="${p}">+</div>`;
+        }
+      }
+    }
+    grid.innerHTML = html;
+    grid.querySelectorAll('.tt-cell').forEach(c => {
+      c.addEventListener('click', () => {
+        openSubjectEditor(Number(c.dataset.day), Number(c.dataset.period));
+      });
+    });
+  }
+
+  function openSubjectEditor(day, period) {
+    editingDay = day;
+    editingPeriod = period;
+    const existing = getSubjectAt(day, period);
+    editingSubjectId = existing ? existing.id : null;
+    const dayNames = t('subject_day_short');
+    $('subjectEditTitle').textContent = existing ? t('subject_edit_title_edit') : t('subject_edit_title');
+    $('subjectName').value = existing ? existing.name : '';
+    $('subjectEditSlot').textContent = `${dayNames[DAYS.indexOf(day)]}曜 ${t('subject_period_short', period)}`;
+    selectedColor = existing ? existing.color : SUBJECT_COLORS[Math.floor(Math.random() * SUBJECT_COLORS.length)];
+    renderColorPalette();
+    $('btnSubjectDelete').style.display = existing ? '' : 'none';
+    const ov = $('subjectEditOverlay');
+    ov.classList.add('open');
+    ov.setAttribute('aria-hidden', 'false');
+    setTimeout(() => $('subjectName').focus(), 100);
+  }
+  function closeSubjectEditor() {
+    const ov = $('subjectEditOverlay');
+    ov.classList.remove('open');
+    ov.setAttribute('aria-hidden', 'true');
+    editingSubjectId = null;
+  }
+  function renderColorPalette() {
+    const host = $('subjectColorPalette');
+    host.innerHTML = SUBJECT_COLORS.map(c =>
+      `<div class="color-swatch${c === selectedColor ? ' selected' : ''}" data-color="${c}" style="background:${c};"></div>`
+    ).join('');
+    host.querySelectorAll('.color-swatch').forEach(sw => {
+      sw.addEventListener('click', () => {
+        selectedColor = sw.dataset.color;
+        renderColorPalette();
+      });
+    });
+  }
+  $('btnSubjectSave').addEventListener('click', () => {
+    const name = $('subjectName').value.trim();
+    if (!name) { $('subjectName').focus(); return; }
+    if (!Array.isArray(state.subjects)) state.subjects = [];
+    if (editingSubjectId) {
+      const s = state.subjects.find(x => x.id === editingSubjectId);
+      if (s) { s.name = name; s.color = selectedColor; }
+    } else {
+      const newId = (state.subjects.reduce((m, s) => Math.max(m, s.id || 0), 0)) + 1;
+      state.subjects.push({ id: newId, name, color: selectedColor, day: editingDay, period: editingPeriod });
+    }
+    saveState();
+    renderTimetable();
+    closeSubjectEditor();
+    toast(t('toast_subject_saved'), 'success');
+  });
+  $('btnSubjectCancel').addEventListener('click', closeSubjectEditor);
+  $('btnSubjectDelete').addEventListener('click', () => {
+    if (!editingSubjectId) return;
+    const s = (state.subjects || []).find(x => x.id === editingSubjectId);
+    if (!s) return;
+    if (!confirm(t('confirm_delete_subject', s.name))) return;
+    state.subjects = state.subjects.filter(x => x.id !== editingSubjectId);
+    saveState();
+    renderTimetable();
+    closeSubjectEditor();
+    toast(t('toast_subject_deleted'), 'warn');
+  });
+  $('subjectEditOverlay').addEventListener('click', (e) => {
+    if (e.target.id === 'subjectEditOverlay') closeSubjectEditor();
+  });
+  $('btnOpenTimetable').addEventListener('click', () => {
+    renderTimetable();
+    previousView = 'settings';
+    switchView('timetable');
+  });
+  $('btnCloseTimetable').addEventListener('click', () => {
+    switchView('settings');
   });
 
   $('filterCourse').addEventListener('change', (e) => { filterCourse = e.target.value; render(); });
