@@ -1722,6 +1722,13 @@
       </div>
       <button id="btnLang" class="btn setting-btn">日本語</button>
     </div>
+    <div class="setting-row">
+      <div class="setting-info">
+        <div class="setting-label" data-i18n="setting_haptic">📳 振動</div>
+        <div class="setting-desc" data-i18n="setting_haptic_desc">ボタン操作時の触覚フィードバック</div>
+      </div>
+      <button id="btnHaptic" class="btn setting-btn">📳</button>
+    </div>
   </section>
 </div>
 
@@ -1808,6 +1815,7 @@
 
   const STORAGE_KEY = 'kadai_tracker_v2';
   const LANG_KEY = 'kadai_tracker_lang';
+  const HAPTIC_KEY = 'kadai_tracker_haptic';
   const DAY_MS = 86400000;
 
   const TYPE_EMOJI = {
@@ -1839,6 +1847,10 @@
       setting_theme_title: 'テーマ切り替え',
       setting_lang: '🌐 言語',
       setting_lang_desc: '表示言語を切り替え',
+      setting_haptic: '📳 振動',
+      setting_haptic_desc: 'ボタン操作時の触覚フィードバック',
+      toast_haptic_on: '📳 振動ON',
+      toast_haptic_off: '📴 振動OFF',
       modal_add_title: '課題を追加',
       modal_edit_title: '課題を編集',
       field_course: '講義名',
@@ -1953,6 +1965,10 @@
       setting_theme_title: 'Toggle theme',
       setting_lang: '🌐 Language',
       setting_lang_desc: 'Change display language',
+      setting_haptic: '📳 Haptic Feedback',
+      setting_haptic_desc: 'Vibrate on button presses',
+      toast_haptic_on: '📳 Haptics ON',
+      toast_haptic_off: '📴 Haptics OFF',
       modal_add_title: 'Add task',
       modal_edit_title: 'Edit task',
       field_course: 'Course',
@@ -2831,6 +2847,13 @@
     applyStaticI18n();
     render();
   });
+  $('btnHaptic').addEventListener('click', () => {
+    hapticEnabled = !hapticEnabled;
+    localStorage.setItem(HAPTIC_KEY, hapticEnabled ? 'on' : 'off');
+    updateHapticBtn();
+    if (hapticEnabled) haptic('success');
+    toast(hapticEnabled ? t('toast_haptic_on') : t('toast_haptic_off'), hapticEnabled ? 'success' : 'warn');
+  });
 
   $('filterCourse').addEventListener('change', (e) => { filterCourse = e.target.value; render(); });
   $('filterStatus').addEventListener('change', (e) => { filterStatus = e.target.value; render(); });
@@ -2863,14 +2886,20 @@
     return false;
   }
 
+  let hapticEnabled = localStorage.getItem(HAPTIC_KEY) !== 'off';
   function haptic(style) {
     // style: 'light' | 'medium' | 'heavy' | 'soft' | 'rigid' | 'success' | 'warning' | 'error' | 'selection'
+    if (!hapticEnabled) return;
     if (postToNative('haptic', style || 'light')) return;
     if (typeof navigator !== 'undefined' && typeof navigator.vibrate === 'function') {
       const map = { light: 10, medium: 20, heavy: 35, soft: 8, rigid: 25, success: [15, 50, 15], warning: [25, 60, 25], error: [30, 60, 30, 60, 30], selection: 5 };
       const p = map[style] || 10;
       try { navigator.vibrate(p); } catch (e) {}
     }
+  }
+  function updateHapticBtn() {
+    const btn = document.getElementById('btnHaptic');
+    if (btn) btn.textContent = hapticEnabled ? '📳' : '📴';
   }
   const hasNativeBridge = (() => {
     try {
@@ -3075,6 +3104,7 @@
 
   applyStaticI18n();
   updateNotifyBtn();
+  updateHapticBtn();
   render();
   handleUrlAction();
   setTimeout(() => {
