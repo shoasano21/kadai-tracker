@@ -2302,6 +2302,7 @@
     maxDate = new Date(maxDate.getFullYear(), maxDate.getMonth(), maxDate.getDate() + 2);
     const totalDays = Math.max(1, daysBetween(minDate, maxDate));
     const pctOfDate = (dStr) => (daysBetween(minDate, parseDate(dStr)) / totalDays) * 100;
+    const pctOfDateEndInclusive = (dStr) => ((daysBetween(minDate, parseDate(dStr)) + 1) / totalDays) * 100;
     const todayPct = (daysBetween(minDate, today) / totalDays) * 100;
 
     const months = [];
@@ -2337,7 +2338,7 @@
             </div>
             <div class="actions-col"></div>
           </div>
-          ${items.map((it, i) => ganttRowHtml(it, pctOfDate, i)).join('')}
+          ${items.map((it, i) => ganttRowHtml(it, pctOfDate, pctOfDateEndInclusive, i)).join('')}
           <div class="today-line" style="left:calc(var(--title-w) + (100% - var(--title-w) - var(--action-w)) * ${todayPct / 100});"></div>
         </div>
       </div>
@@ -2360,9 +2361,9 @@
     });
   }
 
-  function ganttRowHtml(it, pctOfDate, idx) {
+  function ganttRowHtml(it, pctOfDate, pctOfDateEndInclusive, idx) {
     const leftPct = pctOfDate(it.start);
-    const rightPct = pctOfDate(it.end);
+    const rightPct = pctOfDateEndInclusive(it.end);
     const widthPct = Math.max(1.8, rightPct - leftPct);
     const s = statusOf(it);
     const barClass = it.done ? 'done' : s;
