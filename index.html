@@ -4014,18 +4014,24 @@ setTimeout(function () {
     for (let i = 0; i < DAYS.length; i++) {
       html += `<div class="tt-daylabel">${dayNames[i]}</div>`;
     }
+    const rowHasFilled = [];
     for (let p = 1; p <= NUM_PERIODS; p++) {
+      let anyFilled = false;
       html += `<div class="tt-periodlabel">${t('subject_period_short', p)}</div>`;
       for (const d of DAYS) {
         const sub = getSubjectAt(d, p);
         if (sub) {
+          anyFilled = true;
           html += `<div class="tt-cell filled" data-day="${d}" data-period="${p}" style="background:${sub.color};">${escapeHtml(sub.name)}</div>`;
         } else {
           html += `<div class="tt-cell empty" data-day="${d}" data-period="${p}">+</div>`;
         }
       }
+      rowHasFilled.push(anyFilled);
     }
     grid.innerHTML = html;
+    const rowSizes = rowHasFilled.map(f => f ? '1fr' : '0.4fr').join(' ');
+    grid.style.gridTemplateRows = `22px ${rowSizes}`;
     grid.querySelectorAll('.tt-cell').forEach(c => {
       c.addEventListener('click', () => {
         openSubjectEditor(Number(c.dataset.day), Number(c.dataset.period));
