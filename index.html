@@ -1325,6 +1325,12 @@
     position: fixed;
     inset: 0;
     z-index: 200;
+    background: rgba(15,18,35,0.5);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    display: flex;
+    justify-content: center;
+    align-items: center;
     pointer-events: none;
     opacity: 0;
     transition: opacity .25s ease;
@@ -1333,29 +1339,23 @@
   .cal-detail-backdrop {
     position: absolute;
     inset: 0;
-    background: rgba(0,0,0,0.35);
   }
   .cal-detail-sheet {
-    position: absolute;
-    left: 0; right: 0; bottom: 0;
-    max-height: 80vh;
+    position: relative;
+    width: 90%;
+    max-width: 480px;
+    max-height: 86dvh;
     overflow-y: auto;
     background: var(--panel-solid);
-    border-top-left-radius: 22px;
-    border-top-right-radius: 22px;
-    padding: 12px 18px calc(20px + env(safe-area-inset-bottom));
-    box-shadow: 0 -12px 36px -6px rgba(0,0,0,0.22);
-    transform: translateY(100%);
-    transition: transform .28s cubic-bezier(0.22, 0.61, 0.36, 1);
+    border: 1px solid var(--border);
+    border-radius: 18px;
+    padding: 22px;
+    box-shadow: var(--shadow-lg);
+    transform: scale(0.9) translateY(20px);
+    transition: transform .3s cubic-bezier(0.34, 1.56, 0.64, 1);
   }
-  .cal-detail-overlay.open .cal-detail-sheet { transform: translateY(0); }
-  .cal-detail-grabber {
-    width: 42px;
-    height: 4px;
-    margin: 4px auto 14px;
-    background: rgba(0,0,0,0.18);
-    border-radius: 2px;
-  }
+  .cal-detail-overlay.open .cal-detail-sheet { transform: scale(1) translateY(0); }
+  .cal-detail-grabber { display: none; }
   .cal-detail-header {
     font-weight: 800;
     font-size: 15px;
@@ -1909,7 +1909,7 @@
     .cal-cell { min-height: 48px; height: 48px; border-radius: 8px; padding: 2px; }
     .cal-cell .day-num { font-size: 12px; }
     .cal-chip { font-size: 9.5px; padding: 1px 3px; -webkit-line-clamp: 2; }
-    .cal-detail-sheet { padding: 10px 14px calc(16px + env(safe-area-inset-bottom)); }
+    .cal-detail-sheet { padding: 18px; max-height: 90dvh; }
     .fab { width: 56px; height: 56px; right: 16px; bottom: 20px; font-size: 26px; }
   }
 </style>
