@@ -586,20 +586,29 @@
     font-size: 14px;
     font-weight: 700;
   }
-  .cal-period.empty { align-items: center; }
+  .cal-period.empty {
+    align-items: center;
+    min-height: 22px;
+  }
   .cal-period.empty .cal-period-content {
     opacity: 0.4;
+    gap: 0;
   }
-  .cal-period.empty .cal-period-num { padding-top: 0; font-size: 13px; }
-  .cal-period-empty {
-    border-left: 4px solid transparent;
-    padding: 2px 10px;
-    background: var(--panel-2);
-    border-radius: 6px;
+  .cal-period.empty .cal-period-num {
+    padding-top: 0;
     font-size: 12px;
     font-weight: 600;
+  }
+  .cal-period-empty {
+    border-left: none;
+    padding: 0 10px;
+    background: transparent;
+    border-radius: 0;
+    font-size: 12px;
+    font-weight: 500;
     color: var(--text-sub);
-    text-align: center;
+    text-align: left;
+    line-height: 1.2;
   }
   .help-modal { max-width: 460px; width: 100%; max-height: 80vh; overflow-y: auto; }
   .help-header { display: flex; align-items: center; justify-content: space-between; gap: 10px; margin-bottom: 12px; }
