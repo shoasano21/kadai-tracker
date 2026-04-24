@@ -191,11 +191,11 @@
     display: none;
   }
   body[data-view="calendar"] .cal-cell {
-    height: 96px;
+    height: 64px;
   }
   body[data-view="calendar"] .cal-chip {
-    font-size: 11px;
-    padding: 2px 5px;
+    font-size: 10px;
+    padding: 1px 4px;
   }
 
   body::before, body::after { display: none; }
@@ -1094,12 +1094,12 @@
     display: flex;
     align-items: center;
     gap: 8px;
-    margin-bottom: 16px;
+    margin-bottom: 8px;
   }
   .calendar-header .cal-title {
     flex: 1;
     text-align: center;
-    font-size: 32px;
+    font-size: 24px;
     font-weight: 800;
     letter-spacing: 0.01em;
     color: var(--text);
@@ -1157,12 +1157,12 @@
     border: none;
     border-radius: 8px;
     background: var(--panel-solid);
-    padding: 4px 3px 3px;
+    padding: 3px 2px 2px;
     cursor: pointer;
     position: relative;
     transition: transform .15s, background .15s;
     overflow: hidden;
-    height: 80px;
+    height: 56px;
     vertical-align: top;
   }
   @media (hover: hover) {
@@ -1793,7 +1793,7 @@
     .app { padding: 28px 12px calc(170px + env(safe-area-inset-bottom)); }
     .calendar-wrap { padding: 12px 8px; }
     .calendar-weekdays > div { font-size: 10px; padding: 4px 0; }
-    .cal-cell { min-height: 60px; height: 60px; border-radius: 8px; padding: 3px; }
+    .cal-cell { min-height: 48px; height: 48px; border-radius: 8px; padding: 2px; }
     .cal-cell .day-num { font-size: 12px; }
     .cal-chip { font-size: 9.5px; padding: 1px 3px; -webkit-line-clamp: 2; }
     .cal-detail { padding: 12px; margin-top: 12px; }
