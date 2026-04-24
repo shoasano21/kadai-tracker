@@ -2615,14 +2615,18 @@
     const barClass = it.done ? 'done' : s;
     const label = `${fmtDate(it.start)} → ${fmtDate(it.end)}`;
     const delay = Math.min(idx * 0.04, 0.5);
+    const sub = getSubjectByName(it.course);
+    const subjectColor = (sub && !it.done) ? sub.color : null;
+    const tagStyle = subjectColor ? ` style="color:${subjectColor};"` : '';
+    const barColorStyle = subjectColor ? `background:${subjectColor};` : '';
     return `
       <div class="gantt-row ${it.done ? 'done' : ''}" data-id="${it.id}" data-action="detail">
         <div class="task-label">
-          <span class="course-tag">${escapeHtml(it.course)}</span>
+          <span class="course-tag"${tagStyle}>${escapeHtml(it.course)}</span>
           <span class="task-title">${escapeHtml(TYPE_LABEL[it.type] || '')}</span>
         </div>
         <div class="timeline-col">
-          <div class="bar ${barClass}" style="left:${leftPct}%;width:${widthPct}%;animation-delay:${delay}s;" title="${escapeHtml(label)}">${label}</div>
+          <div class="bar ${barClass}" style="left:${leftPct}%;width:${widthPct}%;animation-delay:${delay}s;${barColorStyle}" title="${escapeHtml(label)}">${label}</div>
         </div>
       </div>
     `;
@@ -2730,9 +2734,11 @@
       c.dow === 0 ? 'sun' : (c.dow === 6 ? 'sat' : '')
     ].filter(Boolean).join(' ');
 
-    const chips = c.tasks.slice(0, 2).map(t => {
-      const s = t.done ? 'past' : statusOf(t);
-      return `<div class="cal-chip ${s}" title="${escapeHtml(t.course)} — ${escapeHtml(t.title)}">${escapeHtml(t.course)}</div>`;
+    const chips = c.tasks.slice(0, 2).map(tk => {
+      const s = tk.done ? 'past' : statusOf(tk);
+      const sub = getSubjectByName(tk.course);
+      const style = sub ? ` style="border-color:${sub.color};background:${sub.color}22;color:${sub.color};"` : '';
+      return `<div class="cal-chip ${s}"${style} title="${escapeHtml(tk.course)} — ${escapeHtml(tk.title)}">${escapeHtml(tk.course)}</div>`;
     }).join('');
     const more = c.tasks.length > 2 ? `<div class="cal-chip more">+${c.tasks.length - 2}</div>` : '';
     return `
@@ -2797,10 +2803,15 @@
     else if (left < 0) leftText = t('overdue', Math.abs(left));
     else if (left === 0) leftText = t('due_today');
     else leftText = t('days_left', left);
+    const sub = getSubjectByName(it.course);
+    const borderColor = (sub && !it.done) ? sub.color : '';
+    const courseColor = (sub && !it.done) ? sub.color : '';
+    const rowStyle = `cursor:pointer;${borderColor ? `border-left-color:${borderColor};` : ''}`;
+    const courseStyle = courseColor ? ` style="color:${courseColor};"` : '';
     return `
-      <div class="cal-task ${s}" data-id="${it.id}" data-action="detail" style="cursor:pointer;">
+      <div class="cal-task ${s}" data-id="${it.id}" data-action="detail" style="${rowStyle}">
         <div class="cal-task-body">
-          <div class="cal-task-course">${escapeHtml(it.course)}</div>
+          <div class="cal-task-course"${courseStyle}>${escapeHtml(it.course)}</div>
           <div class="cal-task-meta">
             <span class="type-badge ${it.type}">${emoji} ${typeLbl}</span>
             &nbsp;${leftText}
