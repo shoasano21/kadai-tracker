@@ -1507,24 +1507,61 @@
   }
   .input-split { display: flex; gap: 10px; align-items: stretch; }
   .input-split > input, .input-split > select { flex: 1; min-width: 0; margin-top: 0; }
-  .input-split > .select-with-delete { flex: 1; min-width: 0; margin-top: 0; }
-  .course-delete-btn {
-    flex: 0 0 auto;
-    align-self: stretch;
-    width: 38px;
-    border: 1px solid var(--border-strong);
+
+  .chip-grid {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-top: 10px;
+    max-height: 140px;
+    overflow-y: auto;
+    padding: 2px;
+  }
+  .chip-grid:empty { display: none; }
+  .course-chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 7px 12px;
     background: var(--panel-solid);
-    color: var(--urgent);
-    font-size: 22px;
+    border: 1.5px solid var(--border-strong);
+    border-radius: 999px;
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--text);
+    cursor: pointer;
+    font-family: inherit;
+    transition: all .15s;
+  }
+  .course-chip:hover { transform: translateY(-1px); box-shadow: var(--shadow); }
+  .course-chip.active {
+    background: var(--text);
+    color: #fff;
+    border-color: var(--text);
+  }
+  .course-chip.active[data-color] {
+    background: var(--chip-color, var(--text));
+    border-color: var(--chip-color, var(--text));
+    color: #fff;
+  }
+  .course-chip .chip-del {
+    display: none;
+    width: 18px;
+    height: 18px;
+    border-radius: 50%;
+    border: none;
+    background: rgba(255,255,255,0.22);
+    color: inherit;
+    font-size: 12px;
     font-weight: 700;
     cursor: pointer;
     padding: 0;
-    display: inline-flex;
+    line-height: 1;
     align-items: center;
     justify-content: center;
-    border-radius: 10px;
   }
-  .course-delete-btn:hover { background: rgba(231,76,92,0.12); }
+  .course-chip.active .chip-del { display: inline-flex; }
+  .course-chip .chip-del:hover { background: rgba(255,255,255,0.38); }
   .chip-suggestions {
     display: flex;
     flex-wrap: nowrap;
@@ -1914,13 +1951,11 @@
     <form id="addForm" novalidate>
       <div class="field">
         <label for="fCourse"><span data-i18n="field_course">🎓 講義名</span><span class="req">*</span></label>
-        <div class="input-split">
-          <input id="fCourse" type="text" maxlength="40" autocomplete="off" data-i18n-ph="ph_course" placeholder="新しい講義名を入力..." />
-          <select id="fCourseSelect" class="course-select">
-            <option value="" data-i18n="ph_existing">既存から選択...</option>
-          </select>
-          <button type="button" id="btnDeleteCourse" class="course-delete-btn" data-i18n-title="delete_course_title" data-i18n-aria="delete_course_title" hidden>×</button>
-        </div>
+        <input id="fCourse" type="text" maxlength="40" autocomplete="off" data-i18n-ph="ph_course" placeholder="新しい講義名を入力..." />
+        <select id="fCourseSelect" class="course-select" style="display:none;">
+          <option value=""></option>
+        </select>
+        <div id="fCourseChipGrid" class="chip-grid"></div>
       </div>
       <input id="fTitle" type="hidden" />
       <select id="fTitleSelect" class="course-select" style="display:none;">
@@ -2925,30 +2960,41 @@
   }
 
   // ===== Modal =====
-  function renderCourseChips() {
+  function computeCourseCandidates() {
     const hidden = new Set(state.hiddenCourses || []);
     const subjectNames = Array.from(new Set((state.subjects || []).map(s => s.name).filter(Boolean)));
     const existing = Array.from(new Set(state.items.map(i => i.course).filter(Boolean)));
     const hasSubjects = subjectNames.length > 0;
     let merged;
     if (hasSubjects) {
-      // When a timetable exists, prioritize registered subjects, then any other course
-      // used in existing tasks that isn't in the timetable.
       const existingExtra = existing.filter(c => !subjectNames.includes(c));
       merged = subjectNames.concat(existingExtra);
     } else {
       merged = existing.slice().sort()
         .concat(COMMON_COURSES.filter(c => !existing.includes(c)));
     }
-    merged = merged.filter(c => !hidden.has(c));
-
-    const sel = $('fCourseSelect');
-    if (sel) {
-      sel.innerHTML = `<option value="">${t('ph_existing')}</option>` +
-        merged.map(c => `<option value="${escapeHtml(c)}">${escapeHtml(c)}</option>`).join('');
-    }
-    const delBtn = document.getElementById('btnDeleteCourse');
-    if (delBtn) delBtn.hidden = true;
+    return merged.filter(c => !hidden.has(c));
+  }
+  function renderCourseChips() {
+    const grid = $('fCourseChipGrid');
+    if (!grid) return;
+    const merged = computeCourseCandidates();
+    grid.innerHTML = merged.map(c => {
+      const sub = getSubjectByName(c);
+      const color = sub ? sub.color : '';
+      const attr = color ? ` data-color="true" style="--chip-color:${color};border-color:${color};color:${color};"` : '';
+      return `<button type="button" class="course-chip" data-course="${escapeHtml(c)}"${attr}>` +
+        `<span class="chip-text">${escapeHtml(c)}</span>` +
+        `<span class="chip-del" data-action="del-chip" aria-label="${t('delete_course_title')}">×</span>` +
+        `</button>`;
+    }).join('');
+    updateChipActiveState();
+  }
+  function updateChipActiveState() {
+    const cur = ($('fCourse').value || '').trim();
+    document.querySelectorAll('#fCourseChipGrid .course-chip').forEach(chip => {
+      chip.classList.toggle('active', chip.dataset.course === cur);
+    });
   }
   function updateChipActiveState() {}
 
@@ -3003,28 +3049,33 @@
   if (btnAdd) btnAdd.addEventListener('click', openModal);
   $('btnCancel').addEventListener('click', closeModal);
   $('fCourse').addEventListener('input', updateChipActiveState);
-  $('fCourseSelect').addEventListener('change', (e) => {
-    const v = e.target.value;
-    const delBtn = $('btnDeleteCourse');
-    if (!v) { if (delBtn) delBtn.hidden = true; return; }
-    $('fCourse').value = v;
+  $('fCourseChipGrid').addEventListener('click', (e) => {
+    const delBtn = e.target.closest('.chip-del');
+    if (delBtn) {
+      e.stopPropagation();
+      const chip = delBtn.closest('.course-chip');
+      if (!chip) return;
+      const c = chip.dataset.course;
+      if (!confirm(t('confirm_delete_course', c))) return;
+      if (!Array.isArray(state.hiddenCourses)) state.hiddenCourses = [];
+      if (!state.hiddenCourses.includes(c)) state.hiddenCourses.push(c);
+      saveState();
+      if ($('fCourse').value === c) $('fCourse').value = '';
+      renderCourseChips();
+      toast(t('toast_course_deleted', c), 'warn');
+      return;
+    }
+    const chip = e.target.closest('.course-chip');
+    if (!chip) return;
+    const c = chip.dataset.course;
+    if ($('fCourse').value === c) {
+      $('fCourse').value = '';
+    } else {
+      $('fCourse').value = c;
+    }
     updateChipActiveState();
-    if (delBtn) delBtn.hidden = false;
   });
-  $('btnDeleteCourse').addEventListener('click', () => {
-    const sel = $('fCourseSelect');
-    const c = sel.value;
-    if (!c) return;
-    if (!confirm(t('confirm_delete_course', c))) return;
-    if (!Array.isArray(state.hiddenCourses)) state.hiddenCourses = [];
-    if (!state.hiddenCourses.includes(c)) state.hiddenCourses.push(c);
-    saveState();
-    renderCourseChips();
-    sel.value = '';
-    $('btnDeleteCourse').hidden = true;
-    if ($('fCourse').value === c) $('fCourse').value = '';
-    toast(t('toast_course_deleted', c), 'warn');
-  });
+  $('fCourse').addEventListener('input', updateChipActiveState);
 
   // Populate task title dropdown from existing titles, honoring course filter
   function refreshTitleSelect() {
