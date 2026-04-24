@@ -3433,7 +3433,7 @@
     switchView('timetable');
   });
   $('btnCloseTimetable').addEventListener('click', () => {
-    switchView('settings');
+    switchView(previousView || 'calendar');
   });
 
   $('filterCourse').addEventListener('change', (e) => { filterCourse = e.target.value; render(); });
