@@ -3593,8 +3593,9 @@
   // ===== Syllabus =====
   const SYLLABUS_UNLOCKED_KEY = 'kadai_tracker_syllabus_unlocked';
   let syllabusUnlocked = localStorage.getItem(SYLLABUS_UNLOCKED_KEY) === '1';
-  let selectedSyllabusId = SYLLABI[0] ? SYLLABI[0].id : null;
+  let selectedSyllabusId = null;
   function renderSyllabusPicker() {
+    if (selectedSyllabusId === null && SYLLABI.length > 0) selectedSyllabusId = SYLLABI[0].id;
     const picker = $('syllabusPicker');
     if (!picker) return;
     const chips = SYLLABI.map(s => {
