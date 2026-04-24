@@ -561,7 +561,7 @@
     display: grid;
     grid-template-columns: 32px 1fr;
     gap: 10px;
-    align-items: stretch;
+    align-items: center;
   }
   .cal-period-num {
     display: inline-flex;
@@ -591,14 +591,17 @@
   }
   .cal-period-empty {
     border-left: 4px solid transparent;
-    padding: 8px 10px;
+    padding: 4px 10px;
     background: var(--panel-2);
     border-radius: 6px;
-    font-size: 14px;
+    font-size: 13px;
     font-weight: 700;
     color: var(--text-sub);
     text-align: center;
+    line-height: 1.2;
+    min-height: 0;
   }
+  .cal-period.empty { align-items: center; }
   .help-modal { max-width: 460px; width: 100%; max-height: 80vh; overflow-y: auto; }
   .help-header { display: flex; align-items: center; justify-content: space-between; gap: 10px; margin-bottom: 12px; }
   .help-header h2 { margin: 0; font-size: 20px; }
