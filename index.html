@@ -1545,23 +1545,23 @@
     color: #fff;
   }
   .course-chip .chip-del {
-    display: none;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
     width: 18px;
     height: 18px;
     border-radius: 50%;
     border: none;
-    background: rgba(255,255,255,0.22);
-    color: inherit;
-    font-size: 12px;
+    background: rgba(231,76,92,0.15);
+    color: var(--urgent);
+    font-size: 14px;
     font-weight: 700;
     cursor: pointer;
     padding: 0;
     line-height: 1;
-    align-items: center;
-    justify-content: center;
   }
-  .course-chip.active .chip-del { display: inline-flex; }
-  .course-chip .chip-del:hover { background: rgba(255,255,255,0.38); }
+  .course-chip.active .chip-del { background: rgba(255,255,255,0.28); color: #fff; }
+  .course-chip .chip-del:hover { background: var(--urgent); color: #fff; }
   .chip-suggestions {
     display: flex;
     flex-wrap: nowrap;
