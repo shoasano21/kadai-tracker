@@ -534,7 +534,9 @@
   .timetable-grid {
     display: grid;
     grid-template-columns: 28px repeat(5, minmax(0, 1fr));
-    grid-template-rows: 22px repeat(6, calc((100dvh - 200px - env(safe-area-inset-top) - env(safe-area-inset-bottom)) / 6));
+    grid-auto-rows: var(--tt-row-height, 1fr);
+    grid-template-rows: 22px;
+    grid-auto-flow: row;
     gap: 4px;
     padding: 4px 6px;
   }
@@ -3496,7 +3498,23 @@
         openSubjectEditor(Number(c.dataset.day), Number(c.dataset.period));
       });
     });
+    sizeTimetableRows();
   }
+  function sizeTimetableRows() {
+    const grid = document.getElementById('timetableGrid');
+    if (!grid) return;
+    // 22 (header row) + 6 row gaps (4px) + 4+6 padding = 56
+    // Plus surrounding overhead (settings header + panel padding + app padding + bottom bar + safe areas)
+    const overhead = 56 + 40 + 14 + 4 + 80; // header content + row gaps + padding etc.
+    const safeTop = parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--safe-top') || '0') || 0;
+    const safeBottom = parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--safe-bottom') || '0') || 0;
+    const available = window.innerHeight - overhead - safeTop - safeBottom;
+    const rowH = Math.max(48, Math.floor(available / 6));
+    grid.style.setProperty('--tt-row-height', rowH + 'px');
+  }
+  window.addEventListener('resize', () => {
+    if (currentView === 'timetable') sizeTimetableRows();
+  });
 
   function populateSubjectNameSuggestions() {
     const sel = $('subjectNameSelect');
