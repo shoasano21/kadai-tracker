@@ -282,13 +282,13 @@
     width: 60px;
     height: 60px;
     border-radius: 50%;
-    background: #fff;
+    background: linear-gradient(135deg, #7358d9 0%, #4c2db0 100%);
     color: transparent;
     border: none;
     padding: 0;
     cursor: pointer;
     font-size: 0;
-    box-shadow: 0 4px 10px rgba(0,0,0,0.1), 0 14px 32px -6px rgba(0,0,0,0.22);
+    box-shadow: 0 4px 12px rgba(76,45,176,0.35), 0 14px 32px -6px rgba(76,45,176,0.3);
     transition: transform .2s ease, box-shadow .2s ease;
   }
   .header-add-btn::before,
@@ -299,18 +299,18 @@
     top: 50%;
     width: 22px;
     height: 2px;
-    background: #111;
+    background: #fff;
     border-radius: 2px;
     transform: translate(-50%, -50%);
   }
   .header-add-btn::after { transform: translate(-50%, -50%) rotate(90deg); }
   .header-add-btn:hover {
     transform: translateY(-3px);
-    box-shadow: 0 6px 14px rgba(0,0,0,0.12), 0 18px 42px -6px rgba(0,0,0,0.28);
+    box-shadow: 0 6px 16px rgba(76,45,176,0.45), 0 18px 42px -6px rgba(76,45,176,0.38);
   }
   .header-add-btn:active {
     transform: translateY(0) scale(0.95);
-    box-shadow: 0 2px 6px rgba(0,0,0,0.1), 0 8px 18px -4px rgba(0,0,0,0.2);
+    box-shadow: 0 2px 8px rgba(76,45,176,0.35), 0 8px 18px -4px rgba(76,45,176,0.28);
   }
   header.topbar h1 {
     margin: 0;
@@ -1970,13 +1970,7 @@
       </div>
       <button id="btnLang" class="btn setting-btn">日本語</button>
     </div>
-    <div class="setting-row">
-      <div class="setting-info">
-        <div class="setting-label" data-i18n="setting_timetable">📅 時間割</div>
-        <div class="setting-desc" data-i18n="setting_timetable_desc">曜日と限の科目を登録</div>
-      </div>
-      <button id="btnOpenTimetable" class="btn setting-btn" data-i18n="btn_edit">編集</button>
-    </div>
+    <button id="btnOpenTimetable" hidden></button>
     <div class="setting-row">
       <div class="setting-info">
         <div class="setting-label" data-i18n="setting_haptic">📳 振動</div>
