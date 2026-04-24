@@ -586,14 +586,14 @@
     font-size: 13px;
     color: var(--text-sub);
   }
-  .cal-other-header {
+  .cal-other-header, .cal-tasks-header {
     margin-top: 14px;
     padding-top: 10px;
     border-top: 1px dashed var(--border);
-    font-size: 12px;
-    font-weight: 700;
-    color: var(--text-sub);
-    margin-bottom: 6px;
+    font-size: 13px;
+    font-weight: 800;
+    color: var(--text);
+    margin-bottom: 8px;
   }
 
   .bottom-bar {
@@ -2154,6 +2154,7 @@
       toast_subject_saved: '📅 時間割を更新しました',
       toast_subject_deleted: '🗑 時間割から削除しました',
       cal_other_tasks: 'その他の課題',
+      cal_tasks_header: 'この日の課題',
       modal_add_title: '課題を追加',
       modal_edit_title: '課題を編集',
       field_course: '講義名',
@@ -2290,6 +2291,7 @@
       toast_subject_saved: '📅 Timetable updated',
       toast_subject_deleted: '🗑 Removed from timetable',
       cal_other_tasks: 'Other tasks',
+      cal_tasks_header: 'Tasks due',
       modal_add_title: 'Add task',
       modal_edit_title: 'Edit task',
       field_course: 'Course',
@@ -2881,40 +2883,42 @@
     const js = selDate.getDay(); // 0=Sun..6=Sat
     const dayIdx = js === 0 ? null : js; // 1..6 match our DAYS
     const hasSubjects = (state.subjects || []).length > 0;
-    if (!hasSubjects) {
-      return tasks.length === 0
-        ? `<div class="cal-detail-empty">${t('cal_empty')}</div>`
-        : tasks.map(it => calTaskHtml(it)).join('');
-    }
 
-    const matched = new Set();
+    // Top: timetable for the day (always shown 1-6 if we have subjects registered and it's Mon-Sat)
     let scheduleHtml = '';
-    if (dayIdx !== null) {
+    if (hasSubjects && dayIdx !== null) {
+      let rows = '';
       for (let p = 1; p <= NUM_PERIODS; p++) {
         const sub = getSubjectAt(dayIdx, p);
-        if (!sub) continue;
-        const periodTasks = tasks.filter(it => it.course === sub.name);
-        periodTasks.forEach(it => matched.add(it.id));
-        scheduleHtml += `<div class="cal-period has-sub">` +
-          `<div class="cal-period-num">${p}</div>` +
-          `<div class="cal-period-content">` +
-            `<div class="cal-period-subject" style="border-left-color:${sub.color};">` +
-              `<span class="cal-period-name">${escapeHtml(sub.name)}</span>` +
+        if (sub) {
+          rows += `<div class="cal-period has-sub">` +
+            `<div class="cal-period-num">${p}</div>` +
+            `<div class="cal-period-content">` +
+              `<div class="cal-period-subject" style="border-left-color:${sub.color};color:${sub.color};">` +
+                `<span class="cal-period-name">${escapeHtml(sub.name)}</span>` +
+              `</div>` +
             `</div>` +
-            (periodTasks.length > 0 ? periodTasks.map(it => calTaskHtml(it)).join('') : '') +
-          `</div>` +
-        `</div>`;
+          `</div>`;
+        } else {
+          rows += `<div class="cal-period empty">` +
+            `<div class="cal-period-num">${p}</div>` +
+            `<div class="cal-period-content">` +
+              `<div class="cal-period-empty">—</div>` +
+            `</div>` +
+          `</div>`;
+        }
       }
+      scheduleHtml = `<div class="cal-day-schedule">${rows}</div>`;
     }
 
-    let html = '';
-    if (scheduleHtml) html += `<div class="cal-day-schedule">${scheduleHtml}</div>`;
-
-    const others = tasks.filter(it => !matched.has(it.id));
-    if (others.length > 0) {
-      html += (scheduleHtml ? `<div class="cal-other-header">${t('cal_other_tasks')}</div>` : '') +
-        others.map(it => calTaskHtml(it)).join('');
+    // Bottom: all tasks due on this day
+    let tasksHtml = '';
+    if (tasks.length > 0) {
+      tasksHtml = `<div class="cal-tasks-header">${t('cal_tasks_header')}</div>` +
+        tasks.map(it => calTaskHtml(it)).join('');
     }
+
+    let html = scheduleHtml + tasksHtml;
     if (!html) html = `<div class="cal-detail-empty">${t('cal_empty')}</div>`;
     return html;
   }
