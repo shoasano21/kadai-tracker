@@ -643,8 +643,16 @@
   .cal-period-empty-mark {
     font-size: 11px;
   }
-  .help-modal { max-width: 460px; width: 100%; max-height: 80vh; overflow-y: auto; }
-  .help-header { display: flex; align-items: center; justify-content: space-between; gap: 10px; margin-bottom: 12px; }
+  .help-modal {
+    max-width: 460px;
+    width: 100%;
+    max-height: 85dvh;
+    display: flex;
+    flex-direction: column;
+    padding: 20px;
+    overflow: hidden;
+  }
+  .help-header { display: flex; align-items: center; justify-content: space-between; gap: 10px; margin-bottom: 12px; flex: 0 0 auto; }
   .help-header h2 { margin: 0; font-size: 20px; }
   .help-close-btn {
     width: 36px; height: 36px;
@@ -656,7 +664,7 @@
     align-items: center;
     justify-content: center;
   }
-  .help-content { display: flex; flex-direction: column; gap: 12px; }
+  .help-content { display: flex; flex-direction: column; gap: 12px; flex: 1 1 auto; overflow-y: auto; -webkit-overflow-scrolling: touch; padding-bottom: 8px; min-height: 0; }
   .help-item {
     display: flex;
     gap: 12px;
