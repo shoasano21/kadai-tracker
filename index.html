@@ -537,10 +537,11 @@
     grid-template-rows: 22px repeat(6, 1fr);
     gap: 4px;
     padding: 4px 6px;
-    height: calc(100dvh - 200px - env(safe-area-inset-top) - env(safe-area-inset-bottom));
+    height: calc(100dvh - 240px - env(safe-area-inset-top) - env(safe-area-inset-bottom));
     overflow: hidden;
   }
   .tt-cell { box-sizing: border-box; }
+  body[data-view="timetable"] #timetableHost { overflow: hidden; }
   .tt-corner, .tt-daylabel, .tt-periodlabel {
     font-size: 11px;
     font-weight: 700;
