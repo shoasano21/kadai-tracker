@@ -587,28 +587,39 @@
     font-weight: 700;
   }
   .cal-period.empty {
-    align-items: center;
-    min-height: 22px;
+    align-items: center !important;
+    min-height: 20px !important;
+    height: 20px !important;
   }
   .cal-period.empty .cal-period-content {
-    opacity: 0.4;
-    gap: 0;
+    opacity: 0.5;
+    gap: 0 !important;
+    padding: 0 !important;
+    background: transparent !important;
+    border: none !important;
+    height: 20px;
+    display: flex !important;
+    flex-direction: row !important;
+    align-items: center !important;
   }
   .cal-period.empty .cal-period-num {
-    padding-top: 0;
-    font-size: 12px;
-    font-weight: 600;
+    padding: 0 !important;
+    font-size: 12px !important;
+    font-weight: 600 !important;
+    line-height: 20px;
   }
   .cal-period-empty {
-    border-left: none;
-    padding: 0 10px;
-    background: transparent;
-    border-radius: 0;
-    font-size: 12px;
-    font-weight: 500;
-    color: var(--text-sub);
-    text-align: left;
-    line-height: 1.2;
+    border: none !important;
+    border-left: none !important;
+    padding: 0 !important;
+    background: transparent !important;
+    border-radius: 0 !important;
+    font-size: 12px !important;
+    font-weight: 500 !important;
+    color: var(--text-sub) !important;
+    text-align: left !important;
+    line-height: 20px !important;
+    height: 20px;
   }
   .help-modal { max-width: 460px; width: 100%; max-height: 80vh; overflow-y: auto; }
   .help-header { display: flex; align-items: center; justify-content: space-between; gap: 10px; margin-bottom: 12px; }
