@@ -210,13 +210,9 @@
   .calendar-fab svg { display: block; }
   .calendar-fab:hover { transform: translateY(-3px); box-shadow: 0 6px 14px rgba(0,0,0,0.12), 0 18px 42px -6px rgba(0,0,0,0.28); }
   .calendar-fab:active { transform: translateY(0) scale(0.95); }
-  body[data-view="calendar"] .calendar-header { margin-bottom: 2px; }
-  body[data-view="calendar"] .calendar-header .cal-title { padding: 2px; font-size: 20px; }
-  body[data-view="calendar"] .cal-nav { width: 30px; height: 30px; font-size: 18px; }
-  body[data-view="calendar"] .cal-cell {
-    height: calc((100dvh - 60px - env(safe-area-inset-top) - env(safe-area-inset-bottom)) / 6);
-    min-height: 76px;
-  }
+  body[data-view="calendar"] .calendar-header { margin-bottom: 6px; }
+  body[data-view="calendar"] .calendar-header .cal-title { padding: 4px; font-size: 30px; }
+  body[data-view="calendar"] .cal-nav { width: 48px; height: 48px; font-size: 26px; font-weight: 500; }
   body[data-view="calendar"] header.topbar,
   body[data-view="calendar"] .stats-bar,
   body[data-view="calendar"] .filter-bar,
@@ -224,10 +220,11 @@
     display: none;
   }
   body[data-view="calendar"] .cal-cell {
-    height: 64px;
+    height: calc((100dvh - 95px - env(safe-area-inset-top) - env(safe-area-inset-bottom)) / 6);
+    min-height: 82px;
   }
   body[data-view="calendar"] .cal-chip {
-    font-size: 10px;
+    font-size: 10.5px;
     padding: 1px 4px;
   }
 
