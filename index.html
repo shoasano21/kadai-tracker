@@ -2180,10 +2180,6 @@
   </div>
 
   <section id="timetableHost" class="timetable-panel">
-    <div class="settings-header">
-      <h2 class="settings-title" data-i18n="timetable_heading">📅 時間割</h2>
-      <button id="btnCloseTimetable" class="btn" data-i18n="btn_done">完了</button>
-    </div>
     <div id="timetableGrid" class="timetable-grid"></div>
   </section>
 </div>
@@ -4144,10 +4140,6 @@ setTimeout(function () {
     previousView = 'calendar';
     switchView('timetable');
   });
-  $('btnCloseTimetable').addEventListener('click', () => {
-    switchView(previousView || 'calendar');
-  });
-
   $('filterCourse').addEventListener('change', (e) => { filterCourse = e.target.value; render(); });
   $('filterStatus').addEventListener('change', (e) => { filterStatus = e.target.value; render(); });
 
