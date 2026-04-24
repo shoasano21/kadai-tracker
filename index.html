@@ -510,6 +510,54 @@
   .color-swatch:hover { transform: scale(1.1); }
   .color-swatch.selected { border-color: var(--text); }
 
+  .cal-day-schedule { display: flex; flex-direction: column; gap: 6px; }
+  .cal-period {
+    display: grid;
+    grid-template-columns: 32px 1fr;
+    gap: 10px;
+    align-items: stretch;
+  }
+  .cal-period-num {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 16px;
+    font-weight: 800;
+    color: var(--text-sub);
+    padding-top: 6px;
+  }
+  .cal-period-content {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    min-width: 0;
+  }
+  .cal-period-subject {
+    border-left: 4px solid var(--border-strong);
+    padding: 8px 10px;
+    background: var(--panel-2);
+    border-radius: 6px;
+    font-size: 14px;
+    font-weight: 700;
+  }
+  .cal-period.empty .cal-period-content {
+    opacity: 0.35;
+  }
+  .cal-period-empty {
+    padding: 8px 10px;
+    font-size: 13px;
+    color: var(--text-sub);
+  }
+  .cal-other-header {
+    margin-top: 14px;
+    padding-top: 10px;
+    border-top: 1px dashed var(--border);
+    font-size: 12px;
+    font-weight: 700;
+    color: var(--text-sub);
+    margin-bottom: 6px;
+  }
+
   .bottom-bar {
     position: fixed;
     left: 0;
@@ -1990,6 +2038,7 @@
       confirm_delete_subject: (n) => `「${n}」を時間割から削除しますか？`,
       toast_subject_saved: '📅 時間割を更新しました',
       toast_subject_deleted: '🗑 時間割から削除しました',
+      cal_other_tasks: 'その他の課題',
       modal_add_title: '課題を追加',
       modal_edit_title: '課題を編集',
       field_course: '講義名',
@@ -2125,6 +2174,7 @@
       confirm_delete_subject: (n) => `Remove "${n}" from the timetable?`,
       toast_subject_saved: '📅 Timetable updated',
       toast_subject_deleted: '🗑 Removed from timetable',
+      cal_other_tasks: 'Other tasks',
       modal_add_title: 'Add task',
       modal_edit_title: 'Edit task',
       field_course: 'Course',
@@ -2648,9 +2698,7 @@
         </table>
         <div class="cal-detail">
           <div class="cal-detail-header">${t('cal_detail_header', selDate.getMonth()+1, selDate.getDate(), selDow)}</div>
-          ${selectedTasks.length === 0
-            ? `<div class="cal-detail-empty">${t('cal_empty')}</div>`
-            : selectedTasks.map(it => calTaskHtml(it)).join('')}
+          ${calDayScheduleHtml(selDate, selectedTasks)}
         </div>
       </div>
     `;
@@ -2693,6 +2741,50 @@
         <div class="cal-chips">${chips}${more}</div>
       </td>
     `;
+  }
+
+  function calDayScheduleHtml(selDate, tasks) {
+    const js = selDate.getDay(); // 0=Sun..6=Sat
+    const dayIdx = js === 0 ? null : js; // 1..6 match our DAYS
+    const hasSubjects = (state.subjects || []).length > 0;
+    if (!hasSubjects) {
+      return tasks.length === 0
+        ? `<div class="cal-detail-empty">${t('cal_empty')}</div>`
+        : tasks.map(it => calTaskHtml(it)).join('');
+    }
+
+    const matched = new Set();
+    let html = '<div class="cal-day-schedule">';
+    if (dayIdx === null) {
+      html += `<div class="cal-detail-empty">${t('cal_empty')}</div>`;
+    } else {
+      for (let p = 1; p <= NUM_PERIODS; p++) {
+        const sub = getSubjectAt(dayIdx, p);
+        const periodTasks = sub ? tasks.filter(it => it.course === sub.name) : [];
+        periodTasks.forEach(it => matched.add(it.id));
+        html += `<div class="cal-period${sub ? ' has-sub' : ' empty'}">` +
+          `<div class="cal-period-num">${p}</div>` +
+          `<div class="cal-period-content">`;
+        if (sub) {
+          html += `<div class="cal-period-subject" style="border-left-color:${sub.color};">` +
+            `<span class="cal-period-name">${escapeHtml(sub.name)}</span></div>`;
+          if (periodTasks.length > 0) {
+            html += periodTasks.map(it => calTaskHtml(it)).join('');
+          }
+        } else {
+          html += `<div class="cal-period-empty">—</div>`;
+        }
+        html += `</div></div>`;
+      }
+    }
+    html += '</div>';
+
+    const others = tasks.filter(it => !matched.has(it.id));
+    if (others.length > 0) {
+      html += `<div class="cal-other-header">${t('cal_other_tasks')}</div>` +
+        others.map(it => calTaskHtml(it)).join('');
+    }
+    return html;
   }
 
   function calTaskHtml(it) {
