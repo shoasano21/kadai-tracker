@@ -535,9 +535,9 @@
     display: grid;
     grid-template-columns: 28px repeat(5, minmax(0, 1fr));
     grid-template-rows: 22px repeat(6, 1fr);
-    gap: 4px;
+    gap: 3px;
     padding: 4px 6px;
-    height: calc(100dvh - 280px - env(safe-area-inset-top) - env(safe-area-inset-bottom));
+    height: calc(100dvh - 300px - env(safe-area-inset-top) - env(safe-area-inset-bottom));
     overflow: hidden;
   }
   .tt-cell { box-sizing: border-box; }
@@ -581,7 +581,7 @@
   }
   .tt-cell:hover { background: var(--panel-solid); transform: scale(1.02); }
   .tt-cell.filled { border-style: solid; color: #fff; }
-  .tt-cell.empty { color: var(--text-sub); font-size: 18px; }
+  .tt-cell.empty { color: var(--text-sub); font-size: 14px; }
 
   .color-palette { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 4px; }
   .color-swatch {
