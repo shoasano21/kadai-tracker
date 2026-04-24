@@ -183,9 +183,15 @@
 
   /* Calendar-only mode: hide header banner / summary / filters / reminder
      so the grid is the main focus and can breathe. */
-  body[data-view="calendar"] .app { padding: 8px 4px calc(110px + env(safe-area-inset-bottom)); }
-  body[data-view="calendar"] .calendar-wrap { padding: 10px 6px 6px; box-shadow: none; border: none; background: transparent; }
-  body[data-view="calendar"] .cal-cell { height: 13vh; }
+  body[data-view="calendar"] .app { padding: 6px 4px calc(100px + env(safe-area-inset-bottom)); }
+  body[data-view="calendar"] .calendar-wrap { padding: 6px 4px 0; box-shadow: none; border: none; background: transparent; }
+  body[data-view="calendar"] .calendar-header { margin-bottom: 4px; }
+  body[data-view="calendar"] .calendar-header .cal-title { padding: 4px; font-size: 22px; }
+  body[data-view="calendar"] .cal-nav { width: 34px; height: 34px; font-size: 18px; }
+  body[data-view="calendar"] .cal-cell {
+    height: calc((100dvh - 180px - env(safe-area-inset-top) - env(safe-area-inset-bottom)) / 6);
+    min-height: 58px;
+  }
   body[data-view="calendar"] header.topbar,
   body[data-view="calendar"] .stats-bar,
   body[data-view="calendar"] .filter-bar,
