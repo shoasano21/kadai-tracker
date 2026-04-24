@@ -2850,6 +2850,34 @@
         renderCalendar();
       });
     }
+    // Horizontal swipe to change months
+    const grid = host.querySelector('.calendar-wrap');
+    if (grid) {
+      let touchStartX = 0;
+      let touchStartY = 0;
+      let touchStartTime = 0;
+      grid.addEventListener('touchstart', (e) => {
+        const t = e.touches[0];
+        touchStartX = t.clientX;
+        touchStartY = t.clientY;
+        touchStartTime = Date.now();
+      }, { passive: true });
+      grid.addEventListener('touchend', (e) => {
+        const t = e.changedTouches[0];
+        const dx = t.clientX - touchStartX;
+        const dy = t.clientY - touchStartY;
+        const dt = Date.now() - touchStartTime;
+        // Only treat as swipe if: mostly horizontal, long enough distance, quick enough
+        if (Math.abs(dx) < 60 || Math.abs(dx) < Math.abs(dy) * 1.5 || dt > 600) return;
+        if (dx < 0) {
+          calCursor = new Date(year, month + 1, 1);
+        } else {
+          calCursor = new Date(year, month - 1, 1);
+        }
+        haptic('selection');
+        renderCalendar();
+      }, { passive: true });
+    }
     bindRowActions();
   }
 
