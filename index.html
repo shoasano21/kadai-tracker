@@ -3503,13 +3503,24 @@
   function sizeTimetableRows() {
     const grid = document.getElementById('timetableGrid');
     if (!grid) return;
-    // 22 (header row) + 6 row gaps (4px) + 4+6 padding = 56
-    // Plus surrounding overhead (settings header + panel padding + app padding + bottom bar + safe areas)
-    const overhead = 56 + 40 + 14 + 4 + 80; // header content + row gaps + padding etc.
-    const safeTop = parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--safe-top') || '0') || 0;
-    const safeBottom = parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--safe-bottom') || '0') || 0;
-    const available = window.innerHeight - overhead - safeTop - safeBottom;
-    const rowH = Math.max(48, Math.floor(available / 6));
+    const panel = document.getElementById('timetableHost');
+    if (!panel) return;
+    // Use the panel's own current top to measure exactly how much room is left.
+    const panelRect = panel.getBoundingClientRect();
+    const header = panel.querySelector('.settings-header');
+    const headerH = header ? header.getBoundingClientRect().height : 40;
+    const panelStyle = getComputedStyle(panel);
+    const panelPad = parseFloat(panelStyle.paddingTop) + parseFloat(panelStyle.paddingBottom);
+    const appEl = document.querySelector('.app');
+    const appStyle = appEl ? getComputedStyle(appEl) : null;
+    const appPadBottom = appStyle ? parseFloat(appStyle.paddingBottom) : 100;
+    const dayHeaderRow = 22;
+    const gridPadding = 8;
+    const gaps = 7 * 4;
+    const consumedAbove = panelRect.top; // includes body padding (safe top) and app padding-top
+    const consumedInside = headerH + panelPad + dayHeaderRow + gridPadding + gaps;
+    const available = window.innerHeight - consumedAbove - appPadBottom - consumedInside - 4; // small safety margin
+    const rowH = Math.max(36, Math.floor(available / 6));
     grid.style.setProperty('--tt-row-height', rowH + 'px');
   }
   window.addEventListener('resize', () => {
