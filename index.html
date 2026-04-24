@@ -1892,7 +1892,12 @@
     <h2 id="subjectEditTitle" data-i18n="subject_edit_title">科目を登録</h2>
     <div class="field">
       <label for="subjectName" data-i18n="subject_name_label">科目名</label>
-      <input id="subjectName" type="text" maxlength="30" autocomplete="off" />
+      <div class="input-split">
+        <input id="subjectName" type="text" maxlength="30" autocomplete="off" />
+        <select id="subjectNameSelect" class="course-select">
+          <option value="" data-i18n="ph_existing">既存から選択...</option>
+        </select>
+      </div>
     </div>
     <div class="field">
       <label data-i18n="subject_color_label">色</label>
@@ -3187,6 +3192,19 @@
     });
   }
 
+  function populateSubjectNameSuggestions() {
+    const sel = $('subjectNameSelect');
+    if (!sel) return;
+    const hidden = new Set(state.hiddenCourses || []);
+    const fromTasks = Array.from(new Set((state.items || []).map(i => i.course).filter(Boolean)));
+    const fromSubjects = Array.from(new Set((state.subjects || []).map(s => s.name).filter(Boolean)));
+    const seen = new Set(fromSubjects);
+    const merged = fromSubjects.slice();
+    fromTasks.forEach(n => { if (!seen.has(n) && !hidden.has(n)) { seen.add(n); merged.push(n); } });
+    COMMON_COURSES.forEach(n => { if (!seen.has(n) && !hidden.has(n)) { seen.add(n); merged.push(n); } });
+    sel.innerHTML = `<option value="">${t('ph_existing')}</option>` +
+      merged.map(c => `<option value="${escapeHtml(c)}">${escapeHtml(c)}</option>`).join('');
+  }
   function openSubjectEditor(day, period) {
     editingDay = day;
     editingPeriod = period;
@@ -3198,6 +3216,8 @@
     $('subjectEditSlot').textContent = `${dayNames[DAYS.indexOf(day)]}曜 ${t('subject_period_short', period)}`;
     selectedColor = existing ? existing.color : SUBJECT_COLORS[Math.floor(Math.random() * SUBJECT_COLORS.length)];
     renderColorPalette();
+    populateSubjectNameSuggestions();
+    $('subjectNameSelect').value = '';
     $('btnSubjectDelete').style.display = existing ? '' : 'none';
     const ov = $('subjectEditOverlay');
     ov.classList.add('open');
@@ -3239,6 +3259,13 @@
     toast(t('toast_subject_saved'), 'success');
   });
   $('btnSubjectCancel').addEventListener('click', closeSubjectEditor);
+  $('subjectNameSelect').addEventListener('change', (e) => {
+    const v = e.target.value;
+    if (!v) return;
+    $('subjectName').value = v;
+    e.target.value = '';
+    $('subjectName').focus();
+  });
   $('btnSubjectDelete').addEventListener('click', () => {
     if (!editingSubjectId) return;
     const s = (state.subjects || []).find(x => x.id === editingSubjectId);
