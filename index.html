@@ -599,6 +599,32 @@
     color: var(--text-sub);
     text-align: center;
   }
+  .help-modal { max-width: 460px; width: 100%; max-height: 80vh; overflow-y: auto; }
+  .help-header { display: flex; align-items: center; justify-content: space-between; gap: 10px; margin-bottom: 12px; }
+  .help-header h2 { margin: 0; font-size: 20px; }
+  .help-close-btn {
+    width: 36px; height: 36px;
+    padding: 0;
+    font-size: 16px;
+    font-weight: 700;
+    border-radius: 50%;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .help-content { display: flex; flex-direction: column; gap: 12px; }
+  .help-item {
+    display: flex;
+    gap: 12px;
+    padding: 10px 12px;
+    background: var(--panel-2);
+    border-radius: 12px;
+  }
+  .help-item-emoji { font-size: 22px; line-height: 1.2; flex: 0 0 auto; }
+  .help-item-body { flex: 1; min-width: 0; }
+  .help-item-title { font-size: 14px; font-weight: 800; margin-bottom: 2px; color: var(--text); }
+  .help-item-desc { font-size: 13px; color: var(--text-sub); line-height: 1.45; }
+
   .cal-other-header, .cal-tasks-header {
     margin-top: 14px;
     padding-top: 10px;
@@ -1988,7 +2014,24 @@
       </div>
       <button id="btnHaptic" class="btn setting-btn">📳</button>
     </div>
+    <div class="setting-row">
+      <div class="setting-info">
+        <div class="setting-label" data-i18n="setting_help">❓ 使い方</div>
+        <div class="setting-desc" data-i18n="setting_help_desc">アプリの操作ガイドを見る</div>
+      </div>
+      <button id="btnOpenHelp" class="btn setting-btn" data-i18n="btn_show">表示</button>
+    </div>
   </section>
+
+  <div id="helpOverlay" class="modal-overlay" aria-hidden="true">
+    <div class="modal help-modal">
+      <div class="help-header">
+        <h2 data-i18n="help_heading">❓ アプリの使い方</h2>
+        <button type="button" id="btnCloseHelp" class="btn help-close-btn" aria-label="閉じる">✕</button>
+      </div>
+      <div id="helpContent" class="help-content"></div>
+    </div>
+  </div>
 
   <section id="timetableHost" class="timetable-panel">
     <div class="settings-header">
@@ -2161,6 +2204,20 @@
       toast_subject_deleted: '🗑 時間割から削除しました',
       cal_other_tasks: 'その他の課題',
       cal_tasks_header: 'この日の課題',
+      setting_help: '❓ 使い方',
+      setting_help_desc: 'アプリの操作ガイドを見る',
+      btn_show: '表示',
+      help_heading: '❓ アプリの使い方',
+      help_sections: [
+        { emoji: '📊', title: 'タイムライン', body: '課題を横棒で表示。色は科目ごと、赤は緊急、緑は余裕あり。タップで編集、✓で完了、×で削除。' },
+        { emoji: '📅', title: 'カレンダー', body: '月ごとの表示。日付をタップで下からその日の時間割と課題が出てきます。左右にスワイプで月を切替。' },
+        { emoji: '🗓️', title: '時間割登録', body: 'カレンダー右下のボタンから時間割を登録。空セルをタップで科目名と色を設定。既存の科目から選ぶこともできます。' },
+        { emoji: '➕', title: '課題を追加', body: 'タイムラインの右下の + ボタンから追加。講義名はチップからタップで選ぶか直接入力。色や限は時間割の登録に連動。' },
+        { emoji: '🔔', title: '通知設定', body: '設定から通知のオン/オフ、通知時刻を変更できます。締切3日前・前日・当日に自動通知。' },
+        { emoji: '🌐', title: '言語切替', body: '設定から日本語とEnglishを切替え可能。' },
+        { emoji: '🌙', title: 'ダークモード', body: '設定からテーマを切替えて、ダーク/ライトモードを選択。' },
+        { emoji: '📳', title: '触覚フィードバック', body: '設定からボタン操作時の振動をオン/オフできます。' }
+      ],
       modal_add_title: '課題を追加',
       modal_edit_title: '課題を編集',
       field_course: '講義名',
@@ -2298,6 +2355,20 @@
       toast_subject_deleted: '🗑 Removed from timetable',
       cal_other_tasks: 'Other tasks',
       cal_tasks_header: 'Tasks due',
+      setting_help: '❓ How to use',
+      setting_help_desc: 'View the in-app guide',
+      btn_show: 'Show',
+      help_heading: '❓ How to use',
+      help_sections: [
+        { emoji: '📊', title: 'Timeline', body: 'Shows tasks as horizontal bars. Colors match each course; red = urgent, green = plenty of time. Tap to edit, ✓ to complete, × to delete.' },
+        { emoji: '📅', title: 'Calendar', body: 'Monthly overview. Tap a date to see that day\'s timetable and tasks. Swipe left/right to change months.' },
+        { emoji: '🗓️', title: 'Timetable', body: 'Open the grid from the bottom-right button on Calendar. Tap an empty cell to register a course name and color. You can also pick from existing courses.' },
+        { emoji: '➕', title: 'Add a task', body: 'Use the + button at the bottom-right of Timeline. Pick the course from the chip list or type manually. Colors and periods sync with your registered timetable.' },
+        { emoji: '🔔', title: 'Notifications', body: 'Toggle notifications and set the delivery time in Settings. You\'ll be notified 3 days / 1 day before and on the due date.' },
+        { emoji: '🌐', title: 'Language', body: 'Switch between Japanese and English from Settings.' },
+        { emoji: '🌙', title: 'Dark mode', body: 'Toggle dark / light themes in Settings.' },
+        { emoji: '📳', title: 'Haptic feedback', body: 'Turn button vibration on or off in Settings.' }
+      ],
       modal_add_title: 'Add task',
       modal_edit_title: 'Edit task',
       field_course: 'Course',
@@ -3318,6 +3389,38 @@
     updateHapticBtn();
     if (hapticEnabled) haptic('success');
     toast(hapticEnabled ? t('toast_haptic_on') : t('toast_haptic_off'), hapticEnabled ? 'success' : 'warn');
+  });
+
+  // ===== Help =====
+  function renderHelp() {
+    const sections = t('help_sections') || [];
+    const host = $('helpContent');
+    if (!host) return;
+    host.innerHTML = sections.map(s =>
+      `<div class="help-item">` +
+        `<div class="help-item-emoji">${s.emoji}</div>` +
+        `<div class="help-item-body">` +
+          `<div class="help-item-title">${escapeHtml(s.title)}</div>` +
+          `<div class="help-item-desc">${escapeHtml(s.body)}</div>` +
+        `</div>` +
+      `</div>`
+    ).join('');
+  }
+  function openHelp() {
+    renderHelp();
+    const ov = $('helpOverlay');
+    ov.classList.add('open');
+    ov.setAttribute('aria-hidden', 'false');
+  }
+  function closeHelp() {
+    const ov = $('helpOverlay');
+    ov.classList.remove('open');
+    ov.setAttribute('aria-hidden', 'true');
+  }
+  $('btnOpenHelp').addEventListener('click', openHelp);
+  $('btnCloseHelp').addEventListener('click', closeHelp);
+  $('helpOverlay').addEventListener('click', (e) => {
+    if (e.target.id === 'helpOverlay') closeHelp();
   });
 
   // ===== Timetable =====
