@@ -534,10 +534,13 @@
   .timetable-grid {
     display: grid;
     grid-template-columns: 28px repeat(5, minmax(0, 1fr));
-    grid-template-rows: 22px repeat(6, 80px);
+    grid-template-rows: 22px repeat(6, 1fr);
     gap: 4px;
     padding: 4px 6px;
+    height: calc(100dvh - 200px - env(safe-area-inset-top) - env(safe-area-inset-bottom));
+    overflow: hidden;
   }
+  .tt-cell { box-sizing: border-box; }
   .tt-corner, .tt-daylabel, .tt-periodlabel {
     font-size: 11px;
     font-weight: 700;
@@ -3499,29 +3502,7 @@
     sizeTimetableRows();
   }
   function sizeTimetableRows() {
-    const grid = document.getElementById('timetableGrid');
-    if (!grid) return;
-    const panel = document.getElementById('timetableHost');
-    if (!panel) return;
-    requestAnimationFrame(() => {
-      const gridRect = grid.getBoundingClientRect();
-      const appEl = document.querySelector('.app');
-      const appStyle = appEl ? getComputedStyle(appEl) : null;
-      const appPadBottom = appStyle ? parseFloat(appStyle.paddingBottom) : 110;
-      const gridPadding = 8;
-      const gaps = 7 * 4;
-      const dayHeaderRow = 22;
-      const available = window.innerHeight - gridRect.top - appPadBottom - dayHeaderRow - gaps - gridPadding - 16;
-      const rowH = Math.max(36, Math.floor(available / 6));
-      const totalHeight = dayHeaderRow + gaps + gridPadding + 6 * rowH;
-      grid.style.gridTemplateRows = `22px repeat(6, ${rowH}px)`;
-      grid.style.height = totalHeight + 'px';
-      // Also lock each cell to that height as belt-and-suspenders
-      grid.querySelectorAll('.tt-cell').forEach(c => {
-        c.style.height = rowH + 'px';
-        c.style.maxHeight = rowH + 'px';
-      });
-    });
+    // Grid sizes itself via CSS flex + minmax(0,1fr) now; nothing to do.
   }
   window.addEventListener('resize', () => {
     if (currentView === 'timetable') sizeTimetableRows();
