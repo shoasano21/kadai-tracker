@@ -2962,7 +2962,7 @@ setTimeout(function () {
     host.innerHTML = html;
     bindRowActions();
 
-    // Auto-scroll the gantt so today's line is visible without manual sliding.
+    // Auto-scroll the gantt so today's line sits at the left edge of the right half.
     requestAnimationFrame(() => {
       const wrap = host.querySelector('.gantt-wrap');
       const line = host.querySelector('.today-line');
@@ -2970,9 +2970,7 @@ setTimeout(function () {
       const wrapRect = wrap.getBoundingClientRect();
       const lineRect = line.getBoundingClientRect();
       const todayX = lineRect.left - wrapRect.left + wrap.scrollLeft;
-      // Position today at about 75% from the left (middle of the right half)
-      // so past progress is visible on the left and today sits on the right.
-      const target = Math.max(0, todayX - wrapRect.width * 0.75);
+      const target = Math.max(0, todayX - wrapRect.width * 0.5);
       wrap.scrollLeft = target;
     });
   }
