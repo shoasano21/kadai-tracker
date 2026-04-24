@@ -1505,28 +1505,24 @@
   .course-select {
     margin-top: 6px;
   }
-  .input-split { display: flex; gap: 10px; }
-  .input-split > input, .input-split > select, .input-split > .select-with-delete { flex: 1; min-width: 0; margin-top: 0; }
-  .select-with-delete { position: relative; display: flex; }
-  .select-with-delete select { flex: 1; min-width: 0; padding-right: 36px; margin-top: 0; }
+  .input-split { display: flex; gap: 10px; align-items: stretch; }
+  .input-split > input, .input-split > select { flex: 1; min-width: 0; margin-top: 0; }
+  .input-split > .select-with-delete { flex: 1; min-width: 0; margin-top: 0; }
   .course-delete-btn {
-    position: absolute;
-    right: 4px;
-    top: 50%;
-    transform: translateY(-50%);
-    width: 26px;
-    height: 26px;
-    border: none;
-    background: transparent;
+    flex: 0 0 auto;
+    align-self: stretch;
+    width: 38px;
+    border: 1px solid var(--border-strong);
+    background: var(--panel-solid);
     color: var(--urgent);
-    font-size: 20px;
+    font-size: 22px;
     font-weight: 700;
     cursor: pointer;
     padding: 0;
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    border-radius: 50%;
+    border-radius: 10px;
   }
   .course-delete-btn:hover { background: rgba(231,76,92,0.12); }
   .chip-suggestions {
@@ -1920,12 +1916,10 @@
         <label for="fCourse"><span data-i18n="field_course">🎓 講義名</span><span class="req">*</span></label>
         <div class="input-split">
           <input id="fCourse" type="text" maxlength="40" autocomplete="off" data-i18n-ph="ph_course" placeholder="新しい講義名を入力..." />
-          <div class="select-with-delete">
-            <select id="fCourseSelect" class="course-select">
-              <option value="" data-i18n="ph_existing">既存から選択...</option>
-            </select>
-            <button type="button" id="btnDeleteCourse" class="course-delete-btn" data-i18n-title="delete_course_title" data-i18n-aria="delete_course_title" hidden>×</button>
-          </div>
+          <select id="fCourseSelect" class="course-select">
+            <option value="" data-i18n="ph_existing">既存から選択...</option>
+          </select>
+          <button type="button" id="btnDeleteCourse" class="course-delete-btn" data-i18n-title="delete_course_title" data-i18n-aria="delete_course_title" hidden>×</button>
         </div>
       </div>
       <input id="fTitle" type="hidden" />
