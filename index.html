@@ -3513,7 +3513,14 @@
       const dayHeaderRow = 22;
       const available = window.innerHeight - gridRect.top - appPadBottom - dayHeaderRow - gaps - gridPadding - 16;
       const rowH = Math.max(36, Math.floor(available / 6));
+      const totalHeight = dayHeaderRow + gaps + gridPadding + 6 * rowH;
       grid.style.gridTemplateRows = `22px repeat(6, ${rowH}px)`;
+      grid.style.height = totalHeight + 'px';
+      // Also lock each cell to that height as belt-and-suspenders
+      grid.querySelectorAll('.tt-cell').forEach(c => {
+        c.style.height = rowH + 'px';
+        c.style.maxHeight = rowH + 'px';
+      });
     });
   }
   window.addEventListener('resize', () => {
