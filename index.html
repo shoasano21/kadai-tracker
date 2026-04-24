@@ -502,13 +502,12 @@
   body[data-view="timetable"] .header-add-btn { display: none; }
   body[data-view="timetable"] #timetableHost { display: block; }
 
-  .timetable-panel { display: none; background: var(--panel); border-radius: var(--radius); padding: 8px 6px 16px; box-shadow: var(--shadow); overflow-x: auto; }
+  .timetable-panel { display: none; background: var(--panel); border-radius: var(--radius); padding: 8px 6px 16px; box-shadow: var(--shadow); }
   .timetable-grid {
     display: grid;
-    grid-template-columns: 36px repeat(5, minmax(130px, 1fr));
+    grid-template-columns: 28px repeat(5, 1fr);
     gap: 4px;
-    padding: 4px 8px;
-    min-width: max-content;
+    padding: 4px 6px;
   }
   .tt-corner, .tt-daylabel, .tt-periodlabel {
     font-size: 11px;
