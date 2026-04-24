@@ -67,23 +67,34 @@ struct KadaiProvider: TimelineProvider {
     }
 }
 
-private func dateString(daysFromNow: Int) -> String {
-    let d = Calendar.current.date(byAdding: .day, value: daysFromNow, to: Date()) ?? Date()
+private let posixLocale = Locale(identifier: "en_US_POSIX")
+private var gregCal: Calendar = {
+    var c = Calendar(identifier: .gregorian)
+    c.locale = posixLocale
+    c.timeZone = TimeZone.current
+    return c
+}()
+private func makeYmdFormatter() -> DateFormatter {
     let f = DateFormatter()
     f.dateFormat = "yyyy-MM-dd"
-    return f.string(from: d)
+    f.locale = posixLocale
+    f.calendar = gregCal
+    f.timeZone = gregCal.timeZone
+    return f
+}
+
+private func dateString(daysFromNow: Int) -> String {
+    let d = gregCal.date(byAdding: .day, value: daysFromNow, to: Date()) ?? Date()
+    return makeYmdFormatter().string(from: d)
 }
 
 // MARK: - Helpers
 
 private func daysLeft(_ endStr: String) -> Int {
-    let f = DateFormatter()
-    f.dateFormat = "yyyy-MM-dd"
-    guard let end = f.date(from: endStr) else { return 0 }
-    let cal = Calendar.current
-    let today = cal.startOfDay(for: Date())
-    let endDay = cal.startOfDay(for: end)
-    return cal.dateComponents([.day], from: today, to: endDay).day ?? 0
+    guard let end = makeYmdFormatter().date(from: endStr) else { return 0 }
+    let today = gregCal.startOfDay(for: Date())
+    let endDay = gregCal.startOfDay(for: end)
+    return gregCal.dateComponents([.day], from: today, to: endDay).day ?? 0
 }
 
 private func statusColor(daysLeft d: Int, done: Bool) -> Color {
