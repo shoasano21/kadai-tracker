@@ -666,6 +666,36 @@
     justify-content: center;
   }
   .help-content { display: flex; flex-direction: column; gap: 12px; flex: 1 1 auto; overflow-y: auto; -webkit-overflow-scrolling: touch; padding-bottom: 8px; min-height: 0; }
+  .syllabus-picker {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    margin-bottom: 12px;
+    max-height: 120px;
+    overflow-y: auto;
+    flex: 0 0 auto;
+  }
+  .syllabus-pick-chip {
+    display: inline-flex;
+    align-items: center;
+    padding: 6px 12px;
+    background: var(--panel-solid);
+    border: 1.5px solid var(--border-strong);
+    border-radius: 999px;
+    font-size: 12px;
+    font-weight: 700;
+    color: var(--text);
+    cursor: pointer;
+    font-family: inherit;
+    transition: all .15s;
+    white-space: nowrap;
+  }
+  .syllabus-pick-chip:hover { transform: translateY(-1px); box-shadow: var(--shadow); }
+  .syllabus-pick-chip.active {
+    background: var(--text);
+    color: var(--panel-solid);
+    border-color: var(--text);
+  }
   .syllabus-item {
     background: var(--panel-2);
     border-radius: 12px;
@@ -2136,6 +2166,7 @@
         <h2 data-i18n="syllabus_heading">📚 シラバス</h2>
         <button type="button" id="btnCloseSyllabus" class="btn help-close-btn" aria-label="閉じる">✕</button>
       </div>
+      <div id="syllabusPicker" class="syllabus-picker"></div>
       <div id="syllabusContent" class="help-content"></div>
     </div>
   </div>
@@ -3554,32 +3585,57 @@
   // ===== Syllabus =====
   const SYLLABUS_UNLOCKED_KEY = 'kadai_tracker_syllabus_unlocked';
   let syllabusUnlocked = localStorage.getItem(SYLLABUS_UNLOCKED_KEY) === '1';
+  let selectedSyllabusId = null; // null = all
+  function renderSyllabusPicker() {
+    const picker = $('syllabusPicker');
+    if (!picker) return;
+    const chips = [
+      `<button type="button" class="syllabus-pick-chip${selectedSyllabusId === null ? ' active' : ''}" data-id="">すべて</button>`
+    ].concat(SYLLABI.map(s => {
+      const label = `${s.courseName}${s.classes ? '（' + s.classes + '組）' : ''}`;
+      return `<button type="button" class="syllabus-pick-chip${selectedSyllabusId === s.id ? ' active' : ''}" data-id="${escapeHtml(s.id)}">${escapeHtml(label)}</button>`;
+    }));
+    picker.innerHTML = chips.join('');
+    picker.querySelectorAll('.syllabus-pick-chip').forEach(c => {
+      c.addEventListener('click', () => {
+        const id = c.dataset.id || null;
+        selectedSyllabusId = id;
+        renderSyllabus();
+      });
+    });
+  }
+  function renderSyllabusItem(s) {
+    const sessions = (s.sessions || []).map((topic, i) =>
+      `<div class="sess-num">${i + 1}</div><div class="sess-topic">${escapeHtml(topic)}</div>`
+    ).join('');
+    const textbooks = (s.textbooks || []).map(b => `<li>${escapeHtml(b)}</li>`).join('');
+    return `<div class="syllabus-item">
+      <div class="syllabus-item-title">${escapeHtml(s.courseName)}${s.classes ? '（' + escapeHtml(s.classes) + '組）' : ''}</div>
+      <div class="syllabus-item-meta">
+        <span>担当: ${escapeHtml(s.instructor || '-')}</span>
+        <span>${escapeHtml(s.term || '')}</span>
+        <span>${escapeHtml(s.schedule || '')}</span>
+        <span>${escapeHtml(s.campus || '')}${s.room ? ' 教室' + escapeHtml(String(s.room)) : ''}</span>
+        <span>${s.credits || 0} 単位</span>
+        ${s.kNumber ? `<span>${escapeHtml(s.kNumber)}</span>` : ''}
+      </div>
+      ${s.summary ? `<div><div class="syllabus-section-title">概要</div><div class="syllabus-section-body">${escapeHtml(s.summary)}</div></div>` : ''}
+      ${s.objective ? `<div><div class="syllabus-section-title">${t('syllabus_objective_heading')}</div><div class="syllabus-section-body">${escapeHtml(s.objective)}</div></div>` : ''}
+      ${sessions ? `<div><div class="syllabus-section-title">${t('syllabus_session_heading')}</div><div class="syllabus-sessions">${sessions}</div></div>` : ''}
+      ${s.grading ? `<div><div class="syllabus-section-title">${t('syllabus_grading_heading')}</div><div class="syllabus-section-body">${escapeHtml(s.grading)}</div></div>` : ''}
+      ${textbooks ? `<div><div class="syllabus-section-title">${t('syllabus_textbook_heading')}</div><ul class="syllabus-list">${textbooks}</ul></div>` : ''}
+      ${s.contact ? `<div><div class="syllabus-section-title">${t('syllabus_contact_heading')}</div><div class="syllabus-section-body">${escapeHtml(s.contact)}</div></div>` : ''}
+    </div>`;
+  }
   function renderSyllabus() {
+    renderSyllabusPicker();
     const host = $('syllabusContent');
     if (!host) return;
-    host.innerHTML = SYLLABI.map(s => {
-      const sessions = (s.sessions || []).map((topic, i) =>
-        `<div class="sess-num">${i + 1}</div><div class="sess-topic">${escapeHtml(topic)}</div>`
-      ).join('');
-      const textbooks = (s.textbooks || []).map(b => `<li>${escapeHtml(b)}</li>`).join('');
-      return `<div class="syllabus-item">
-        <div class="syllabus-item-title">${escapeHtml(s.courseName)}${s.classes ? '（' + escapeHtml(s.classes) + '組）' : ''}</div>
-        <div class="syllabus-item-meta">
-          <span>担当: ${escapeHtml(s.instructor || '-')}</span>
-          <span>${escapeHtml(s.term || '')}</span>
-          <span>${escapeHtml(s.schedule || '')}</span>
-          <span>${escapeHtml(s.campus || '')}${s.room ? ' 教室' + escapeHtml(String(s.room)) : ''}</span>
-          <span>${s.credits || 0} 単位</span>
-          ${s.kNumber ? `<span>${escapeHtml(s.kNumber)}</span>` : ''}
-        </div>
-        ${s.summary ? `<div><div class="syllabus-section-title">概要</div><div class="syllabus-section-body">${escapeHtml(s.summary)}</div></div>` : ''}
-        ${s.objective ? `<div><div class="syllabus-section-title">${t('syllabus_objective_heading')}</div><div class="syllabus-section-body">${escapeHtml(s.objective)}</div></div>` : ''}
-        ${sessions ? `<div><div class="syllabus-section-title">${t('syllabus_session_heading')}</div><div class="syllabus-sessions">${sessions}</div></div>` : ''}
-        ${s.grading ? `<div><div class="syllabus-section-title">${t('syllabus_grading_heading')}</div><div class="syllabus-section-body">${escapeHtml(s.grading)}</div></div>` : ''}
-        ${textbooks ? `<div><div class="syllabus-section-title">${t('syllabus_textbook_heading')}</div><ul class="syllabus-list">${textbooks}</ul></div>` : ''}
-        ${s.contact ? `<div><div class="syllabus-section-title">${t('syllabus_contact_heading')}</div><div class="syllabus-section-body">${escapeHtml(s.contact)}</div></div>` : ''}
-      </div>`;
-    }).join('');
+    const list = selectedSyllabusId
+      ? SYLLABI.filter(s => s.id === selectedSyllabusId)
+      : SYLLABI;
+    host.innerHTML = list.map(renderSyllabusItem).join('');
+    host.scrollTop = 0;
   }
   function openSyllabusViewer() {
     renderSyllabus();
