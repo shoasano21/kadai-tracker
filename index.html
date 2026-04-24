@@ -666,6 +666,30 @@
     justify-content: center;
   }
   .help-content { display: flex; flex-direction: column; gap: 12px; flex: 1 1 auto; overflow-y: auto; -webkit-overflow-scrolling: touch; padding-bottom: 8px; min-height: 0; }
+  .syllabus-item {
+    background: var(--panel-2);
+    border-radius: 12px;
+    padding: 14px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+  .syllabus-item-title { font-size: 16px; font-weight: 800; color: var(--text); }
+  .syllabus-item-meta { display: flex; flex-wrap: wrap; gap: 6px; font-size: 11px; color: var(--text-sub); }
+  .syllabus-item-meta span {
+    background: var(--panel-solid);
+    border: 1px solid var(--border);
+    border-radius: 999px;
+    padding: 2px 8px;
+  }
+  .syllabus-section-title { font-size: 12px; font-weight: 800; color: var(--text); margin-bottom: 4px; }
+  .syllabus-section-body { font-size: 13px; color: var(--text-sub); line-height: 1.5; white-space: pre-wrap; }
+  .syllabus-sessions { display: grid; grid-template-columns: 28px 1fr; gap: 4px 8px; font-size: 12px; line-height: 1.4; }
+  .syllabus-sessions .sess-num { font-weight: 800; color: var(--text-sub); text-align: right; }
+  .syllabus-sessions .sess-topic { color: var(--text); }
+  .syllabus-list { display: flex; flex-direction: column; gap: 4px; font-size: 12px; color: var(--text-sub); }
+  .syllabus-list li { list-style: none; padding-left: 12px; position: relative; }
+  .syllabus-list li::before { content: '•'; position: absolute; left: 0; }
   .help-item {
     display: flex;
     gap: 12px;
@@ -2074,6 +2098,13 @@
       </div>
       <button id="btnOpenHelp" class="btn setting-btn" data-i18n="btn_show">表示</button>
     </div>
+    <div class="setting-row">
+      <div class="setting-info">
+        <div class="setting-label" data-i18n="setting_syllabus">📚 シラバス</div>
+        <div class="setting-desc" data-i18n="setting_syllabus_desc">コードを入力して必修科目のシラバスを表示</div>
+      </div>
+      <button id="btnOpenSyllabus" class="btn setting-btn" data-i18n="btn_show">表示</button>
+    </div>
   </section>
 
   <div id="helpOverlay" class="modal-overlay" aria-hidden="true">
@@ -2083,6 +2114,29 @@
         <button type="button" id="btnCloseHelp" class="btn help-close-btn" aria-label="閉じる">✕</button>
       </div>
       <div id="helpContent" class="help-content"></div>
+    </div>
+  </div>
+
+  <div id="syllabusCodeOverlay" class="modal-overlay" aria-hidden="true">
+    <div class="modal" style="max-width:380px;">
+      <h2 data-i18n="syllabus_code_title">📚 シラバス</h2>
+      <p style="font-size:13px;color:var(--text-sub);margin:0 0 12px;" data-i18n="syllabus_code_prompt">コードを入力してください</p>
+      <input id="syllabusCodeInput" type="password" autocomplete="off" placeholder="code" style="width:100%;padding:10px 12px;font-size:15px;border:1px solid var(--border-strong);border-radius:10px;" />
+      <div id="syllabusCodeError" class="field-error"></div>
+      <div class="modal-actions">
+        <button type="button" id="btnSyllabusCancel" class="btn" data-i18n="btn_cancel">キャンセル</button>
+        <button type="button" id="btnSyllabusConfirm" class="btn primary" data-i18n="btn_confirm">確認</button>
+      </div>
+    </div>
+  </div>
+
+  <div id="syllabusOverlay" class="modal-overlay" aria-hidden="true">
+    <div class="modal help-modal">
+      <div class="help-header">
+        <h2 data-i18n="syllabus_heading">📚 シラバス</h2>
+        <button type="button" id="btnCloseSyllabus" class="btn help-close-btn" aria-label="閉じる">✕</button>
+      </div>
+      <div id="syllabusContent" class="help-content"></div>
     </div>
   </div>
 
@@ -2260,6 +2314,19 @@
       setting_help: '❓ 使い方',
       setting_help_desc: 'アプリの操作ガイドを見る',
       btn_show: '表示',
+      btn_confirm: '確認',
+      setting_syllabus: '📚 シラバス',
+      setting_syllabus_desc: 'コードを入力して必修科目のシラバスを表示',
+      syllabus_code_title: '📚 シラバス',
+      syllabus_code_prompt: 'コードを入力してください',
+      syllabus_heading: '📚 必修科目シラバス',
+      syllabus_code_error: 'コードが正しくありません',
+      syllabus_session_heading: '授業の計画',
+      syllabus_objective_heading: '授業内容・目的',
+      syllabus_grading_heading: '成績評価',
+      syllabus_textbook_heading: '教科書・参考書',
+      syllabus_contact_heading: '連絡先',
+      syllabus_info_heading: '基本情報',
       help_heading: '❓ アプリの使い方',
       help_sections: [
         { emoji: '📊', title: 'タイムライン', body: '課題を横棒で表示。色は科目ごと、赤は緊急、緑は余裕あり。タップで編集、✓で完了、×で削除。' },
@@ -2411,6 +2478,19 @@
       setting_help: '❓ How to use',
       setting_help_desc: 'View the in-app guide',
       btn_show: 'Show',
+      btn_confirm: 'OK',
+      setting_syllabus: '📚 Syllabus',
+      setting_syllabus_desc: 'Enter a code to view required course syllabi',
+      syllabus_code_title: '📚 Syllabus',
+      syllabus_code_prompt: 'Enter the code',
+      syllabus_heading: '📚 Required Course Syllabi',
+      syllabus_code_error: 'Incorrect code',
+      syllabus_session_heading: 'Class Schedule',
+      syllabus_objective_heading: 'Overview / Objectives',
+      syllabus_grading_heading: 'Grading',
+      syllabus_textbook_heading: 'Textbooks / References',
+      syllabus_contact_heading: 'Contact',
+      syllabus_info_heading: 'Basic Info',
       help_heading: '❓ How to use',
       help_sections: [
         { emoji: '📊', title: 'Timeline', body: 'Shows tasks as horizontal bars. Colors match each course; red = urgent, green = plenty of time. Tap to edit, ✓ to complete, × to delete.' },
@@ -3471,8 +3551,136 @@
     if (e.target.id === 'helpOverlay') closeHelp();
   });
 
+  // ===== Syllabus =====
+  const SYLLABUS_UNLOCKED_KEY = 'kadai_tracker_syllabus_unlocked';
+  let syllabusUnlocked = localStorage.getItem(SYLLABUS_UNLOCKED_KEY) === '1';
+  function renderSyllabus() {
+    const host = $('syllabusContent');
+    if (!host) return;
+    host.innerHTML = SYLLABI.map(s => {
+      const sessions = (s.sessions || []).map((topic, i) =>
+        `<div class="sess-num">${i + 1}</div><div class="sess-topic">${escapeHtml(topic)}</div>`
+      ).join('');
+      const textbooks = (s.textbooks || []).map(b => `<li>${escapeHtml(b)}</li>`).join('');
+      return `<div class="syllabus-item">
+        <div class="syllabus-item-title">${escapeHtml(s.courseName)}${s.classes ? '（' + escapeHtml(s.classes) + '組）' : ''}</div>
+        <div class="syllabus-item-meta">
+          <span>担当: ${escapeHtml(s.instructor || '-')}</span>
+          <span>${escapeHtml(s.term || '')}</span>
+          <span>${escapeHtml(s.schedule || '')}</span>
+          <span>${escapeHtml(s.campus || '')}${s.room ? ' 教室' + escapeHtml(String(s.room)) : ''}</span>
+          <span>${s.credits || 0} 単位</span>
+          ${s.kNumber ? `<span>${escapeHtml(s.kNumber)}</span>` : ''}
+        </div>
+        ${s.summary ? `<div><div class="syllabus-section-title">概要</div><div class="syllabus-section-body">${escapeHtml(s.summary)}</div></div>` : ''}
+        ${s.objective ? `<div><div class="syllabus-section-title">${t('syllabus_objective_heading')}</div><div class="syllabus-section-body">${escapeHtml(s.objective)}</div></div>` : ''}
+        ${sessions ? `<div><div class="syllabus-section-title">${t('syllabus_session_heading')}</div><div class="syllabus-sessions">${sessions}</div></div>` : ''}
+        ${s.grading ? `<div><div class="syllabus-section-title">${t('syllabus_grading_heading')}</div><div class="syllabus-section-body">${escapeHtml(s.grading)}</div></div>` : ''}
+        ${textbooks ? `<div><div class="syllabus-section-title">${t('syllabus_textbook_heading')}</div><ul class="syllabus-list">${textbooks}</ul></div>` : ''}
+        ${s.contact ? `<div><div class="syllabus-section-title">${t('syllabus_contact_heading')}</div><div class="syllabus-section-body">${escapeHtml(s.contact)}</div></div>` : ''}
+      </div>`;
+    }).join('');
+  }
+  function openSyllabusViewer() {
+    renderSyllabus();
+    const ov = $('syllabusOverlay');
+    ov.classList.add('open');
+    ov.setAttribute('aria-hidden', 'false');
+  }
+  function closeSyllabusViewer() {
+    const ov = $('syllabusOverlay');
+    ov.classList.remove('open');
+    ov.setAttribute('aria-hidden', 'true');
+  }
+  function openSyllabusCodePrompt() {
+    $('syllabusCodeInput').value = '';
+    $('syllabusCodeError').textContent = '';
+    const ov = $('syllabusCodeOverlay');
+    ov.classList.add('open');
+    ov.setAttribute('aria-hidden', 'false');
+    setTimeout(() => $('syllabusCodeInput').focus(), 100);
+  }
+  function closeSyllabusCodePrompt() {
+    const ov = $('syllabusCodeOverlay');
+    ov.classList.remove('open');
+    ov.setAttribute('aria-hidden', 'true');
+  }
+  $('btnOpenSyllabus').addEventListener('click', () => {
+    if (syllabusUnlocked) {
+      openSyllabusViewer();
+    } else {
+      openSyllabusCodePrompt();
+    }
+  });
+  $('btnSyllabusCancel').addEventListener('click', closeSyllabusCodePrompt);
+  $('btnSyllabusConfirm').addEventListener('click', () => {
+    const code = ($('syllabusCodeInput').value || '').trim();
+    if (code === SYLLABUS_CODE) {
+      syllabusUnlocked = true;
+      localStorage.setItem(SYLLABUS_UNLOCKED_KEY, '1');
+      closeSyllabusCodePrompt();
+      openSyllabusViewer();
+    } else {
+      $('syllabusCodeError').textContent = t('syllabus_code_error');
+      haptic('error');
+    }
+  });
+  $('syllabusCodeInput').addEventListener('keydown', (e) => {
+    if (e.key === 'Enter') $('btnSyllabusConfirm').click();
+  });
+  $('btnCloseSyllabus').addEventListener('click', closeSyllabusViewer);
+  $('syllabusOverlay').addEventListener('click', (e) => {
+    if (e.target.id === 'syllabusOverlay') closeSyllabusViewer();
+  });
+  $('syllabusCodeOverlay').addEventListener('click', (e) => {
+    if (e.target.id === 'syllabusCodeOverlay') closeSyllabusCodePrompt();
+  });
+
   // ===== Timetable =====
   const SUBJECT_COLORS = ['#7358d9','#e53935','#f06675','#eaa93c','#43a047','#1e88e5','#00acc1','#8e24aa','#5e3cb8','#ef6c00'];
+
+  // ===== Syllabus data =====
+  const SYLLABUS_CODE = 'keio2026';
+  const SYLLABI = [
+    {
+      id: 'cell-biology',
+      courseName: '細胞生物学',
+      classes: 'A, B',
+      instructor: '藤猪 英樹',
+      credits: 2,
+      term: '2026 春',
+      schedule: '木2',
+      campus: '日吉',
+      room: '23',
+      kNumber: 'FME-ME-11501-211-43',
+      summary: '細胞小器官、遺伝子、遺伝学、分子生物学の基礎的な生物学を扱う。',
+      objective: '細胞生物学では、医学の基礎の基礎を学習する。生命の基本単位である細胞に関する基本的な知識を習得しつつ、これらの基盤を究極の応用科学である医学へと繋げる。生命現象を遺伝子・細胞レベルで理解し、さらに器官・個体が、調和のとれた活動を維持するためのしくみを統合的に考える力を養うことを最大の目標とする。最低限の暗記を行ったのちに考える生物を目指す。',
+      sessions: [
+        '医学生物学概論',
+        '細胞：生命の基本単位',
+        '細胞の化学成分（タンパク質・核酸）',
+        '遺伝子発現の仕組み Ⅰ',
+        '遺伝子発現の仕組み Ⅱ',
+        '遺伝子発現の多様性を生み出す仕組み Ⅰ',
+        '遺伝子発現の多様性を生み出す仕組み Ⅱ',
+        '中間試験',
+        '細胞周期、DNAの複製・修復',
+        '生体膜',
+        '細胞骨格と細胞運動：モータータンパク質',
+        '生体分子の細胞内輸送と細胞内区画',
+        '細胞のシグナル伝達（細胞内と細胞間）',
+        '細胞のおかしくなりかた'
+      ],
+      grading: '中間試験（40点、出題範囲 第1〜7回）および本試験（60点、出題範囲 第8〜15回）にて、授業内容を広く問う論述式の問題を中心に出題する。これらで計60点以上を合格とする。',
+      textbooks: [
+        '講義資料はK-LMSにて配布',
+        'Essential 細胞生物学（原書第５版）／中村桂子・松原謙一 監訳／南江堂',
+        'キャンベル生物学（原書第11版）／池内昌彦・伊藤元己 監訳／丸善出版',
+        'カラー図解 アメリカ版 新・大学生物学の教科書／講談社'
+      ],
+      contact: 'hfujii.z5@keio.jp（第2校舎2301室／要メールアポ）'
+    }
+  ];
   const NUM_PERIODS = 6;
   const DAYS = [1, 2, 3, 4, 5]; // Mon-Fri
   let editingSubjectId = null;
