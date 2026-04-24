@@ -3593,21 +3593,18 @@
   // ===== Syllabus =====
   const SYLLABUS_UNLOCKED_KEY = 'kadai_tracker_syllabus_unlocked';
   let syllabusUnlocked = localStorage.getItem(SYLLABUS_UNLOCKED_KEY) === '1';
-  let selectedSyllabusId = null; // null = all
+  let selectedSyllabusId = SYLLABI[0] ? SYLLABI[0].id : null;
   function renderSyllabusPicker() {
     const picker = $('syllabusPicker');
     if (!picker) return;
-    const chips = [
-      `<button type="button" class="syllabus-pick-chip${selectedSyllabusId === null ? ' active' : ''}" data-id="">すべて</button>`
-    ].concat(SYLLABI.map(s => {
+    const chips = SYLLABI.map(s => {
       const label = `${s.courseName}${s.classes ? '（' + s.classes + '組）' : ''}`;
       return `<button type="button" class="syllabus-pick-chip${selectedSyllabusId === s.id ? ' active' : ''}" data-id="${escapeHtml(s.id)}">${escapeHtml(label)}</button>`;
-    }));
+    });
     picker.innerHTML = chips.join('');
     picker.querySelectorAll('.syllabus-pick-chip').forEach(c => {
       c.addEventListener('click', () => {
-        const id = c.dataset.id || null;
-        selectedSyllabusId = id;
+        selectedSyllabusId = c.dataset.id;
         renderSyllabus();
       });
     });
@@ -3639,10 +3636,8 @@
     renderSyllabusPicker();
     const host = $('syllabusContent');
     if (!host) return;
-    const list = selectedSyllabusId
-      ? SYLLABI.filter(s => s.id === selectedSyllabusId)
-      : SYLLABI;
-    host.innerHTML = list.map(renderSyllabusItem).join('');
+    const current = SYLLABI.find(s => s.id === selectedSyllabusId) || SYLLABI[0];
+    host.innerHTML = current ? renderSyllabusItem(current) : '';
     host.scrollTop = 0;
   }
   function openSyllabusViewer() {
