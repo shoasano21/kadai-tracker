@@ -501,6 +501,14 @@
   body[data-view="timetable"] .settings-icon-btn,
   body[data-view="timetable"] .header-add-btn { display: none; }
   body[data-view="timetable"] #timetableHost { display: block; }
+  body[data-view="timetable"] {
+    overflow: hidden;
+    height: 100vh;
+    height: 100dvh;
+    touch-action: none;
+    overscroll-behavior: none;
+  }
+  body[data-view="timetable"] .app { height: 100vh; height: 100dvh; overflow: hidden; }
 
   .timetable-panel { display: none; background: var(--panel); border-radius: var(--radius); padding: 8px 6px 16px; box-shadow: var(--shadow); }
   .timetable-grid {
