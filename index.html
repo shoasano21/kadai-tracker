@@ -2856,36 +2856,34 @@
     }
 
     const matched = new Set();
-    let html = '<div class="cal-day-schedule">';
-    if (dayIdx === null) {
-      html += `<div class="cal-detail-empty">${t('cal_empty')}</div>`;
-    } else {
+    let scheduleHtml = '';
+    if (dayIdx !== null) {
       for (let p = 1; p <= NUM_PERIODS; p++) {
         const sub = getSubjectAt(dayIdx, p);
-        const periodTasks = sub ? tasks.filter(it => it.course === sub.name) : [];
+        if (!sub) continue;
+        const periodTasks = tasks.filter(it => it.course === sub.name);
         periodTasks.forEach(it => matched.add(it.id));
-        html += `<div class="cal-period${sub ? ' has-sub' : ' empty'}">` +
+        scheduleHtml += `<div class="cal-period has-sub">` +
           `<div class="cal-period-num">${p}</div>` +
-          `<div class="cal-period-content">`;
-        if (sub) {
-          html += `<div class="cal-period-subject" style="border-left-color:${sub.color};">` +
-            `<span class="cal-period-name">${escapeHtml(sub.name)}</span></div>`;
-          if (periodTasks.length > 0) {
-            html += periodTasks.map(it => calTaskHtml(it)).join('');
-          }
-        } else {
-          html += `<div class="cal-period-empty">—</div>`;
-        }
-        html += `</div></div>`;
+          `<div class="cal-period-content">` +
+            `<div class="cal-period-subject" style="border-left-color:${sub.color};">` +
+              `<span class="cal-period-name">${escapeHtml(sub.name)}</span>` +
+            `</div>` +
+            (periodTasks.length > 0 ? periodTasks.map(it => calTaskHtml(it)).join('') : '') +
+          `</div>` +
+        `</div>`;
       }
     }
-    html += '</div>';
+
+    let html = '';
+    if (scheduleHtml) html += `<div class="cal-day-schedule">${scheduleHtml}</div>`;
 
     const others = tasks.filter(it => !matched.has(it.id));
     if (others.length > 0) {
-      html += `<div class="cal-other-header">${t('cal_other_tasks')}</div>` +
+      html += (scheduleHtml ? `<div class="cal-other-header">${t('cal_other_tasks')}</div>` : '') +
         others.map(it => calTaskHtml(it)).join('');
     }
+    if (!html) html = `<div class="cal-detail-empty">${t('cal_empty')}</div>`;
     return html;
   }
 
