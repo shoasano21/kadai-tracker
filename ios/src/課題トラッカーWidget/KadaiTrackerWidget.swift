@@ -67,34 +67,33 @@ struct KadaiProvider: TimelineProvider {
     }
 }
 
-private let posixLocale = Locale(identifier: "en_US_POSIX")
-private var gregCal: Calendar = {
-    var c = Calendar(identifier: .gregorian)
-    c.locale = posixLocale
-    c.timeZone = TimeZone.current
-    return c
+private var gregorianCalendar: Calendar = {
+    var cal = Calendar(identifier: .gregorian)
+    cal.timeZone = TimeZone.current
+    return cal
 }()
-private func makeYmdFormatter() -> DateFormatter {
+
+private var isoDateFormatter: DateFormatter = {
     let f = DateFormatter()
+    f.locale = Locale(identifier: "en_US_POSIX")
+    f.calendar = Calendar(identifier: .gregorian)
+    f.timeZone = TimeZone.current
     f.dateFormat = "yyyy-MM-dd"
-    f.locale = posixLocale
-    f.calendar = gregCal
-    f.timeZone = gregCal.timeZone
     return f
-}
+}()
 
 private func dateString(daysFromNow: Int) -> String {
-    let d = gregCal.date(byAdding: .day, value: daysFromNow, to: Date()) ?? Date()
-    return makeYmdFormatter().string(from: d)
+    let d = gregorianCalendar.date(byAdding: .day, value: daysFromNow, to: Date()) ?? Date()
+    return isoDateFormatter.string(from: d)
 }
 
 // MARK: - Helpers
 
 private func daysLeft(_ endStr: String) -> Int {
-    guard let end = makeYmdFormatter().date(from: endStr) else { return 0 }
-    let today = gregCal.startOfDay(for: Date())
-    let endDay = gregCal.startOfDay(for: end)
-    return gregCal.dateComponents([.day], from: today, to: endDay).day ?? 0
+    guard let end = isoDateFormatter.date(from: endStr) else { return 0 }
+    let today = gregorianCalendar.startOfDay(for: Date())
+    let endDay = gregorianCalendar.startOfDay(for: end)
+    return gregorianCalendar.dateComponents([.day], from: today, to: endDay).day ?? 0
 }
 
 private func statusColor(daysLeft d: Int, done: Bool) -> Color {
