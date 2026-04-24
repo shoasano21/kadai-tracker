@@ -1187,13 +1187,23 @@
   .cal-cell.sat .day-num { color: var(--accent); }
   .cal-cell.today .day-num {
     background: transparent;
-    color: #000 !important;
-    font-weight: 800;
-    box-shadow: inset 0 0 0 2px #000;
+    color: var(--text) !important;
+    font-weight: 900;
+    box-shadow:
+      inset 0 0 0 1.5px rgba(115,88,217,0.35),
+      0 0 0 3px rgba(115,88,217,0.12);
   }
   .cal-cell.selected {
     background: var(--panel-solid);
-    box-shadow: inset 0 0 0 2px #000;
+    box-shadow:
+      inset 0 0 0 1.5px rgba(115,88,217,0.45),
+      0 6px 18px -4px rgba(76,45,176,0.25);
+    transform: translateY(-1px);
+  }
+  .cal-cell.selected.today .day-num {
+    box-shadow:
+      inset 0 0 0 1.5px rgba(76,45,176,0.55),
+      0 0 0 3px rgba(115,88,217,0.18);
   }
   .cal-cell.selected.today { background: var(--panel-solid); }
 
