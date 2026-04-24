@@ -502,12 +502,13 @@
   body[data-view="timetable"] .header-add-btn { display: none; }
   body[data-view="timetable"] #timetableHost { display: block; }
 
-  .timetable-panel { display: none; background: var(--panel); border-radius: var(--radius); padding: 8px 6px 16px; box-shadow: var(--shadow); }
+  .timetable-panel { display: none; background: var(--panel); border-radius: var(--radius); padding: 8px 6px 16px; box-shadow: var(--shadow); overflow-x: auto; }
   .timetable-grid {
     display: grid;
-    grid-template-columns: 36px repeat(6, 1fr);
+    grid-template-columns: 36px repeat(5, minmax(130px, 1fr));
     gap: 4px;
     padding: 4px 8px;
+    min-width: max-content;
   }
   .tt-corner, .tt-daylabel, .tt-periodlabel {
     font-size: 11px;
@@ -2153,7 +2154,7 @@
       subject_name_label: '科目名',
       subject_color_label: '色',
       subject_slot: (day, period) => `${day}曜 ${period}限`,
-      subject_day_short: ['月','火','水','木','金','土'],
+      subject_day_short: ['月','火','水','木','金'],
       subject_period_short: (n) => `${n}限`,
       confirm_delete_subject: (n) => `「${n}」を時間割から削除しますか？`,
       toast_subject_saved: '📅 時間割を更新しました',
@@ -2290,7 +2291,7 @@
       subject_name_label: 'Course Name',
       subject_color_label: 'Color',
       subject_slot: (day, period) => `${day} P${period}`,
-      subject_day_short: ['Mon','Tue','Wed','Thu','Fri','Sat'],
+      subject_day_short: ['Mon','Tue','Wed','Thu','Fri'],
       subject_period_short: (n) => `P${n}`,
       confirm_delete_subject: (n) => `Remove "${n}" from the timetable?`,
       toast_subject_saved: '📅 Timetable updated',
@@ -2886,7 +2887,7 @@
 
   function calDayScheduleHtml(selDate, tasks) {
     const js = selDate.getDay(); // 0=Sun..6=Sat
-    const dayIdx = js === 0 ? null : js; // 1..6 match our DAYS
+    const dayIdx = DAYS.includes(js) ? js : null;
     const hasSubjects = (state.subjects || []).length > 0;
 
     // Top: timetable for the day (always shown 1-6 if we have subjects registered and it's Mon-Sat)
@@ -3294,7 +3295,7 @@
   // ===== Timetable =====
   const SUBJECT_COLORS = ['#7358d9','#e53935','#f06675','#eaa93c','#43a047','#1e88e5','#00acc1','#8e24aa','#5e3cb8','#ef6c00'];
   const NUM_PERIODS = 6;
-  const DAYS = [1, 2, 3, 4, 5, 6]; // Mon-Sat
+  const DAYS = [1, 2, 3, 4, 5]; // Mon-Fri
   let editingSubjectId = null;
   let editingDay = 1, editingPeriod = 1;
   let selectedColor = SUBJECT_COLORS[0];
