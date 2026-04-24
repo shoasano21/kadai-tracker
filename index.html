@@ -2290,6 +2290,13 @@
 <div class="toast-host" id="toastHost"></div>
 
 <script>
+// Failsafe: always dismiss the splash after 3s even if the main app script throws.
+setTimeout(function () {
+  var s = document.getElementById('splash');
+  if (s) s.classList.add('done');
+}, 3000);
+</script>
+<script>
 (function () {
   'use strict';
 
