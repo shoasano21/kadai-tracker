@@ -183,7 +183,14 @@
 
   /* Calendar-only mode: hide header banner / summary / filters / reminder
      so the grid is the main focus and can breathe. */
-  body[data-view="calendar"] .app { padding: 4px 4px calc(10px + env(safe-area-inset-bottom)); }
+  body[data-view="calendar"] {
+    overflow: hidden;
+    height: 100vh;
+    height: 100dvh;
+    touch-action: none;
+    overscroll-behavior: none;
+  }
+  body[data-view="calendar"] .app { padding: 4px 4px calc(10px + env(safe-area-inset-bottom)); height: 100vh; height: 100dvh; overflow: hidden; }
   body[data-view="calendar"] .calendar-wrap { padding: 4px 4px 0; box-shadow: none; border: none; background: transparent; }
   body[data-view="calendar"] .header-add-btn,
   body[data-view="calendar"] .settings-icon-btn { display: none !important; }
