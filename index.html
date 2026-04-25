@@ -1629,6 +1629,22 @@
   }
   .modal::before { display: none; }
   .modal-overlay.open .modal { transform: scale(1) translateY(0); }
+
+  /* Compact spacing for the add/edit task modal so it fits without scrolling */
+  #modalOverlay .modal { padding: 14px 16px 16px; }
+  #modalOverlay .modal h2 { margin: 0 0 8px; font-size: 17px; }
+  #modalOverlay .field { margin-bottom: 8px; }
+  #modalOverlay .field label { margin-bottom: 2px; }
+  #modalOverlay .field input,
+  #modalOverlay .field select,
+  #modalOverlay .field textarea { padding: 7px 10px; font-size: 15px; }
+  #modalOverlay .field input[type="date"] { min-height: 38px; }
+  #modalOverlay .field textarea { min-height: 40px; font-size: 13px; }
+  #modalOverlay .field-error { min-height: 0; margin-top: 0; }
+  #modalOverlay .modal-actions { margin-top: 6px; }
+  #modalOverlay .chip-grid { max-height: 84px; margin-top: 6px; gap: 6px; }
+  #modalOverlay .course-chip { padding: 5px 10px; font-size: 12px; }
+
   .modal h2 {
     margin: 0 0 16px;
     font-size: 18px;
