@@ -717,6 +717,26 @@
     color: rgba(255,255,255,0.30);
   }
 
+  /* Period-time editor: roomy time inputs that don't overlap */
+  #periodTimeOverlay .period-time-row {
+    grid-template-columns: 1fr 1fr;
+    gap: 14px;
+    margin-bottom: 10px;
+  }
+  #periodTimeOverlay .field input[type="time"] {
+    width: 100%;
+    min-height: 48px;
+    padding: 10px 12px;
+    font-size: 18px;
+    font-weight: 700;
+    text-align: center;
+    box-sizing: border-box;
+  }
+  #periodTimeOverlay .field label {
+    margin-bottom: 6px;
+    font-size: 13px;
+  }
+
   .color-palette { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 4px; }
   .color-swatch {
     width: 36px; height: 36px; border-radius: 50%;
@@ -2435,9 +2455,9 @@
 </div>
 
 <div id="periodTimeOverlay" class="modal-overlay" aria-hidden="true">
-  <div class="modal" style="max-width:360px;">
+  <div class="modal period-time-modal" style="max-width:420px;">
     <h2 id="periodTimeTitle">⏰ 1限の時間</h2>
-    <div class="field-row">
+    <div class="field-row period-time-row">
       <div class="field">
         <label for="periodStartInput">開始</label>
         <input id="periodStartInput" type="time" />
