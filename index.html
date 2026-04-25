@@ -405,11 +405,22 @@
   }
   .settings-icon-btn:active { transform: scale(0.94); }
 
-  .stats-bar {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
+  .dashboard-row {
+    display: flex;
+    align-items: stretch;
     gap: 12px;
     margin-bottom: 16px;
+  }
+  .dashboard-row > .stats-bar,
+  .dashboard-row > .filter-bar {
+    flex: 1 1 0;
+    margin-bottom: 0;
+    min-width: 0;
+  }
+  .stats-bar {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
   }
   .stats-bar .stat {
     display: flex;
@@ -1041,9 +1052,9 @@
 
   /* Filter bar (two columns) */
   .filter-bar {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 12px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
     background: var(--panel);
     backdrop-filter: blur(14px);
     -webkit-backdrop-filter: blur(14px);
@@ -2184,36 +2195,38 @@
       <line x1="15" y1="4" x2="15" y2="21"/>
     </svg>
   </button>
-  <section class="stats-bar">
-    <div class="stat urgent" id="cardUrgent">
-      <span class="stat-value" id="sumUrgent">0</span><span class="stat-unit" data-i18n="stat_unit">個</span>
-      <span class="stat-label" data-i18n="stat_urgent">Urgent</span>
-      <span class="stat-emoji">🔥</span>
-    </div>
-    <div class="stat ok">
-      <span class="stat-value" id="sumOk">0</span><span class="stat-unit" data-i18n="stat_unit">個</span>
-      <span class="stat-label" data-i18n="stat_coming_up">Coming Up</span>
-      <span class="stat-emoji">🌱</span>
-    </div>
-  </section>
   <button id="btnAddHeader" class="header-add-btn" data-i18n-title="add_task" data-i18n-aria="add_task">＋</button>
 
   <div id="reminderHost"></div>
 
-  <section class="filter-bar">
-    <div class="filter-row">
-      <label for="filterCourse" data-i18n="filter_lecture">🎓 Lecture</label>
-      <select id="filterCourse"><option value="" data-i18n="filter_all_courses">すべて</option></select>
-    </div>
-    <div class="filter-row">
-      <label for="filterStatus" data-i18n="filter_status">🔍 Status</label>
-      <select id="filterStatus">
-        <option value="open" selected data-i18n="filter_open">未提出のみ</option>
-        <option value="all" data-i18n="filter_all">全件</option>
-        <option value="done" data-i18n="filter_done">提出済のみ</option>
-      </select>
-    </div>
-  </section>
+  <div class="dashboard-row">
+    <section class="stats-bar">
+      <div class="stat urgent" id="cardUrgent">
+        <span class="stat-value" id="sumUrgent">0</span><span class="stat-unit" data-i18n="stat_unit">個</span>
+        <span class="stat-label" data-i18n="stat_urgent">Urgent</span>
+        <span class="stat-emoji">🔥</span>
+      </div>
+      <div class="stat ok">
+        <span class="stat-value" id="sumOk">0</span><span class="stat-unit" data-i18n="stat_unit">個</span>
+        <span class="stat-label" data-i18n="stat_coming_up">Coming Up</span>
+        <span class="stat-emoji">🌱</span>
+      </div>
+    </section>
+    <section class="filter-bar">
+      <div class="filter-row">
+        <label for="filterCourse" data-i18n="filter_lecture">🎓 Lecture</label>
+        <select id="filterCourse"><option value="" data-i18n="filter_all_courses">すべて</option></select>
+      </div>
+      <div class="filter-row">
+        <label for="filterStatus" data-i18n="filter_status">🔍 Status</label>
+        <select id="filterStatus">
+          <option value="open" selected data-i18n="filter_open">未提出のみ</option>
+          <option value="all" data-i18n="filter_all">全件</option>
+          <option value="done" data-i18n="filter_done">提出済のみ</option>
+        </select>
+      </div>
+    </section>
+  </div>
 
   <main id="viewHost"></main>
 
