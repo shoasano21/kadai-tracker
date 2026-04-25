@@ -545,7 +545,7 @@
     overflow: hidden;
     display: flex;
     flex-direction: column;
-    padding: calc(env(safe-area-inset-top) + 8px) 8px calc(90px + env(safe-area-inset-bottom));
+    padding: calc(env(safe-area-inset-top) + 6px) 8px calc(72px + env(safe-area-inset-bottom));
     max-width: 100%;
   }
 
@@ -570,33 +570,32 @@
   .tt-header {
     position: relative;
     flex: 0 0 auto;
-    padding: 14px 18px 12px;
+    padding: 10px 18px 6px;
     text-align: center;
     box-sizing: border-box;
   }
   .tt-title {
     margin: 0;
-    font-size: 20px;
+    font-size: 18px;
     font-weight: 800;
     color: var(--text);
-    line-height: 28px;
+    line-height: 24px;
     letter-spacing: 0.02em;
   }
   .tt-hint {
     flex: 0 0 auto;
     text-align: center;
-    font-size: 11px;
+    font-size: 10px;
     font-weight: 600;
     color: var(--text-sub);
-    padding: 0 14px 8px;
+    padding: 0 14px 4px;
     letter-spacing: 0.02em;
   }
   .tt-scroll {
     flex: 1 1 auto;
     min-height: 0;
-    overflow-y: auto;
-    -webkit-overflow-scrolling: touch;
-    padding: 4px 12px 14px;
+    overflow: hidden;
+    padding: 4px 10px 10px;
   }
   .tt-grid {
     display: grid;
