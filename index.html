@@ -223,6 +223,14 @@
   .calendar-fab svg { display: block; }
   .calendar-fab:hover { transform: translateY(-2px); box-shadow: 0 4px 10px rgba(0,0,0,0.1), 0 12px 28px -6px rgba(0,0,0,0.22); }
   .calendar-fab:active { transform: translateY(0) scale(0.95); }
+
+  /* Left-handed mode: mirror the floating action buttons to the left edge */
+  body[data-hand="left"] .calendar-fab,
+  body[data-hand="left"] .header-add-btn,
+  body[data-hand="left"] .settings-icon-btn {
+    right: auto;
+    left: calc(20px + env(safe-area-inset-left));
+  }
   body[data-view="calendar"] .calendar-header { margin-bottom: 6px; }
   body[data-view="calendar"] .calendar-header .cal-title { padding: 4px; font-size: 30px; }
   body[data-view="calendar"] .cal-nav { width: 48px; height: 48px; font-size: 26px; font-weight: 500; }
@@ -2224,6 +2232,13 @@
     </div>
     <div class="setting-row">
       <div class="setting-info">
+        <div class="setting-label" data-i18n="setting_hand">✋ 利き手</div>
+        <div class="setting-desc" data-i18n="setting_hand_desc">追加・設定・時間割ボタンの位置を切り替え</div>
+      </div>
+      <button id="btnHand" class="btn setting-btn">右利き</button>
+    </div>
+    <div class="setting-row">
+      <div class="setting-info">
         <div class="setting-label" data-i18n="setting_theme">🌙 テーマ</div>
         <div class="setting-desc" data-i18n="setting_theme_desc">ダーク/ライトモード切替</div>
       </div>
@@ -2470,6 +2485,10 @@ setTimeout(function () {
       setting_class_notify: '📚 授業の通知',
       setting_class_notify_desc: '授業の開始前に通知します',
       class_notify_off: 'オフ',
+      setting_hand: '✋ 利き手',
+      setting_hand_desc: '追加・設定・時間割ボタンの位置を切り替え',
+      hand_right: '右利き',
+      hand_left: '左利き',
       class_notif_title: (n) => `まもなく ${n}限`,
       class_notif_body: (name, start, end) => `${name} ${start}〜${end}`,
       setting_theme: '🌙 テーマ',
@@ -2637,6 +2656,10 @@ setTimeout(function () {
       setting_class_notify: '📚 Class alerts',
       setting_class_notify_desc: 'Remind me before each class',
       class_notify_off: 'Off',
+      setting_hand: '✋ Handedness',
+      setting_hand_desc: 'Switch the position of the action buttons',
+      hand_right: 'Right',
+      hand_left: 'Left',
       class_notif_title: (n) => `Period ${n} starting soon`,
       class_notif_body: (name, start, end) => `${name} ${start}–${end}`,
       setting_notify_time_desc: 'Send notifications at this time daily',
@@ -4535,6 +4558,26 @@ setTimeout(function () {
       if (!Number.isFinite(v)) return;
       setClassNotifyLead(v);
       syncNativeNotifications();
+    });
+  }
+
+  const HAND_KEY = 'kadai_tracker_hand';
+  function getHand() {
+    const v = localStorage.getItem(HAND_KEY);
+    return v === 'left' ? 'left' : 'right';
+  }
+  function applyHand(h) {
+    document.body.setAttribute('data-hand', h);
+    const btn = $('btnHand');
+    if (btn) btn.textContent = t(h === 'left' ? 'hand_left' : 'hand_right');
+  }
+  applyHand(getHand());
+  const handBtn = $('btnHand');
+  if (handBtn) {
+    handBtn.addEventListener('click', () => {
+      const next = getHand() === 'left' ? 'right' : 'left';
+      localStorage.setItem(HAND_KEY, next);
+      applyHand(next);
     });
   }
 
