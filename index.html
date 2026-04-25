@@ -2312,7 +2312,6 @@
   <section id="timetableHost" class="timetable-screen">
     <header class="tt-header">
       <h2 class="tt-title" data-i18n="timetable_heading">📅 時間割</h2>
-      <button id="btnCloseTimetable" class="tt-close" aria-label="閉じる">✕</button>
     </header>
     <div class="tt-scroll">
       <table id="timetableGrid" class="tt-table"></table>
@@ -4388,10 +4387,6 @@ setTimeout(function () {
     previousView = 'calendar';
     switchView('timetable');
   });
-  $('btnCloseTimetable').addEventListener('click', () => {
-    switchView(previousView || 'calendar');
-  });
-
   $('filterCourse').addEventListener('change', (e) => { filterCourse = e.target.value; render(); });
   $('filterStatus').addEventListener('change', (e) => { filterStatus = e.target.value; render(); });
 
