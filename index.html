@@ -551,12 +551,15 @@
     flex-direction: column;
     flex: 1 1 auto;
     min-height: 0;
-    background: var(--panel);
+    background: linear-gradient(180deg, #fafbff 0%, #f3f5fb 100%);
     border: 1px solid var(--border-strong);
-    border-radius: 18px;
-    box-shadow: 0 6px 20px -10px rgba(0,0,0,0.18);
+    border-radius: 22px;
+    box-shadow: 0 10px 32px -16px rgba(40,50,90,0.20);
     overflow: hidden;
     box-sizing: border-box;
+  }
+  [data-theme="dark"] .timetable-screen {
+    background: linear-gradient(180deg, #1c1f2c 0%, #161823 100%);
   }
   body[data-view="timetable"] #timetableHost.timetable-screen {
     display: flex;
@@ -564,11 +567,8 @@
   .tt-header {
     position: relative;
     flex: 0 0 auto;
-    padding: 10px 14px;
-    background: var(--panel);
-    border-bottom: 1px solid var(--border);
+    padding: 14px 18px 12px;
     text-align: center;
-    min-height: 48px;
     box-sizing: border-box;
   }
   .tt-title {
@@ -577,17 +577,7 @@
     font-weight: 800;
     color: var(--text);
     line-height: 28px;
-  }
-  .tt-close {
-    position: absolute;
-    top: 50%;
-    right: 14px;
-    transform: translateY(-50%);
-    margin-top: calc(env(safe-area-inset-top) / 2);
-    width: 44px; height: 44px; border-radius: 50%;
-    border: 1px solid var(--border); background: var(--panel-2);
-    color: var(--text); font-size: 22px; line-height: 1; cursor: pointer;
-    display: flex; align-items: center; justify-content: center;
+    letter-spacing: 0.02em;
   }
   .tt-hint {
     flex: 0 0 auto;
@@ -595,20 +585,21 @@
     font-size: 11px;
     font-weight: 600;
     color: var(--text-sub);
-    padding: 6px 14px 0;
+    padding: 0 14px 8px;
+    letter-spacing: 0.02em;
   }
   .tt-scroll {
     flex: 1 1 auto;
     min-height: 0;
     overflow-y: auto;
     -webkit-overflow-scrolling: touch;
-    padding: 8px 10px 12px;
+    padding: 4px 12px 14px;
   }
   .tt-grid {
     display: grid;
-    grid-template-columns: 60px repeat(5, minmax(0, 1fr));
-    grid-template-rows: 26px repeat(5, minmax(0, 1fr));
-    row-gap: 16px;
+    grid-template-columns: 56px repeat(5, minmax(0, 1fr));
+    grid-template-rows: 28px repeat(5, minmax(0, 1fr));
+    row-gap: 10px;
     column-gap: 8px;
     height: 100%;
     min-height: 0;
@@ -626,18 +617,19 @@
   }
   .tt-grid .tt-corner { }
   .tt-grid .tt-daylabel {
-    font-size: 11px;
+    font-size: 12px;
     font-weight: 700;
     color: var(--text-sub);
     text-align: center;
     display: flex;
     align-items: center;
     justify-content: center;
+    letter-spacing: 0.08em;
   }
   .tt-period-cell {
     cursor: pointer;
     text-align: center;
-    line-height: 1.2;
+    line-height: 1.15;
     padding: 4px 2px;
     overflow: hidden;
     display: flex;
@@ -646,53 +638,59 @@
     justify-content: center;
     min-height: 0;
     position: relative;
-    background: var(--panel-2);
-    border: 1px dashed var(--border);
-    border-radius: 10px;
+    background: transparent;
+    border: none;
+    border-radius: 12px;
     transition: background .15s, transform .15s;
+    gap: 4px;
   }
   .tt-period-cell:active {
     transform: scale(0.96);
-    background: var(--panel-solid);
+    background: rgba(115, 88, 217, 0.08);
   }
   .tt-period-cell .num {
-    font-size: 13px;
-    font-weight: 800;
+    font-size: 18px;
+    font-weight: 900;
     color: var(--text);
+    letter-spacing: -0.02em;
+    line-height: 1;
   }
   .tt-period-cell .time {
-    font-size: 9.5px;
-    font-weight: 600;
-    color: var(--accent);
-    margin-top: 3px;
-    line-height: 1.15;
-    text-decoration: underline;
-    text-decoration-style: dotted;
-    text-underline-offset: 2px;
-  }
-  .tt-period-cell .edit-hint {
-    position: absolute;
-    top: 2px;
-    right: 3px;
     font-size: 9px;
-    opacity: 0.6;
-    line-height: 1;
+    font-weight: 700;
+    color: var(--accent);
+    line-height: 1.2;
+    padding: 2px 5px;
+    background: rgba(115, 88, 217, 0.10);
+    border-radius: 6px;
+    white-space: nowrap;
   }
   .tt-cell {
     position: relative;
-    background: var(--panel-2);
-    border: 1px dashed var(--border);
-    border-radius: 10px;
+    background: rgba(120, 130, 160, 0.06);
+    border: 1.5px dashed rgba(120, 130, 160, 0.25);
+    border-radius: 14px;
     cursor: pointer;
     padding: 0;
-    transition: transform .12s;
+    transition: transform .12s, background .15s, border-color .15s;
     box-sizing: border-box;
     overflow: hidden;
     min-width: 0;
     min-height: 0;
   }
-  .tt-cell:active { transform: scale(0.96); }
-  .tt-cell.filled { border-style: solid; color: #fff; }
+  .tt-cell:active { transform: scale(0.94); }
+  .tt-cell.filled {
+    border: none;
+    color: #fff;
+    box-shadow:
+      inset 0 1px 0 rgba(255,255,255,0.18),
+      inset 0 -2px 0 rgba(0,0,0,0.10),
+      0 2px 6px -2px rgba(0,0,0,0.18);
+  }
+  .tt-cell.empty:hover {
+    background: rgba(120, 130, 160, 0.10);
+    border-color: rgba(120, 130, 160, 0.40);
+  }
   .tt-cell-text {
     position: absolute;
     inset: 0;
@@ -700,15 +698,27 @@
     align-items: center;
     justify-content: center;
     padding: 4px;
-    font-size: 11px;
+    font-size: 11.5px;
     font-weight: 700;
     color: inherit;
     word-break: break-all;
-    line-height: 1.15;
+    line-height: 1.2;
     overflow: hidden;
     text-align: center;
+    letter-spacing: 0.01em;
   }
-  .tt-cell.empty .tt-cell-text { color: var(--text-sub); font-size: 18px; font-weight: 400; }
+  .tt-cell.empty .tt-cell-text {
+    color: rgba(120, 130, 160, 0.55);
+    font-size: 22px;
+    font-weight: 300;
+  }
+  [data-theme="dark"] .tt-cell {
+    background: rgba(255,255,255,0.04);
+    border-color: rgba(255,255,255,0.10);
+  }
+  [data-theme="dark"] .tt-cell.empty .tt-cell-text {
+    color: rgba(255,255,255,0.30);
+  }
 
   .color-palette { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 4px; }
   .color-swatch {
