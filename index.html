@@ -634,7 +634,7 @@
     cursor: pointer;
     text-align: center;
     line-height: 1.1;
-    padding: 6px 4px;
+    padding: 4px 2px;
     overflow: hidden;
     display: flex;
     flex-direction: column;
@@ -642,35 +642,18 @@
     justify-content: center;
     min-height: 0;
     position: relative;
-    background: rgba(255, 255, 255, 0.85);
-    border: 1px solid rgba(110, 118, 134, 0.25);
+    background: transparent;
+    border: none;
     border-radius: 10px;
-    transition: background .15s, transform .12s, box-shadow .15s, border-color .15s;
+    transition: background .15s, transform .15s;
     gap: 4px;
-    box-shadow:
-      inset 0 1px 0 rgba(255,255,255,0.7),
-      0 1px 2px rgba(40,50,90,0.08);
-  }
-  [data-theme="dark"] .tt-period-cell {
-    background: rgba(255,255,255,0.04);
-    border-color: rgba(255,255,255,0.10);
-    box-shadow: inset 0 1px 0 rgba(255,255,255,0.05);
-  }
-  @media (hover: hover) {
-    .tt-period-cell:hover {
-      background: rgba(255, 255, 255, 0.95);
-      border-color: rgba(110, 118, 134, 0.45);
-      box-shadow:
-        inset 0 1px 0 rgba(255,255,255,0.7),
-        0 4px 10px -3px rgba(40,50,90,0.18);
-    }
   }
   .tt-period-cell:active {
     transform: scale(0.96);
     background: rgba(110, 118, 134, 0.10);
   }
   .tt-period-cell .num {
-    font-size: 16px;
+    font-size: 17px;
     font-weight: 900;
     color: var(--text);
     letter-spacing: -0.02em;
@@ -746,6 +729,55 @@
   }
   [data-theme="dark"] .tt-cell.empty .tt-cell-text {
     color: rgba(255,255,255,0.25);
+  }
+
+  /* Period-time editor: time inputs styled as tappable buttons */
+  .period-time-input {
+    display: flex !important;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    min-height: 56px;
+    padding: 12px 18px;
+    font-size: 22px;
+    font-weight: 800;
+    text-align: center;
+    box-sizing: border-box;
+    background: linear-gradient(180deg, #f8f9ff 0%, #eef0fb 100%);
+    color: var(--text);
+    border: 1.5px solid #c8cce0;
+    border-radius: 14px;
+    cursor: pointer;
+    transition: transform .12s, box-shadow .15s, border-color .15s;
+    box-shadow:
+      inset 0 1px 0 rgba(255,255,255,0.85),
+      0 2px 6px -2px rgba(40,50,90,0.12);
+    font-family: inherit;
+    letter-spacing: 0.02em;
+  }
+  .period-time-input:hover {
+    border-color: #6e7686;
+    box-shadow:
+      inset 0 1px 0 rgba(255,255,255,0.85),
+      0 4px 12px -3px rgba(40,50,90,0.20);
+  }
+  .period-time-input:active {
+    transform: scale(0.98);
+    box-shadow:
+      inset 0 1px 3px rgba(40,50,90,0.10),
+      0 1px 2px rgba(40,50,90,0.06);
+  }
+  .period-time-input:focus {
+    outline: none;
+    border-color: #6e7686;
+    box-shadow:
+      inset 0 1px 0 rgba(255,255,255,0.85),
+      0 0 0 3px rgba(110, 118, 134, 0.20);
+  }
+  [data-theme="dark"] .period-time-input {
+    background: linear-gradient(180deg, rgba(255,255,255,0.06) 0%, rgba(255,255,255,0.03) 100%);
+    border-color: rgba(255,255,255,0.18);
+    color: var(--text);
   }
 
   /* Period-time editor: stack inputs vertically so they never overlap */
@@ -2544,11 +2576,11 @@
     <div class="period-time-row" style="display:flex;flex-direction:column;gap:12px;margin-bottom:14px;">
       <div class="field" style="margin-bottom:0;width:100%;">
         <label for="periodStartInput" style="display:block;margin-bottom:6px;font-size:13px;font-weight:700;">開始</label>
-        <input id="periodStartInput" type="time" style="display:block;width:100%;min-height:52px;padding:10px 16px 10px 16px;font-size:20px;font-weight:700;text-align:left;box-sizing:border-box;" />
+        <input id="periodStartInput" type="time" class="period-time-input" />
       </div>
       <div class="field" style="margin-bottom:0;width:100%;">
         <label for="periodEndInput" style="display:block;margin-bottom:6px;font-size:13px;font-weight:700;">終了</label>
-        <input id="periodEndInput" type="time" style="display:block;width:100%;min-height:52px;padding:10px 16px 10px 16px;font-size:20px;font-weight:700;text-align:left;box-sizing:border-box;" />
+        <input id="periodEndInput" type="time" class="period-time-input" />
       </div>
     </div>
     <div class="modal-actions">
