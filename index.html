@@ -2209,6 +2209,21 @@
     </div>
     <div class="setting-row">
       <div class="setting-info">
+        <div class="setting-label" data-i18n="setting_class_notify">📚 授業の通知</div>
+        <div class="setting-desc" data-i18n="setting_class_notify_desc">授業の開始前に通知します</div>
+      </div>
+      <select id="classNotifyLead" class="setting-time-input">
+        <option value="-1" data-i18n="class_notify_off">オフ</option>
+        <option value="5">5分前</option>
+        <option value="10">10分前</option>
+        <option value="15" selected>15分前</option>
+        <option value="20">20分前</option>
+        <option value="30">30分前</option>
+        <option value="60">1時間前</option>
+      </select>
+    </div>
+    <div class="setting-row">
+      <div class="setting-info">
         <div class="setting-label" data-i18n="setting_theme">🌙 テーマ</div>
         <div class="setting-desc" data-i18n="setting_theme_desc">ダーク/ライトモード切替</div>
       </div>
@@ -2452,6 +2467,11 @@ setTimeout(function () {
       setting_notify_time: '⏰ 通知時刻',
       setting_notify_time_desc: '毎日この時刻に通知を送信',
       setting_notify_time_title: '通知時刻を変更',
+      setting_class_notify: '📚 授業の通知',
+      setting_class_notify_desc: '授業の開始前に通知します',
+      class_notify_off: 'オフ',
+      class_notif_title: (n) => `まもなく ${n}限`,
+      class_notif_body: (name, start, end) => `${name} ${start}〜${end}`,
       setting_theme: '🌙 テーマ',
       setting_theme_desc: 'ダーク/ライトモード切替',
       setting_theme_title: 'テーマ切り替え',
@@ -2614,6 +2634,11 @@ setTimeout(function () {
       setting_notify: '🔔 Notifications',
       setting_notify_desc: 'Notify when deadlines approach',
       setting_notify_time: '⏰ Notify time',
+      setting_class_notify: '📚 Class alerts',
+      setting_class_notify_desc: 'Remind me before each class',
+      class_notify_off: 'Off',
+      class_notif_title: (n) => `Period ${n} starting soon`,
+      class_notif_body: (name, start, end) => `${name} ${start}–${end}`,
       setting_notify_time_desc: 'Send notifications at this time daily',
       setting_notify_time_title: 'Change notification time',
       setting_theme: '🌙 Theme',
@@ -4237,6 +4262,7 @@ setTimeout(function () {
     savePeriodTimes(periodTimes);
     closePeriodTimeEditor();
     renderTimetable();
+    syncNativeNotifications();
   });
 
   function populateSubjectNameSuggestions() {
@@ -4303,6 +4329,7 @@ setTimeout(function () {
     saveState();
     renderTimetable();
     closeSubjectEditor();
+    syncNativeNotifications();
     toast(t('toast_subject_saved'), 'success');
   });
   $('btnSubjectCancel').addEventListener('click', closeSubjectEditor);
@@ -4322,6 +4349,7 @@ setTimeout(function () {
     saveState();
     renderTimetable();
     closeSubjectEditor();
+    syncNativeNotifications();
     toast(t('toast_subject_deleted'), 'warn');
   });
   $('subjectEditOverlay').addEventListener('click', (e) => {
@@ -4427,9 +4455,56 @@ setTimeout(function () {
     return out;
   }
 
+  const CLASS_NOTIFY_KEY = 'kadai_tracker_class_notify_lead';
+  function getClassNotifyLead() {
+    const raw = localStorage.getItem(CLASS_NOTIFY_KEY);
+    if (raw === null) return 15;
+    const n = Number(raw);
+    return Number.isFinite(n) ? n : 15;
+  }
+  function setClassNotifyLead(min) {
+    localStorage.setItem(CLASS_NOTIFY_KEY, String(min));
+  }
+
+  function buildClassNotificationsPayload() {
+    const lead = getClassNotifyLead();
+    if (lead < 0) return [];
+    const subjects = state.subjects || [];
+    if (!subjects.length) return [];
+    const now = new Date();
+    const out = [];
+    const horizonDays = 14;
+    for (let offset = 0; offset <= horizonDays; offset++) {
+      const day = new Date(now);
+      day.setDate(now.getDate() + offset);
+      const dow = day.getDay();
+      if (!DAYS.includes(dow)) continue;
+      subjects.filter(s => s.day === dow).forEach(s => {
+        const pt = (periodTimes && periodTimes[s.period]) || DEFAULT_PERIOD_TIMES[s.period];
+        if (!pt || !pt.start) return;
+        const [h, m] = pt.start.split(':').map(Number);
+        const when = new Date(day);
+        when.setHours(h || 0, m || 0, 0, 0);
+        when.setMinutes(when.getMinutes() - lead);
+        if (when.getTime() <= now.getTime()) return;
+        const ymd = `${when.getFullYear()}-${String(when.getMonth()+1).padStart(2,'0')}-${String(when.getDate()).padStart(2,'0')}`;
+        out.push({
+          id: `class-${s.id || (s.day + '-' + s.period)}-${ymd}`,
+          title: t('class_notif_title', s.period),
+          body: t('class_notif_body', s.name, pt.start, pt.end),
+          when: when.toISOString()
+        });
+      });
+    }
+    return out;
+  }
+
   function syncNativeNotifications() {
     if (!hasNativeBridge) return;
-    const notifications = notifyEnabled ? buildNotificationsPayload() : [];
+    let notifications = [];
+    if (notifyEnabled) {
+      notifications = buildNotificationsPayload().concat(buildClassNotificationsPayload());
+    }
     postToNative('schedule-local', JSON.stringify({ notifications }));
   }
 
@@ -4451,6 +4526,17 @@ setTimeout(function () {
     syncNativeNotifications();
     toast(t('toast_notify_time', v), 'success');
   });
+
+  const classNotifyLeadEl = $('classNotifyLead');
+  if (classNotifyLeadEl) {
+    classNotifyLeadEl.value = String(getClassNotifyLead());
+    classNotifyLeadEl.addEventListener('change', (e) => {
+      const v = Number(e.target.value);
+      if (!Number.isFinite(v)) return;
+      setClassNotifyLead(v);
+      syncNativeNotifications();
+    });
+  }
 
   $('btnNotify').addEventListener('click', async () => {
     // If native API available and permission not yet determined, request it before toggling ON.
