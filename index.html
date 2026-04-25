@@ -541,16 +541,21 @@
     overflow: hidden;
     display: flex;
     flex-direction: column;
-    padding: 0;
+    padding: calc(env(safe-area-inset-top) + 8px) 8px calc(80px + env(safe-area-inset-bottom));
     max-width: 100%;
   }
 
   .timetable-screen {
     display: none;
     flex-direction: column;
-    flex: 1 1 0;
+    flex: 1 1 auto;
     min-height: 0;
     background: var(--panel);
+    border: 1px solid var(--border-strong);
+    border-radius: 18px;
+    box-shadow: 0 6px 20px -10px rgba(0,0,0,0.18);
+    overflow: hidden;
+    box-sizing: border-box;
   }
   body[data-view="timetable"] #timetableHost.timetable-screen {
     display: flex;
@@ -558,19 +563,19 @@
   .tt-header {
     position: relative;
     flex: 0 0 auto;
-    padding: calc(env(safe-area-inset-top) + 8px) 14px 10px;
+    padding: 10px 14px;
     background: var(--panel);
     border-bottom: 1px solid var(--border);
     text-align: center;
-    min-height: 56px;
+    min-height: 48px;
     box-sizing: border-box;
   }
   .tt-title {
     margin: 0;
-    font-size: 22px;
+    font-size: 20px;
     font-weight: 800;
     color: var(--text);
-    line-height: 44px;
+    line-height: 28px;
   }
   .tt-close {
     position: absolute;
@@ -596,7 +601,7 @@
     min-height: 0;
     overflow-y: auto;
     -webkit-overflow-scrolling: touch;
-    padding: 6px 10px calc(90px + env(safe-area-inset-bottom));
+    padding: 8px 10px 12px;
   }
   .tt-grid {
     display: grid;
