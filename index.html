@@ -190,13 +190,29 @@
     touch-action: none;
     overscroll-behavior: none;
   }
-  body[data-view="calendar"] .app { padding: 8px 8px calc(10px + env(safe-area-inset-bottom)); height: 100vh; height: 100dvh; overflow: hidden; }
+  body[data-view="calendar"] .app {
+    padding: 8px 8px calc(80px + env(safe-area-inset-bottom));
+    height: 100vh;
+    height: 100dvh;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+  }
   body[data-view="calendar"] .calendar-wrap {
     padding: 10px 10px 6px;
     background: var(--panel);
     border: 1px solid var(--border-strong);
     border-radius: 18px;
     box-shadow: 0 6px 20px -10px rgba(0,0,0,0.18);
+    flex: 1 1 auto;
+    min-height: 0;
+    display: flex;
+    flex-direction: column;
+    box-sizing: border-box;
+  }
+  body[data-view="calendar"] .cal-table {
+    flex: 1 1 auto;
+    min-height: 0;
   }
   body[data-view="calendar"] .header-add-btn,
   body[data-view="calendar"] .settings-icon-btn { display: none !important; }
@@ -241,8 +257,8 @@
     display: none;
   }
   body[data-view="calendar"] .cal-cell {
-    height: calc((100dvh - 210px - env(safe-area-inset-top) - env(safe-area-inset-bottom)) / var(--cal-rows, 6));
-    min-height: 48px;
+    height: calc((100dvh - 240px - env(safe-area-inset-top) - env(safe-area-inset-bottom)) / var(--cal-rows, 6));
+    min-height: 44px;
   }
   body[data-view="calendar"] .cal-chip {
     font-size: 10.5px;
