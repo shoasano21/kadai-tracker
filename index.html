@@ -583,12 +583,20 @@
     color: var(--text); font-size: 22px; line-height: 1; cursor: pointer;
     display: flex; align-items: center; justify-content: center;
   }
+  .tt-hint {
+    flex: 0 0 auto;
+    text-align: center;
+    font-size: 11px;
+    font-weight: 600;
+    color: var(--text-sub);
+    padding: 6px 14px 0;
+  }
   .tt-scroll {
     flex: 1 1 auto;
     min-height: 0;
     overflow-y: auto;
     -webkit-overflow-scrolling: touch;
-    padding: 10px 10px calc(90px + env(safe-area-inset-bottom));
+    padding: 6px 10px calc(90px + env(safe-area-inset-bottom));
   }
   .tt-grid {
     display: grid;
@@ -623,13 +631,22 @@
     cursor: pointer;
     text-align: center;
     line-height: 1.2;
-    padding: 2px;
+    padding: 4px 2px;
     overflow: hidden;
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
     min-height: 0;
+    position: relative;
+    background: var(--panel-2);
+    border: 1px dashed var(--border);
+    border-radius: 10px;
+    transition: background .15s, transform .15s;
+  }
+  .tt-period-cell:active {
+    transform: scale(0.96);
+    background: var(--panel-solid);
   }
   .tt-period-cell .num {
     font-size: 13px;
@@ -639,9 +656,20 @@
   .tt-period-cell .time {
     font-size: 9.5px;
     font-weight: 600;
-    color: var(--text-sub);
+    color: var(--accent);
     margin-top: 3px;
     line-height: 1.15;
+    text-decoration: underline;
+    text-decoration-style: dotted;
+    text-underline-offset: 2px;
+  }
+  .tt-period-cell .edit-hint {
+    position: absolute;
+    top: 2px;
+    right: 3px;
+    font-size: 9px;
+    opacity: 0.6;
+    line-height: 1;
   }
   .tt-cell {
     position: relative;
@@ -2347,6 +2375,7 @@
     <header class="tt-header">
       <h2 class="tt-title" data-i18n="timetable_heading">時間割</h2>
     </header>
+    <div class="tt-hint" data-i18n="tt_period_hint">⏱️ 左の時刻ラベルをタップで時間を変更</div>
     <div class="tt-scroll">
       <div id="timetableGrid" class="tt-grid"></div>
     </div>
@@ -2540,6 +2569,7 @@ setTimeout(function () {
       setting_timetable_desc: '曜日と限の科目を登録',
       btn_edit: '編集',
       timetable_heading: '時間割',
+      tt_period_hint: '⏱️ 左の時刻ラベルをタップで時間を変更',
       subject_edit_title: '科目を登録',
       subject_edit_title_edit: '科目を編集',
       subject_name_label: '科目名',
@@ -2713,6 +2743,7 @@ setTimeout(function () {
       setting_timetable_desc: 'Register courses by day and period',
       btn_edit: 'Edit',
       timetable_heading: 'Timetable',
+      tt_period_hint: '⏱️ Tap a time label on the left to edit',
       subject_edit_title: 'Add Course',
       subject_edit_title_edit: 'Edit Course',
       subject_name_label: 'Course Name',
@@ -4250,7 +4281,8 @@ setTimeout(function () {
     }
     for (let p = 1; p <= NUM_PERIODS; p++) {
       const pt = periodTimes[p] || DEFAULT_PERIOD_TIMES[p];
-      html += `<div class="tt-period-cell" data-period="${p}">` +
+      html += `<div class="tt-period-cell" data-period="${p}" title="タップで時間を変更" aria-label="${t('subject_period_short', p)} ${pt.start}〜${pt.end} - タップで時間を変更">` +
+        `<span class="edit-hint">✏️</span>` +
         `<span class="num">${t('subject_period_short', p)}</span>` +
         `<span class="time">${pt.start}<br>-${pt.end}</span>` +
         `</div>`;
