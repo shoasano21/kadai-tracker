@@ -4287,7 +4287,6 @@ setTimeout(function () {
     for (let p = 1; p <= NUM_PERIODS; p++) {
       const pt = periodTimes[p] || DEFAULT_PERIOD_TIMES[p];
       html += `<div class="tt-period-cell" data-period="${p}" title="タップで時間を変更" aria-label="${t('subject_period_short', p)} ${pt.start}〜${pt.end} - タップで時間を変更">` +
-        `<span class="edit-hint">✏️</span>` +
         `<span class="num">${t('subject_period_short', p)}</span>` +
         `<span class="time">${pt.start}<br>-${pt.end}</span>` +
         `</div>`;
