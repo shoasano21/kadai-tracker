@@ -603,25 +603,35 @@
     line-height: 1.15;
   }
   .tt-cell {
+    position: relative;
     height: 64px;
     background: var(--panel-2);
     border: 1px dashed var(--border);
     border-radius: 10px;
     cursor: pointer;
-    text-align: center;
-    vertical-align: middle;
-    font-size: 11px;
-    font-weight: 700;
-    color: var(--text);
-    word-break: break-all;
-    line-height: 1.15;
-    padding: 4px;
+    padding: 0;
     transition: transform .12s;
     box-sizing: border-box;
+    overflow: hidden;
   }
   .tt-cell:active { transform: scale(0.96); }
   .tt-cell.filled { border-style: solid; color: #fff; }
-  .tt-cell.empty { color: var(--text-sub); font-size: 18px; font-weight: 400; }
+  .tt-cell-text {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 4px;
+    font-size: 11px;
+    font-weight: 700;
+    color: inherit;
+    word-break: break-all;
+    line-height: 1.15;
+    overflow: hidden;
+    text-align: center;
+  }
+  .tt-cell.empty .tt-cell-text { color: var(--text-sub); font-size: 18px; font-weight: 400; }
 
   .color-palette { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 4px; }
   .color-swatch {
@@ -4168,9 +4178,9 @@ setTimeout(function () {
       for (const d of DAYS) {
         const sub = getSubjectAt(d, p);
         if (sub) {
-          body += `<td class="tt-cell filled" data-day="${d}" data-period="${p}" style="background:${sub.color};">${escapeHtml(sub.name)}</td>`;
+          body += `<td class="tt-cell filled" data-day="${d}" data-period="${p}" style="background:${sub.color};"><span class="tt-cell-text">${escapeHtml(sub.name)}</span></td>`;
         } else {
-          body += `<td class="tt-cell empty" data-day="${d}" data-period="${p}">+</td>`;
+          body += `<td class="tt-cell empty" data-day="${d}" data-period="${p}"><span class="tt-cell-text">+</span></td>`;
         }
       }
       body += '</tr>';
