@@ -803,19 +803,26 @@
     gap: 8px;
   }
   .cal-period.has-task .cal-period-subject {
-    box-shadow: 0 0 0 1.5px rgba(229, 57, 53, 0.5);
+    box-shadow: 0 0 0 2px rgba(229, 57, 53, 0.55), 0 4px 10px -4px rgba(229, 57, 53, 0.30);
+    background: rgba(229, 57, 53, 0.06);
   }
   .cal-period-task-badge {
     display: inline-flex;
     align-items: center;
-    gap: 3px;
-    background: rgba(229, 57, 53, 0.12);
-    color: #e53935;
-    font-size: 11px;
+    gap: 4px;
+    background: #e53935;
+    color: #fff;
+    font-size: 12px;
     font-weight: 800;
-    padding: 3px 8px;
+    padding: 4px 10px;
     border-radius: 999px;
     white-space: nowrap;
+    box-shadow: 0 2px 6px -2px rgba(229, 57, 53, 0.6);
+  }
+  .cal-period-task-badge.done {
+    background: rgba(120, 130, 160, 0.20);
+    color: var(--text-sub);
+    box-shadow: none;
   }
   .cal-period-empty-row {
     display: flex;
@@ -3512,16 +3519,19 @@ setTimeout(function () {
     let scheduleHtml = '';
     if (hasSubjects && dayIdx !== null) {
       let rows = '';
+      const norm = (s) => (s || '').trim().toLowerCase();
       for (let p = 1; p <= NUM_PERIODS; p++) {
         const sub = getSubjectAt(dayIdx, p);
         if (sub) {
-          const matchingTasks = tasks.filter(it => !it.done && it.course === sub.name);
+          const subName = norm(sub.name);
+          const matchingTasks = tasks.filter(it => norm(it.course) === subName);
           matchingTasks.forEach(it => matchedTaskIds.add(it.id));
           const cnt = matchingTasks.length;
+          const undone = matchingTasks.filter(it => !it.done).length;
           const badge = cnt > 0
-            ? `<span class="cal-period-task-badge" aria-label="課題 ${cnt}件">📌 ${cnt}</span>`
+            ? `<span class="cal-period-task-badge${undone === 0 ? ' done' : ''}" aria-label="課題 ${cnt}件">📌 課題${cnt}</span>`
             : '';
-          rows += `<div class="cal-period has-sub${cnt > 0 ? ' has-task' : ''}">` +
+          rows += `<div class="cal-period has-sub${undone > 0 ? ' has-task' : ''}">` +
             `<div class="cal-period-num">${p}</div>` +
             `<div class="cal-period-content">` +
               `<div class="cal-period-subject" style="border-left-color:${sub.color};color:${sub.color};">` +
