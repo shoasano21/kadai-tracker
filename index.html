@@ -506,8 +506,7 @@
   body[data-view="timetable"] .filter-bar,
   body[data-view="timetable"] #viewHost,
   body[data-view="timetable"] .settings-icon-btn,
-  body[data-view="timetable"] .header-add-btn,
-  body[data-view="timetable"] .bottom-bar { display: none !important; }
+  body[data-view="timetable"] .header-add-btn { display: none !important; }
   body[data-view="timetable"] {
     overflow: hidden;
     height: 100dvh;
@@ -565,7 +564,7 @@
     min-height: 0;
     overflow-y: auto;
     -webkit-overflow-scrolling: touch;
-    padding: 10px 10px calc(env(safe-area-inset-bottom) + 12px);
+    padding: 10px 10px calc(90px + env(safe-area-inset-bottom));
   }
   .tt-table {
     width: 100%;
