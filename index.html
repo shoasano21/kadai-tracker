@@ -667,12 +667,12 @@
   }
   .tt-cell {
     position: relative;
-    background: rgba(120, 130, 160, 0.06);
-    border: 1.5px dashed rgba(120, 130, 160, 0.25);
+    background: transparent;
+    border: none;
     border-radius: 14px;
     cursor: pointer;
     padding: 0;
-    transition: transform .12s, background .15s, border-color .15s;
+    transition: transform .12s, background .15s;
     box-sizing: border-box;
     overflow: hidden;
     min-width: 0;
@@ -680,7 +680,6 @@
   }
   .tt-cell:active { transform: scale(0.94); }
   .tt-cell.filled {
-    border: none;
     color: #fff;
     box-shadow:
       inset 0 1px 0 rgba(255,255,255,0.18),
@@ -688,8 +687,7 @@
       0 2px 6px -2px rgba(0,0,0,0.18);
   }
   .tt-cell.empty:hover {
-    background: rgba(120, 130, 160, 0.10);
-    border-color: rgba(120, 130, 160, 0.40);
+    background: rgba(120, 130, 160, 0.06);
   }
   .tt-cell-text {
     position: absolute;
@@ -712,9 +710,8 @@
     font-size: 22px;
     font-weight: 300;
   }
-  [data-theme="dark"] .tt-cell {
+  [data-theme="dark"] .tt-cell.empty:hover {
     background: rgba(255,255,255,0.04);
-    border-color: rgba(255,255,255,0.10);
   }
   [data-theme="dark"] .tt-cell.empty .tt-cell-text {
     color: rgba(255,255,255,0.30);
