@@ -545,8 +545,10 @@
     overflow: hidden;
     display: flex;
     flex-direction: column;
-    padding: calc(env(safe-area-inset-top) + 8px) 8px calc(80px + env(safe-area-inset-bottom));
+    padding: calc(env(safe-area-inset-top) + 8px) 8px calc(60px + env(safe-area-inset-bottom));
     max-width: 100%;
+    position: relative;
+    z-index: 100;
   }
 
   .timetable-screen {
@@ -560,6 +562,8 @@
     box-shadow: 0 10px 32px -16px rgba(40,50,90,0.20);
     overflow: hidden;
     box-sizing: border-box;
+    position: relative;
+    z-index: 100;
   }
   [data-theme="dark"] .timetable-screen {
     background: linear-gradient(180deg, #1c1f2c 0%, #161823 100%);
