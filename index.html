@@ -532,16 +532,28 @@
     display: flex;
   }
   .tt-header {
+    position: relative;
     flex: 0 0 auto;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
     padding: calc(env(safe-area-inset-top) + 8px) 14px 10px;
     background: var(--panel);
     border-bottom: 1px solid var(--border);
+    text-align: center;
+    min-height: 56px;
+    box-sizing: border-box;
   }
-  .tt-title { margin: 0; font-size: 22px; font-weight: 800; color: var(--text); }
+  .tt-title {
+    margin: 0;
+    font-size: 22px;
+    font-weight: 800;
+    color: var(--text);
+    line-height: 44px;
+  }
   .tt-close {
+    position: absolute;
+    top: 50%;
+    right: 14px;
+    transform: translateY(-50%);
+    margin-top: calc(env(safe-area-inset-top) / 2);
     width: 44px; height: 44px; border-radius: 50%;
     border: 1px solid var(--border); background: var(--panel-2);
     color: var(--text); font-size: 22px; line-height: 1; cursor: pointer;
