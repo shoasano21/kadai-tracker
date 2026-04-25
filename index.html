@@ -604,10 +604,10 @@
   }
   .tt-grid {
     display: grid;
-    grid-template-columns: 56px repeat(5, minmax(0, 1fr));
-    grid-template-rows: 28px repeat(5, minmax(0, 1fr));
-    row-gap: 10px;
-    column-gap: 8px;
+    grid-template-columns: 54px repeat(5, minmax(0, 1fr));
+    grid-template-rows: 30px repeat(5, minmax(0, 1fr));
+    row-gap: 8px;
+    column-gap: 6px;
     height: 100%;
     min-height: 0;
   }
@@ -624,19 +624,28 @@
   }
   .tt-grid .tt-corner { }
   .tt-grid .tt-daylabel {
-    font-size: 12px;
-    font-weight: 700;
-    color: var(--text-sub);
+    font-size: 13px;
+    font-weight: 800;
+    color: var(--text);
     text-align: center;
     display: flex;
     align-items: center;
     justify-content: center;
-    letter-spacing: 0.08em;
+    letter-spacing: 0.04em;
+    border-radius: 8px;
+    background: transparent;
+    transition: background .15s;
+  }
+  .tt-grid .tt-daylabel.dow-sun { color: #e53935; }
+  .tt-grid .tt-daylabel.dow-sat { color: #1e88e5; }
+  .tt-grid .tt-daylabel.is-today {
+    background: rgba(110, 118, 134, 0.14);
+    box-shadow: inset 0 0 0 1.5px #6e7686;
   }
   .tt-period-cell {
     cursor: pointer;
     text-align: center;
-    line-height: 1.15;
+    line-height: 1.1;
     padding: 4px 2px;
     overflow: hidden;
     display: flex;
@@ -647,36 +656,34 @@
     position: relative;
     background: transparent;
     border: none;
-    border-radius: 12px;
-    transition: background .15s, transform .15s;
-    gap: 4px;
+    border-radius: 10px;
+    transition: background .15s, transform .12s;
+    gap: 3px;
   }
   .tt-period-cell:active {
     transform: scale(0.96);
-    background: rgba(115, 88, 217, 0.08);
+    background: rgba(110, 118, 134, 0.10);
   }
   .tt-period-cell .num {
-    font-size: 18px;
+    font-size: 17px;
     font-weight: 900;
     color: var(--text);
     letter-spacing: -0.02em;
     line-height: 1;
   }
   .tt-period-cell .time {
-    font-size: 9px;
+    font-size: 9.5px;
     font-weight: 700;
-    color: var(--accent);
-    line-height: 1.2;
-    padding: 2px 5px;
-    background: rgba(115, 88, 217, 0.10);
-    border-radius: 6px;
+    color: var(--text-sub);
+    line-height: 1.15;
     white-space: nowrap;
+    letter-spacing: -0.02em;
   }
   .tt-cell {
     position: relative;
     background: #ffffff;
     border: none;
-    border-radius: 4px;
+    border-radius: 8px;
     cursor: pointer;
     padding: 0;
     transition: transform .12s, background .15s, box-shadow .15s;
@@ -685,9 +692,9 @@
     min-width: 0;
     min-height: 0;
     box-shadow:
-      inset 0 1px 0 rgba(255,255,255,0.8),
-      0 2px 4px rgba(40,50,90,0.08),
-      0 1px 2px rgba(40,50,90,0.06);
+      inset 0 1px 0 rgba(255,255,255,0.85),
+      0 1px 2px rgba(40,50,90,0.06),
+      0 2px 6px -2px rgba(40,50,90,0.10);
   }
   [data-theme="dark"] .tt-cell {
     background: rgba(255,255,255,0.06);
@@ -699,16 +706,30 @@
     .tt-cell:hover {
       transform: translateY(-1px);
       box-shadow:
-        inset 0 1px 0 rgba(255,255,255,0.8),
+        inset 0 1px 0 rgba(255,255,255,0.85),
         0 6px 14px -4px rgba(40,50,90,0.22);
     }
   }
-  .tt-cell:active { transform: scale(0.98); }
+  .tt-cell:active { transform: scale(0.96); }
   .tt-cell.filled {
     color: #fff;
     box-shadow:
-      inset 0 1px 0 rgba(255,255,255,0.20),
-      0 2px 6px -2px rgba(0,0,0,0.18);
+      inset 0 1px 0 rgba(255,255,255,0.22),
+      inset 0 -1px 0 rgba(0,0,0,0.08),
+      0 2px 8px -2px rgba(0,0,0,0.22);
+  }
+  .tt-cell.is-now {
+    box-shadow:
+      inset 0 0 0 2px #6e7686,
+      inset 0 1px 0 rgba(255,255,255,0.85),
+      0 4px 14px -2px rgba(110, 118, 134, 0.40);
+  }
+  .tt-cell.filled.is-now {
+    box-shadow:
+      inset 0 0 0 2px #fff,
+      inset 0 1px 0 rgba(255,255,255,0.22),
+      inset 0 -1px 0 rgba(0,0,0,0.08),
+      0 4px 14px -2px rgba(0,0,0,0.30);
   }
   .tt-cell-text {
     position: absolute;
@@ -717,7 +738,7 @@
     align-items: center;
     justify-content: center;
     padding: 4px;
-    font-size: 11.5px;
+    font-size: 12px;
     font-weight: 700;
     color: inherit;
     word-break: break-all;
@@ -727,12 +748,12 @@
     letter-spacing: 0.01em;
   }
   .tt-cell.empty .tt-cell-text {
-    color: rgba(120, 130, 160, 0.55);
-    font-size: 22px;
+    color: rgba(120, 130, 160, 0.40);
+    font-size: 20px;
     font-weight: 300;
   }
   [data-theme="dark"] .tt-cell.empty .tt-cell-text {
-    color: rgba(255,255,255,0.30);
+    color: rgba(255,255,255,0.25);
   }
 
   /* Period-time editor: stack inputs vertically so they never overlap */
@@ -4359,22 +4380,43 @@ setTimeout(function () {
     const grid = document.getElementById('timetableGrid');
     if (!grid) return;
     const dayNames = t('subject_day_short');
+    const now = new Date();
+    const todayDow = now.getDay();
+    const nowMinutes = now.getHours() * 60 + now.getMinutes();
+    const currentPeriod = (() => {
+      for (let p = 1; p <= NUM_PERIODS; p++) {
+        const pt = periodTimes[p] || DEFAULT_PERIOD_TIMES[p];
+        const [sh, sm] = (pt.start || '0:0').split(':').map(Number);
+        const [eh, em] = (pt.end || '0:0').split(':').map(Number);
+        const startM = sh * 60 + sm;
+        const endM = eh * 60 + em;
+        if (nowMinutes >= startM && nowMinutes <= endM) return p;
+      }
+      return 0;
+    })();
     let html = '<div class="tt-corner"></div>';
     for (let i = 0; i < DAYS.length; i++) {
-      html += `<div class="tt-daylabel">${dayNames[i]}</div>`;
+      const dow = DAYS[i];
+      const cls = ['tt-daylabel'];
+      if (dow === 0) cls.push('dow-sun');
+      if (dow === 6) cls.push('dow-sat');
+      if (dow === todayDow) cls.push('is-today');
+      html += `<div class="${cls.join(' ')}">${dayNames[i]}</div>`;
     }
     for (let p = 1; p <= NUM_PERIODS; p++) {
       const pt = periodTimes[p] || DEFAULT_PERIOD_TIMES[p];
       html += `<div class="tt-period-cell" data-period="${p}" title="タップで時間を変更" aria-label="${t('subject_period_short', p)} ${pt.start}〜${pt.end} - タップで時間を変更">` +
         `<span class="num">${t('subject_period_short', p)}</span>` +
-        `<span class="time">${pt.start}<br>-${pt.end}</span>` +
+        `<span class="time">${pt.start}-${pt.end}</span>` +
         `</div>`;
       for (const d of DAYS) {
         const sub = getSubjectAt(d, p);
+        const isNow = (d === todayDow && p === currentPeriod);
+        const nowCls = isNow ? ' is-now' : '';
         if (sub) {
-          html += `<div class="tt-cell filled" data-day="${d}" data-period="${p}" style="background:${sub.color};"><span class="tt-cell-text">${escapeHtml(sub.name)}</span></div>`;
+          html += `<div class="tt-cell filled${nowCls}" data-day="${d}" data-period="${p}" style="background:${sub.color};"><span class="tt-cell-text">${escapeHtml(sub.name)}</span></div>`;
         } else {
-          html += `<div class="tt-cell empty" data-day="${d}" data-period="${p}"><span class="tt-cell-text">+</span></div>`;
+          html += `<div class="tt-cell empty${nowCls}" data-day="${d}" data-period="${p}"><span class="tt-cell-text">+</span></div>`;
         }
       }
     }
