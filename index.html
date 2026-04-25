@@ -590,51 +590,48 @@
     -webkit-overflow-scrolling: touch;
     padding: 10px 10px calc(90px + env(safe-area-inset-bottom));
   }
-  .tt-table {
-    width: 100%;
-    border-collapse: separate;
-    border-spacing: 6px;
-    table-layout: fixed;
+  .tt-grid {
+    display: grid;
+    grid-template-columns: 60px repeat(5, minmax(0, 1fr));
+    grid-template-rows: 26px repeat(5, 64px);
+    gap: 6px;
   }
-  .tt-table thead th {
-    height: 26px;
+  .tt-grid .tt-corner { }
+  .tt-grid .tt-daylabel {
     font-size: 11px;
     font-weight: 700;
     color: var(--text-sub);
     text-align: center;
+    display: flex;
+    align-items: center;
+    justify-content: center;
   }
-  .tt-table th.tt-corner-cell { width: 60px; }
   .tt-period-cell {
-    width: 60px;
-    height: 64px;
-    max-height: 64px;
-    overflow: hidden;
     cursor: pointer;
     text-align: center;
     line-height: 1.2;
     padding: 2px;
-    vertical-align: middle;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-height: 0;
   }
   .tt-period-cell .num {
-    display: block;
     font-size: 13px;
     font-weight: 800;
     color: var(--text);
   }
   .tt-period-cell .time {
-    display: block;
     font-size: 9.5px;
     font-weight: 600;
     color: var(--text-sub);
     margin-top: 3px;
     line-height: 1.15;
   }
-  .tt-table tbody tr { height: 64px; }
   .tt-cell {
     position: relative;
-    height: 64px;
-    max-height: 64px;
-    min-height: 64px;
     background: var(--panel-2);
     border: 1px dashed var(--border);
     border-radius: 10px;
@@ -643,6 +640,8 @@
     transition: transform .12s;
     box-sizing: border-box;
     overflow: hidden;
+    min-width: 0;
+    min-height: 0;
   }
   .tt-cell:active { transform: scale(0.96); }
   .tt-cell.filled { border-style: solid; color: #fff; }
@@ -2336,7 +2335,7 @@
       <h2 class="tt-title" data-i18n="timetable_heading">📅 時間割</h2>
     </header>
     <div class="tt-scroll">
-      <table id="timetableGrid" class="tt-table"></table>
+      <div id="timetableGrid" class="tt-grid"></div>
     </div>
   </section>
 </div>
@@ -4232,30 +4231,26 @@ setTimeout(function () {
     const grid = document.getElementById('timetableGrid');
     if (!grid) return;
     const dayNames = t('subject_day_short');
-    let head = '<thead><tr><th class="tt-corner-cell"></th>';
+    let html = '<div class="tt-corner"></div>';
     for (let i = 0; i < DAYS.length; i++) {
-      head += `<th>${dayNames[i]}</th>`;
+      html += `<div class="tt-daylabel">${dayNames[i]}</div>`;
     }
-    head += '</tr></thead>';
-    let body = '<tbody>';
     for (let p = 1; p <= NUM_PERIODS; p++) {
       const pt = periodTimes[p] || DEFAULT_PERIOD_TIMES[p];
-      body += `<tr><td class="tt-period-cell" data-period="${p}">` +
+      html += `<div class="tt-period-cell" data-period="${p}">` +
         `<span class="num">${t('subject_period_short', p)}</span>` +
         `<span class="time">${pt.start}<br>-${pt.end}</span>` +
-        `</td>`;
+        `</div>`;
       for (const d of DAYS) {
         const sub = getSubjectAt(d, p);
         if (sub) {
-          body += `<td class="tt-cell filled" data-day="${d}" data-period="${p}" style="background:${sub.color};"><span class="tt-cell-text">${escapeHtml(sub.name)}</span></td>`;
+          html += `<div class="tt-cell filled" data-day="${d}" data-period="${p}" style="background:${sub.color};"><span class="tt-cell-text">${escapeHtml(sub.name)}</span></div>`;
         } else {
-          body += `<td class="tt-cell empty" data-day="${d}" data-period="${p}"><span class="tt-cell-text">+</span></td>`;
+          html += `<div class="tt-cell empty" data-day="${d}" data-period="${p}"><span class="tt-cell-text">+</span></div>`;
         }
       }
-      body += '</tr>';
     }
-    body += '</tbody>';
-    grid.innerHTML = head + body;
+    grid.innerHTML = html;
     grid.querySelectorAll('.tt-cell').forEach(c => {
       c.addEventListener('click', () => {
         openSubjectEditor(Number(c.dataset.day), Number(c.dataset.period));
