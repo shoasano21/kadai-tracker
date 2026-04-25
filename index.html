@@ -567,10 +567,26 @@
   }
   .timetable-grid {
     display: grid;
-    grid-template-columns: 28px repeat(5, minmax(0, 1fr));
-    grid-template-rows: 22px repeat(6, 96px);
+    grid-template-columns: 60px repeat(5, minmax(0, 1fr));
+    grid-template-rows: 22px repeat(5, 96px);
     gap: 3px;
     padding: 4px 6px;
+  }
+  .tt-periodlabel {
+    flex-direction: column;
+    cursor: pointer;
+    line-height: 1.15;
+  }
+  .tt-period-num {
+    font-size: 12px;
+    font-weight: 800;
+    color: var(--text);
+  }
+  .tt-period-time {
+    font-size: 9px;
+    font-weight: 600;
+    color: var(--text-sub);
+    margin-top: 2px;
   }
   .tt-cell { box-sizing: border-box; }
   body[data-view="timetable"] #timetableHost { overflow: hidden; }
@@ -2273,6 +2289,27 @@
       <button type="button" id="btnSubjectDelete" class="btn" style="display:none;color:var(--urgent);" data-i18n="btn_delete">削除</button>
       <button type="button" id="btnSubjectCancel" class="btn" data-i18n="btn_cancel">キャンセル</button>
       <button type="button" id="btnSubjectSave" class="btn primary" data-i18n="btn_save">保存</button>
+    </div>
+  </div>
+</div>
+
+<div id="periodTimeOverlay" class="modal-overlay" aria-hidden="true">
+  <div class="modal" style="max-width:360px;">
+    <h2 id="periodTimeTitle">⏰ 1限の時間</h2>
+    <div class="field-row">
+      <div class="field">
+        <label for="periodStartInput">開始</label>
+        <input id="periodStartInput" type="time" />
+      </div>
+      <div class="field">
+        <label for="periodEndInput">終了</label>
+        <input id="periodEndInput" type="time" />
+      </div>
+    </div>
+    <div class="modal-actions">
+      <button type="button" id="btnPeriodTimeReset" class="btn">デフォルト</button>
+      <button type="button" id="btnPeriodTimeCancel" class="btn">キャンセル</button>
+      <button type="button" id="btnPeriodTimeSave" class="btn primary">保存</button>
     </div>
   </div>
 </div>
@@ -4043,8 +4080,33 @@ setTimeout(function () {
       summary: '中国語。'
     }
   ];
-  const NUM_PERIODS = 6;
+  const NUM_PERIODS = 5;
   const DAYS = [1, 2, 3, 4, 5]; // Mon-Fri
+  const DEFAULT_PERIOD_TIMES = {
+    1: { start: '09:00', end: '10:30' },
+    2: { start: '10:45', end: '12:15' },
+    3: { start: '13:00', end: '14:30' },
+    4: { start: '14:45', end: '16:15' },
+    5: { start: '16:30', end: '18:00' }
+  };
+  const PERIOD_TIMES_KEY = 'kadai_tracker_period_times';
+  function loadPeriodTimes() {
+    try {
+      const raw = localStorage.getItem(PERIOD_TIMES_KEY);
+      if (!raw) return JSON.parse(JSON.stringify(DEFAULT_PERIOD_TIMES));
+      const parsed = JSON.parse(raw);
+      const merged = JSON.parse(JSON.stringify(DEFAULT_PERIOD_TIMES));
+      for (let p = 1; p <= NUM_PERIODS; p++) {
+        if (parsed[p] && parsed[p].start && parsed[p].end) merged[p] = parsed[p];
+      }
+      return merged;
+    } catch { return JSON.parse(JSON.stringify(DEFAULT_PERIOD_TIMES)); }
+  }
+  function savePeriodTimes(pt) {
+    localStorage.setItem(PERIOD_TIMES_KEY, JSON.stringify(pt));
+  }
+  let periodTimes = loadPeriodTimes();
+  let editingPeriodForTime = 1;
   let editingSubjectId = null;
   let editingDay = 1, editingPeriod = 1;
   let selectedColor = SUBJECT_COLORS[0];
@@ -4069,26 +4131,31 @@ setTimeout(function () {
     for (let i = 0; i < DAYS.length; i++) {
       html += `<div class="tt-daylabel">${dayNames[i]}</div>`;
     }
-    const rowHasFilled = [];
     for (let p = 1; p <= NUM_PERIODS; p++) {
-      let anyFilled = false;
-      html += `<div class="tt-periodlabel">${t('subject_period_short', p)}</div>`;
+      const pt = periodTimes[p] || DEFAULT_PERIOD_TIMES[p];
+      html += `<div class="tt-periodlabel" data-period="${p}">` +
+        `<span class="tt-period-num">${t('subject_period_short', p)}</span>` +
+        `<span class="tt-period-time">${pt.start}<br>-${pt.end}</span>` +
+        `</div>`;
       for (const d of DAYS) {
         const sub = getSubjectAt(d, p);
         if (sub) {
-          anyFilled = true;
           html += `<div class="tt-cell filled" data-day="${d}" data-period="${p}" style="background:${sub.color};">${escapeHtml(sub.name)}</div>`;
         } else {
           html += `<div class="tt-cell empty" data-day="${d}" data-period="${p}">+</div>`;
         }
       }
-      rowHasFilled.push(anyFilled);
     }
     grid.innerHTML = html;
     grid.style.gridTemplateRows = `22px repeat(${NUM_PERIODS}, 96px)`;
     grid.querySelectorAll('.tt-cell').forEach(c => {
       c.addEventListener('click', () => {
         openSubjectEditor(Number(c.dataset.day), Number(c.dataset.period));
+      });
+    });
+    grid.querySelectorAll('.tt-periodlabel').forEach(el => {
+      el.addEventListener('click', () => {
+        openPeriodTimeEditor(Number(el.dataset.period));
       });
     });
     sizeTimetableRows();
@@ -4098,6 +4165,40 @@ setTimeout(function () {
   }
   window.addEventListener('resize', () => {
     if (currentView === 'timetable') sizeTimetableRows();
+  });
+
+  function openPeriodTimeEditor(period) {
+    editingPeriodForTime = period;
+    const pt = periodTimes[period] || DEFAULT_PERIOD_TIMES[period];
+    $('periodTimeTitle').textContent = `⏰ ${period}限の時間`;
+    $('periodStartInput').value = pt.start;
+    $('periodEndInput').value = pt.end;
+    const ov = $('periodTimeOverlay');
+    ov.classList.add('open');
+    ov.setAttribute('aria-hidden', 'false');
+  }
+  function closePeriodTimeEditor() {
+    const ov = $('periodTimeOverlay');
+    ov.classList.remove('open');
+    ov.setAttribute('aria-hidden', 'true');
+  }
+  $('btnPeriodTimeCancel').addEventListener('click', closePeriodTimeEditor);
+  $('periodTimeOverlay').addEventListener('click', (e) => {
+    if (e.target.id === 'periodTimeOverlay') closePeriodTimeEditor();
+  });
+  $('btnPeriodTimeReset').addEventListener('click', () => {
+    const def = DEFAULT_PERIOD_TIMES[editingPeriodForTime];
+    $('periodStartInput').value = def.start;
+    $('periodEndInput').value = def.end;
+  });
+  $('btnPeriodTimeSave').addEventListener('click', () => {
+    const start = $('periodStartInput').value;
+    const end = $('periodEndInput').value;
+    if (!start || !end) return;
+    periodTimes[editingPeriodForTime] = { start, end };
+    savePeriodTimes(periodTimes);
+    closePeriodTimeEditor();
+    renderTimetable();
   });
 
   function populateSubjectNameSuggestions() {
