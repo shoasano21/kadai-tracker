@@ -591,31 +591,30 @@
     padding: 10px 10px calc(90px + env(safe-area-inset-bottom));
   }
   .tt-grid {
-    display: flex;
-    flex-direction: column;
-    gap: 8px;
+    display: grid;
+    grid-template-columns: 60px repeat(5, minmax(0, 1fr));
+    grid-auto-rows: 64px;
+    grid-template-rows: 26px repeat(5, 64px);
+    gap: 12px 8px;
+    align-content: start;
   }
-  .tt-row {
-    display: flex;
-    gap: 6px;
-    height: 80px;
-    flex-shrink: 0;
-  }
-  .tt-row-head {
-    height: 26px;
-  }
-  .tt-row > * {
-    flex: 1 1 0;
-    min-width: 0;
-    height: 100%;
+  .tt-grid > * {
+    align-self: stretch;
+    justify-self: stretch;
+    width: 100%;
+    height: 64px;
+    max-height: 64px;
+    min-height: 0;
     overflow: hidden;
-    box-sizing: border-box;
+    contain: size layout paint;
   }
-  .tt-cell-period,
-  .tt-cell-corner {
-    flex: 0 0 60px;
+  .tt-grid > .tt-corner,
+  .tt-grid > .tt-daylabel {
+    height: 26px;
+    max-height: 26px;
   }
-  .tt-cell-day {
+  .tt-grid .tt-corner { }
+  .tt-grid .tt-daylabel {
     font-size: 11px;
     font-weight: 700;
     color: var(--text-sub);
@@ -629,10 +628,12 @@
     text-align: center;
     line-height: 1.2;
     padding: 2px;
+    overflow: hidden;
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
+    min-height: 0;
   }
   .tt-period-cell .num {
     font-size: 13px;
@@ -4247,15 +4248,13 @@ setTimeout(function () {
     const grid = document.getElementById('timetableGrid');
     if (!grid) return;
     const dayNames = t('subject_day_short');
-    let html = '<div class="tt-row tt-row-head"><div class="tt-cell-corner"></div>';
+    let html = '<div class="tt-corner"></div>';
     for (let i = 0; i < DAYS.length; i++) {
-      html += `<div class="tt-cell-day">${dayNames[i]}</div>`;
+      html += `<div class="tt-daylabel">${dayNames[i]}</div>`;
     }
-    html += '</div>';
     for (let p = 1; p <= NUM_PERIODS; p++) {
       const pt = periodTimes[p] || DEFAULT_PERIOD_TIMES[p];
-      html += `<div class="tt-row">` +
-        `<div class="tt-period-cell" data-period="${p}">` +
+      html += `<div class="tt-period-cell" data-period="${p}">` +
         `<span class="num">${t('subject_period_short', p)}</span>` +
         `<span class="time">${pt.start}<br>-${pt.end}</span>` +
         `</div>`;
@@ -4267,7 +4266,6 @@ setTimeout(function () {
           html += `<div class="tt-cell empty" data-day="${d}" data-period="${p}"><span class="tt-cell-text">+</span></div>`;
         }
       }
-      html += '</div>';
     }
     grid.innerHTML = html;
     grid.querySelectorAll('.tt-cell').forEach(c => {
