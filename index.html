@@ -190,8 +190,14 @@
     touch-action: none;
     overscroll-behavior: none;
   }
-  body[data-view="calendar"] .app { padding: 4px 4px calc(10px + env(safe-area-inset-bottom)); height: 100vh; height: 100dvh; overflow: hidden; }
-  body[data-view="calendar"] .calendar-wrap { padding: 4px 4px 0; box-shadow: none; border: none; background: transparent; }
+  body[data-view="calendar"] .app { padding: 8px 8px calc(10px + env(safe-area-inset-bottom)); height: 100vh; height: 100dvh; overflow: hidden; }
+  body[data-view="calendar"] .calendar-wrap {
+    padding: 10px 10px 6px;
+    background: var(--panel);
+    border: 1px solid var(--border-strong);
+    border-radius: 18px;
+    box-shadow: 0 6px 20px -10px rgba(0,0,0,0.18);
+  }
   body[data-view="calendar"] .header-add-btn,
   body[data-view="calendar"] .settings-icon-btn { display: none !important; }
   body[data-view="calendar"] .calendar-fab { display: flex; }
