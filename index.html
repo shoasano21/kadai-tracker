@@ -1345,6 +1345,30 @@
   }
   .calendar-header .cal-title:hover { color: var(--accent); transform: scale(1.02); }
   .calendar-header .cal-title:active { transform: scale(0.98); }
+  .cal-title-wrap {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    min-width: 0;
+  }
+  .cal-title-wrap .cal-title { flex: 0 1 auto; }
+  .cal-today-pill {
+    background: var(--panel-2);
+    border: 1px solid var(--border);
+    border-radius: 999px;
+    padding: 4px 10px;
+    font-size: 12px;
+    font-weight: 700;
+    color: var(--text);
+    cursor: pointer;
+    font-family: inherit;
+    transition: background .15s, color .15s, transform .15s;
+    flex-shrink: 0;
+  }
+  .cal-today-pill:hover { background: var(--accent); color: #fff; border-color: var(--accent); }
+  .cal-today-pill:active { transform: scale(0.95); }
   .cal-nav {
     background: var(--panel-2);
     border: 1px solid var(--border);
@@ -3151,7 +3175,10 @@ setTimeout(function () {
       <div class="calendar-wrap">
         <div class="calendar-header">
           <button class="cal-nav" id="calPrev" aria-label="${t('cal_prev')}">‹</button>
-          <button class="cal-title" id="calToday" title="${t('cal_today_btn')}" aria-label="${t('cal_today_btn')}">${title}</button>
+          <div class="cal-title-wrap">
+            <button class="cal-title" id="calToday" title="${t('cal_today_btn')}" aria-label="${t('cal_today_btn')}">${title}</button>
+            <button type="button" class="cal-today-pill" id="calTodayPill" data-i18n="cal_today_btn">今日</button>
+          </div>
           <button class="cal-nav" id="calNext" aria-label="${t('cal_next')}">›</button>
         </div>
         <table class="cal-table">
@@ -3179,12 +3206,15 @@ setTimeout(function () {
 
     $('calPrev').addEventListener('click', () => { calCursor = new Date(year, month - 1, 1); renderCalendar(); });
     $('calNext').addEventListener('click', () => { calCursor = new Date(year, month + 1, 1); renderCalendar(); });
-    $('calToday').addEventListener('click', () => {
+    const goToToday = () => {
       const t = new Date();
       calCursor = new Date(t.getFullYear(), t.getMonth(), 1);
       calSelectedDate = todayStr();
       renderCalendar();
-    });
+    };
+    $('calToday').addEventListener('click', goToToday);
+    const todayPill = $('calTodayPill');
+    if (todayPill) todayPill.addEventListener('click', goToToday);
     host.querySelectorAll('.cal-cell').forEach(el => {
       el.addEventListener('click', () => {
         calSelectedDate = el.dataset.date;
