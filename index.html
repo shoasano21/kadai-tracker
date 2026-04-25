@@ -926,7 +926,7 @@
     left: 0;
     right: 0;
     bottom: 0;
-    z-index: 80;
+    z-index: 200;
     padding: 10px 16px calc(10px + env(safe-area-inset-bottom)) 16px;
     background: var(--panel);
     backdrop-filter: blur(18px);
@@ -935,7 +935,9 @@
     display: flex;
     justify-content: center;
     box-shadow: 0 -4px 20px rgba(40,50,90,0.08);
+    pointer-events: auto;
   }
+  .bottom-bar * { pointer-events: auto; }
   .bottom-bar .view-toggle {
     width: 100%;
     max-width: 520px;
