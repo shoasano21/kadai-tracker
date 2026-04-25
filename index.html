@@ -606,6 +606,9 @@
   .tt-table th.tt-corner-cell { width: 60px; }
   .tt-period-cell {
     width: 60px;
+    height: 64px;
+    max-height: 64px;
+    overflow: hidden;
     cursor: pointer;
     text-align: center;
     line-height: 1.2;
@@ -626,9 +629,12 @@
     margin-top: 3px;
     line-height: 1.15;
   }
+  .tt-table tbody tr { height: 64px; }
   .tt-cell {
     position: relative;
     height: 64px;
+    max-height: 64px;
+    min-height: 64px;
     background: var(--panel-2);
     border: 1px dashed var(--border);
     border-radius: 10px;
