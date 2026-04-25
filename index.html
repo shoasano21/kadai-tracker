@@ -528,6 +528,16 @@
     min-height: 0;
     position: relative;
   }
+  .timetable-title {
+    position: absolute;
+    top: calc(env(safe-area-inset-top) + 10px);
+    left: calc(env(safe-area-inset-left) + 14px);
+    margin: 0;
+    font-size: 18px;
+    font-weight: 800;
+    color: var(--text);
+    z-index: 10;
+  }
   .timetable-close-btn {
     position: absolute;
     top: calc(env(safe-area-inset-top) + 6px);
@@ -2201,6 +2211,7 @@
   </div>
 
   <section id="timetableHost" class="timetable-panel">
+    <h2 class="timetable-title" data-i18n="timetable_heading">📅 時間割</h2>
     <button id="btnCloseTimetable" class="timetable-close-btn" aria-label="閉じる">✕</button>
     <div id="timetableGrid" class="timetable-grid"></div>
   </section>
