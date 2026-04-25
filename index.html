@@ -470,14 +470,21 @@
     display: none;
     background: var(--panel);
     border-radius: var(--radius);
-    padding: 8px 6px;
+    padding: 10px 10px 12px;
     box-shadow: var(--shadow);
   }
+  body[data-view="settings"] #settingsHost.settings-panel {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    column-gap: 8px;
+    row-gap: 8px;
+  }
   .settings-header {
+    grid-column: 1 / -1;
     display: flex;
     align-items: center;
     justify-content: center;
-    padding: 4px 10px 8px;
+    padding: 4px 10px 4px;
   }
   .settings-title {
     margin: 4px 2px 4px;
@@ -499,12 +506,18 @@
   }
   .setting-row {
     display: flex;
-    align-items: center;
+    flex-direction: column;
+    align-items: stretch;
     justify-content: space-between;
-    gap: 12px;
-    padding: 14px 14px;
-    border-top: 1px solid var(--border);
+    gap: 10px;
+    padding: 12px 12px;
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    background: var(--panel-2);
+    min-height: 100px;
   }
+  .setting-row > .setting-info { flex: 1; min-height: 0; }
+  .setting-row > :not(.setting-info) { align-self: flex-end; }
   .setting-info { display: flex; flex-direction: column; gap: 2px; min-width: 0; flex: 1; }
   .setting-label {
     font-size: 15px;
