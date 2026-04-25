@@ -4058,8 +4058,7 @@ setTimeout(function () {
       rowHasFilled.push(anyFilled);
     }
     grid.innerHTML = html;
-    const rowSizes = rowHasFilled.map(f => f ? '1fr' : '0.4fr').join(' ');
-    grid.style.gridTemplateRows = `22px ${rowSizes}`;
+    grid.style.gridTemplateRows = `22px repeat(${NUM_PERIODS}, 1fr)`;
     grid.querySelectorAll('.tt-cell').forEach(c => {
       c.addEventListener('click', () => {
         openSubjectEditor(Number(c.dataset.day), Number(c.dataset.period));
