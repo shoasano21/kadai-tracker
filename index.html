@@ -568,8 +568,8 @@
   .timetable-grid {
     display: grid;
     grid-template-columns: 60px repeat(5, minmax(0, 1fr));
-    grid-template-rows: 22px repeat(5, 80px);
-    gap: 8px;
+    grid-template-rows: 22px repeat(5, 64px);
+    gap: 10px;
     padding: 4px 6px;
   }
   .tt-periodlabel {
@@ -4146,7 +4146,7 @@ setTimeout(function () {
       }
     }
     grid.innerHTML = html;
-    grid.style.gridTemplateRows = `22px repeat(${NUM_PERIODS}, 80px)`;
+    grid.style.gridTemplateRows = `22px repeat(${NUM_PERIODS}, 64px)`;
     grid.querySelectorAll('.tt-cell').forEach(c => {
       c.addEventListener('click', () => {
         openSubjectEditor(Number(c.dataset.day), Number(c.dataset.period));
