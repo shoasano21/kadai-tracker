@@ -2449,6 +2449,19 @@
     </div>
     <div class="setting-row">
       <div class="setting-info">
+        <div class="setting-label" data-i18n="setting_class_end_notify">📝 課題登録のリマインダー</div>
+        <div class="setting-desc" data-i18n="setting_class_end_notify_desc">授業の終了直前に課題の登録を促します</div>
+      </div>
+      <select id="classEndReminderLead" class="setting-time-input">
+        <option value="-1" data-i18n="class_notify_off">オフ</option>
+        <option value="0">終了時</option>
+        <option value="3">3分前</option>
+        <option value="5" selected>5分前</option>
+        <option value="10">10分前</option>
+      </select>
+    </div>
+    <div class="setting-row">
+      <div class="setting-info">
         <div class="setting-label" data-i18n="setting_hand">✋ 利き手</div>
         <div class="setting-desc" data-i18n="setting_hand_desc">追加・設定・時間割ボタンの位置を切り替え</div>
       </div>
@@ -2708,6 +2721,10 @@ setTimeout(function () {
       hand_left: '左利き',
       class_notif_title: (n) => `まもなく ${n}限`,
       class_notif_body: (name, start, end) => `${name} ${start}〜${end}`,
+      setting_class_end_notify: '📝 課題登録のリマインダー',
+      setting_class_end_notify_desc: '授業の終了直前に課題の登録を促します',
+      class_end_notif_title: (name) => `${name} の課題はある？`,
+      class_end_notif_body: '出題された課題があれば登録しておきましょう',
       setting_theme: '🌙 テーマ',
       setting_theme_desc: 'ダーク/ライトモード切替',
       setting_theme_title: 'テーマ切り替え',
@@ -2880,6 +2897,10 @@ setTimeout(function () {
       hand_left: 'Left',
       class_notif_title: (n) => `Period ${n} starting soon`,
       class_notif_body: (name, start, end) => `${name} ${start}–${end}`,
+      setting_class_end_notify: '📝 Task reminder',
+      setting_class_end_notify_desc: 'Prompt to log assignments near class end',
+      class_end_notif_title: (name) => `Any ${name} assignments?`,
+      class_end_notif_body: 'Add new assignments before you leave',
       setting_notify_time_desc: 'Send notifications at this time daily',
       setting_notify_time_title: 'Change notification time',
       setting_theme: '🌙 Theme',
@@ -4712,9 +4733,21 @@ setTimeout(function () {
     localStorage.setItem(CLASS_NOTIFY_KEY, String(min));
   }
 
+  const CLASS_END_REMINDER_KEY = 'kadai_tracker_class_end_reminder_lead';
+  function getClassEndReminderLead() {
+    const raw = localStorage.getItem(CLASS_END_REMINDER_KEY);
+    if (raw === null) return 5;
+    const n = Number(raw);
+    return Number.isFinite(n) ? n : 5;
+  }
+  function setClassEndReminderLead(min) {
+    localStorage.setItem(CLASS_END_REMINDER_KEY, String(min));
+  }
+
   function buildClassNotificationsPayload() {
-    const lead = getClassNotifyLead();
-    if (lead < 0) return [];
+    const startLead = getClassNotifyLead();
+    const endLead = getClassEndReminderLead();
+    if (startLead < 0 && endLead < 0) return [];
     const subjects = state.subjects || [];
     if (!subjects.length) return [];
     const now = new Date();
@@ -4727,19 +4760,38 @@ setTimeout(function () {
       if (!DAYS.includes(dow)) continue;
       subjects.filter(s => s.day === dow).forEach(s => {
         const pt = (periodTimes && periodTimes[s.period]) || DEFAULT_PERIOD_TIMES[s.period];
-        if (!pt || !pt.start) return;
-        const [h, m] = pt.start.split(':').map(Number);
-        const when = new Date(day);
-        when.setHours(h || 0, m || 0, 0, 0);
-        when.setMinutes(when.getMinutes() - lead);
-        if (when.getTime() <= now.getTime()) return;
-        const ymd = `${when.getFullYear()}-${String(when.getMonth()+1).padStart(2,'0')}-${String(when.getDate()).padStart(2,'0')}`;
-        out.push({
-          id: `class-${s.id || (s.day + '-' + s.period)}-${ymd}`,
-          title: t('class_notif_title', s.period),
-          body: t('class_notif_body', s.name, pt.start, pt.end),
-          when: when.toISOString()
-        });
+        if (!pt) return;
+        const ymd = (d) => `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
+        // Start-of-class reminder
+        if (startLead >= 0 && pt.start) {
+          const [sh, sm] = pt.start.split(':').map(Number);
+          const startWhen = new Date(day);
+          startWhen.setHours(sh || 0, sm || 0, 0, 0);
+          startWhen.setMinutes(startWhen.getMinutes() - startLead);
+          if (startWhen.getTime() > now.getTime()) {
+            out.push({
+              id: `class-${s.id || (s.day + '-' + s.period)}-${ymd(startWhen)}`,
+              title: t('class_notif_title', s.period),
+              body: t('class_notif_body', s.name, pt.start, pt.end),
+              when: startWhen.toISOString()
+            });
+          }
+        }
+        // End-of-class reminder (prompt to register tasks)
+        if (endLead >= 0 && pt.end) {
+          const [eh, em] = pt.end.split(':').map(Number);
+          const endWhen = new Date(day);
+          endWhen.setHours(eh || 0, em || 0, 0, 0);
+          endWhen.setMinutes(endWhen.getMinutes() - endLead);
+          if (endWhen.getTime() > now.getTime()) {
+            out.push({
+              id: `class-end-${s.id || (s.day + '-' + s.period)}-${ymd(endWhen)}`,
+              title: t('class_end_notif_title', s.name),
+              body: t('class_end_notif_body'),
+              when: endWhen.toISOString()
+            });
+          }
+        }
       });
     }
     return out;
@@ -4780,6 +4832,16 @@ setTimeout(function () {
       const v = Number(e.target.value);
       if (!Number.isFinite(v)) return;
       setClassNotifyLead(v);
+      syncNativeNotifications();
+    });
+  }
+  const classEndReminderLeadEl = $('classEndReminderLead');
+  if (classEndReminderLeadEl) {
+    classEndReminderLeadEl.value = String(getClassEndReminderLead());
+    classEndReminderLeadEl.addEventListener('change', (e) => {
+      const v = Number(e.target.value);
+      if (!Number.isFinite(v)) return;
+      setClassEndReminderLead(v);
       syncNativeNotifications();
     });
   }
