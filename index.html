@@ -797,6 +797,25 @@
     border-radius: 6px;
     font-size: 14px;
     font-weight: 700;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+  }
+  .cal-period.has-task .cal-period-subject {
+    box-shadow: 0 0 0 1.5px rgba(229, 57, 53, 0.5);
+  }
+  .cal-period-task-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 3px;
+    background: rgba(229, 57, 53, 0.12);
+    color: #e53935;
+    font-size: 11px;
+    font-weight: 800;
+    padding: 3px 8px;
+    border-radius: 999px;
+    white-space: nowrap;
   }
   .cal-period-empty-row {
     display: flex;
@@ -3487,19 +3506,27 @@ setTimeout(function () {
     const js = selDate.getDay(); // 0=Sun..6=Sat
     const dayIdx = DAYS.includes(js) ? js : null;
     const hasSubjects = (state.subjects || []).length > 0;
+    const matchedTaskIds = new Set();
 
-    // Top: timetable for the day (always shown 1-6 if we have subjects registered and it's Mon-Sat)
+    // Top: timetable for the day; show task marker on the period whose course matches
     let scheduleHtml = '';
     if (hasSubjects && dayIdx !== null) {
       let rows = '';
       for (let p = 1; p <= NUM_PERIODS; p++) {
         const sub = getSubjectAt(dayIdx, p);
         if (sub) {
-          rows += `<div class="cal-period has-sub">` +
+          const matchingTasks = tasks.filter(it => !it.done && it.course === sub.name);
+          matchingTasks.forEach(it => matchedTaskIds.add(it.id));
+          const cnt = matchingTasks.length;
+          const badge = cnt > 0
+            ? `<span class="cal-period-task-badge" aria-label="課題 ${cnt}件">📌 ${cnt}</span>`
+            : '';
+          rows += `<div class="cal-period has-sub${cnt > 0 ? ' has-task' : ''}">` +
             `<div class="cal-period-num">${p}</div>` +
             `<div class="cal-period-content">` +
               `<div class="cal-period-subject" style="border-left-color:${sub.color};color:${sub.color};">` +
                 `<span class="cal-period-name">${escapeHtml(sub.name)}</span>` +
+                badge +
               `</div>` +
             `</div>` +
           `</div>`;
@@ -3510,7 +3537,7 @@ setTimeout(function () {
       scheduleHtml = `<div class="cal-day-schedule">${rows}</div>`;
     }
 
-    // Bottom: all tasks due on this day
+    // Bottom: tasks list — show all tasks due this day (full details, even those tagged on schedule)
     let tasksHtml = '';
     if (tasks.length > 0) {
       tasksHtml = `<div class="cal-tasks-header">${t('cal_tasks_header')}</div>` +
