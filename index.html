@@ -604,10 +604,10 @@
   }
   .tt-grid {
     display: grid;
-    grid-template-columns: 56px repeat(5, minmax(0, 1fr));
-    grid-template-rows: 28px repeat(5, minmax(0, 1fr));
-    row-gap: 10px;
-    column-gap: 8px;
+    grid-template-columns: 58px repeat(5, minmax(0, 1fr));
+    grid-template-rows: 32px repeat(5, minmax(0, 1fr));
+    row-gap: 8px;
+    column-gap: 6px;
     height: 100%;
     min-height: 0;
   }
@@ -624,19 +624,21 @@
   }
   .tt-grid .tt-corner { }
   .tt-grid .tt-daylabel {
-    font-size: 12px;
-    font-weight: 700;
-    color: var(--text-sub);
+    font-size: 14px;
+    font-weight: 800;
+    color: var(--text);
     text-align: center;
     display: flex;
     align-items: center;
     justify-content: center;
-    letter-spacing: 0.08em;
+    letter-spacing: 0.04em;
+    background: rgba(110, 118, 134, 0.10);
+    border-radius: 8px;
   }
   .tt-period-cell {
     cursor: pointer;
     text-align: center;
-    line-height: 1.15;
+    line-height: 1.1;
     padding: 4px 2px;
     overflow: hidden;
     display: flex;
@@ -647,36 +649,34 @@
     position: relative;
     background: transparent;
     border: none;
-    border-radius: 12px;
+    border-radius: 10px;
     transition: background .15s, transform .15s;
     gap: 4px;
   }
   .tt-period-cell:active {
     transform: scale(0.96);
-    background: rgba(115, 88, 217, 0.08);
+    background: rgba(110, 118, 134, 0.10);
   }
   .tt-period-cell .num {
-    font-size: 18px;
+    font-size: 17px;
     font-weight: 900;
     color: var(--text);
     letter-spacing: -0.02em;
     line-height: 1;
   }
   .tt-period-cell .time {
-    font-size: 9px;
+    font-size: 10px;
     font-weight: 700;
-    color: var(--accent);
+    color: var(--text-sub);
     line-height: 1.2;
-    padding: 2px 5px;
-    background: rgba(115, 88, 217, 0.10);
-    border-radius: 6px;
     white-space: nowrap;
+    letter-spacing: -0.02em;
   }
   .tt-cell {
     position: relative;
     background: #ffffff;
     border: none;
-    border-radius: 4px;
+    border-radius: 10px;
     cursor: pointer;
     padding: 0;
     transition: transform .12s, background .15s, box-shadow .15s;
@@ -685,9 +685,9 @@
     min-width: 0;
     min-height: 0;
     box-shadow:
-      inset 0 1px 0 rgba(255,255,255,0.8),
-      0 2px 4px rgba(40,50,90,0.08),
-      0 1px 2px rgba(40,50,90,0.06);
+      inset 0 1px 0 rgba(255,255,255,0.85),
+      0 1px 2px rgba(40,50,90,0.06),
+      0 2px 6px -2px rgba(40,50,90,0.10);
   }
   [data-theme="dark"] .tt-cell {
     background: rgba(255,255,255,0.06);
@@ -699,16 +699,17 @@
     .tt-cell:hover {
       transform: translateY(-1px);
       box-shadow:
-        inset 0 1px 0 rgba(255,255,255,0.8),
+        inset 0 1px 0 rgba(255,255,255,0.85),
         0 6px 14px -4px rgba(40,50,90,0.22);
     }
   }
-  .tt-cell:active { transform: scale(0.98); }
+  .tt-cell:active { transform: scale(0.96); }
   .tt-cell.filled {
     color: #fff;
     box-shadow:
-      inset 0 1px 0 rgba(255,255,255,0.20),
-      0 2px 6px -2px rgba(0,0,0,0.18);
+      inset 0 1px 0 rgba(255,255,255,0.22),
+      inset 0 -1px 0 rgba(0,0,0,0.08),
+      0 2px 8px -2px rgba(0,0,0,0.20);
   }
   .tt-cell-text {
     position: absolute;
@@ -717,7 +718,7 @@
     align-items: center;
     justify-content: center;
     padding: 4px;
-    font-size: 11.5px;
+    font-size: 13px;
     font-weight: 700;
     color: inherit;
     word-break: break-all;
@@ -727,12 +728,12 @@
     letter-spacing: 0.01em;
   }
   .tt-cell.empty .tt-cell-text {
-    color: rgba(120, 130, 160, 0.55);
+    color: rgba(120, 130, 160, 0.45);
     font-size: 22px;
     font-weight: 300;
   }
   [data-theme="dark"] .tt-cell.empty .tt-cell-text {
-    color: rgba(255,255,255,0.30);
+    color: rgba(255,255,255,0.25);
   }
 
   /* Period-time editor: stack inputs vertically so they never overlap */
@@ -4367,7 +4368,8 @@ setTimeout(function () {
       const pt = periodTimes[p] || DEFAULT_PERIOD_TIMES[p];
       html += `<div class="tt-period-cell" data-period="${p}" title="タップで時間を変更" aria-label="${t('subject_period_short', p)} ${pt.start}〜${pt.end} - タップで時間を変更">` +
         `<span class="num">${t('subject_period_short', p)}</span>` +
-        `<span class="time">${pt.start}<br>-${pt.end}</span>` +
+        `<span class="time">${pt.start}</span>` +
+        `<span class="time">${pt.end}</span>` +
         `</div>`;
       for (const d of DAYS) {
         const sub = getSubjectAt(d, p);
