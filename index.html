@@ -499,7 +499,8 @@
   body[data-view="timetable"] .filter-bar,
   body[data-view="timetable"] #viewHost,
   body[data-view="timetable"] .settings-icon-btn,
-  body[data-view="timetable"] .header-add-btn { display: none; }
+  body[data-view="timetable"] .header-add-btn,
+  body[data-view="timetable"] .bottom-bar { display: none; }
   body[data-view="timetable"] #timetableHost { display: block; }
   body[data-view="timetable"] {
     overflow: hidden;
@@ -514,7 +515,7 @@
     overflow: hidden;
     display: flex;
     flex-direction: column;
-    padding-bottom: calc(80px + env(safe-area-inset-bottom));
+    padding-bottom: env(safe-area-inset-bottom);
   }
 
   .timetable-panel {
@@ -525,16 +526,36 @@
     box-shadow: var(--shadow);
     flex-direction: column;
     min-height: 0;
+    position: relative;
+  }
+  .timetable-close-btn {
+    position: absolute;
+    top: calc(env(safe-area-inset-top) + 6px);
+    right: calc(env(safe-area-inset-right) + 8px);
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    border: 1px solid var(--border);
+    background: var(--panel-2);
+    color: var(--text);
+    font-size: 18px;
+    line-height: 1;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 10;
   }
   body[data-view="timetable"] #timetableHost {
     display: flex;
     flex: 1 1 0;
     min-height: 0;
+    padding-top: calc(env(safe-area-inset-top) + 48px);
   }
   .timetable-grid {
     display: grid;
     grid-template-columns: 28px repeat(5, minmax(0, 1fr));
-    grid-template-rows: 22px repeat(5, 1fr);
+    grid-template-rows: 22px repeat(6, 1fr);
     gap: 3px;
     padding: 4px 6px;
     flex: 1 1 0;
@@ -2180,6 +2201,7 @@
   </div>
 
   <section id="timetableHost" class="timetable-panel">
+    <button id="btnCloseTimetable" class="timetable-close-btn" aria-label="閉じる">✕</button>
     <div id="timetableGrid" class="timetable-grid"></div>
   </section>
 </div>
@@ -3983,7 +4005,7 @@ setTimeout(function () {
       summary: '中国語。'
     }
   ];
-  const NUM_PERIODS = 5;
+  const NUM_PERIODS = 6;
   const DAYS = [1, 2, 3, 4, 5]; // Mon-Fri
   let editingSubjectId = null;
   let editingDay = 1, editingPeriod = 1;
@@ -4139,6 +4161,10 @@ setTimeout(function () {
     previousView = 'calendar';
     switchView('timetable');
   });
+  $('btnCloseTimetable').addEventListener('click', () => {
+    switchView(previousView || 'calendar');
+  });
+
   $('filterCourse').addEventListener('change', (e) => { filterCourse = e.target.value; render(); });
   $('filterStatus').addEventListener('change', (e) => { filterStatus = e.target.value; render(); });
 
