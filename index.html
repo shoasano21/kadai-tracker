@@ -500,135 +500,110 @@
   body[data-view="timetable"] #viewHost,
   body[data-view="timetable"] .settings-icon-btn,
   body[data-view="timetable"] .header-add-btn,
-  body[data-view="timetable"] .bottom-bar { display: none; }
-  body[data-view="timetable"] #timetableHost { display: block; }
+  body[data-view="timetable"] .bottom-bar { display: none !important; }
   body[data-view="timetable"] {
     overflow: hidden;
-    height: 100vh;
     height: 100dvh;
     overscroll-behavior: none;
   }
   body[data-view="timetable"] .app {
-    height: 100vh;
     height: 100dvh;
     overflow: hidden;
     display: flex;
     flex-direction: column;
-    padding: 0 6px env(safe-area-inset-bottom);
+    padding: 0;
+    max-width: 100%;
   }
 
-  .timetable-panel {
+  .timetable-screen {
     display: none;
-    background: var(--panel);
-    border-radius: var(--radius);
-    padding: 6px 6px 8px;
-    box-shadow: var(--shadow);
-    flex-direction: column;
-    min-height: 0;
-    position: relative;
-  }
-  .timetable-title {
-    position: absolute;
-    top: calc(env(safe-area-inset-top) + 10px);
-    left: calc(env(safe-area-inset-left) + 14px);
-    margin: 0;
-    font-size: 18px;
-    font-weight: 800;
-    color: var(--text);
-    z-index: 10;
-  }
-  .timetable-close-btn {
-    position: absolute;
-    top: calc(env(safe-area-inset-top) + 6px);
-    right: calc(env(safe-area-inset-right) + 8px);
-    width: 36px;
-    height: 36px;
-    border-radius: 50%;
-    border: 1px solid var(--border);
-    background: var(--panel-2);
-    color: var(--text);
-    font-size: 18px;
-    line-height: 1;
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    z-index: 10;
-  }
-  body[data-view="timetable"] #timetableHost {
-    display: flex;
     flex-direction: column;
     flex: 1 1 0;
     min-height: 0;
-    padding-top: calc(env(safe-area-inset-top) + 48px);
-    padding-bottom: 4px;
+    background: var(--panel);
+  }
+  body[data-view="timetable"] #timetableHost.timetable-screen {
+    display: flex;
+  }
+  .tt-header {
+    flex: 0 0 auto;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: calc(env(safe-area-inset-top) + 8px) 14px 10px;
+    background: var(--panel);
+    border-bottom: 1px solid var(--border);
+  }
+  .tt-title { margin: 0; font-size: 18px; font-weight: 800; color: var(--text); }
+  .tt-close {
+    width: 36px; height: 36px; border-radius: 50%;
+    border: 1px solid var(--border); background: var(--panel-2);
+    color: var(--text); font-size: 18px; line-height: 1; cursor: pointer;
+    display: flex; align-items: center; justify-content: center;
+  }
+  .tt-scroll {
+    flex: 1 1 auto;
+    min-height: 0;
     overflow-y: auto;
     -webkit-overflow-scrolling: touch;
+    padding: 10px 10px calc(env(safe-area-inset-bottom) + 12px);
   }
-  .timetable-grid {
-    display: grid;
-    grid-template-columns: 60px repeat(5, minmax(0, 1fr));
-    grid-template-rows: 22px repeat(5, 64px);
-    gap: 10px;
-    padding: 4px 6px;
+  .tt-table {
+    width: 100%;
+    border-collapse: separate;
+    border-spacing: 6px;
+    table-layout: fixed;
   }
-  .tt-periodlabel {
-    flex-direction: column;
-    cursor: pointer;
-    line-height: 1.15;
-  }
-  .tt-period-num {
-    font-size: 12px;
-    font-weight: 800;
-    color: var(--text);
-  }
-  .tt-period-time {
-    font-size: 9px;
-    font-weight: 600;
-    color: var(--text-sub);
-    margin-top: 2px;
-  }
-  .tt-cell { box-sizing: border-box; }
-  .tt-corner, .tt-daylabel, .tt-periodlabel {
+  .tt-table thead th {
+    height: 26px;
     font-size: 11px;
     font-weight: 700;
     color: var(--text-sub);
     text-align: center;
-    padding: 4px 2px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
   }
-  .tt-cell, .tt-corner, .tt-daylabel, .tt-periodlabel {
-    align-self: stretch;
-    justify-self: stretch;
+  .tt-table th.tt-corner-cell { width: 60px; }
+  .tt-period-cell {
+    width: 60px;
+    cursor: pointer;
+    text-align: center;
+    line-height: 1.2;
+    padding: 2px;
+    vertical-align: middle;
+  }
+  .tt-period-cell .num {
+    display: block;
+    font-size: 13px;
+    font-weight: 800;
+    color: var(--text);
+  }
+  .tt-period-cell .time {
+    display: block;
+    font-size: 9.5px;
+    font-weight: 600;
+    color: var(--text-sub);
+    margin-top: 3px;
+    line-height: 1.15;
   }
   .tt-cell {
+    height: 64px;
     background: var(--panel-2);
     border: 1px dashed var(--border);
-    border-radius: 8px;
-    min-width: 0;
-    min-height: 0;
-    width: 100%;
-    height: 100%;
-    padding: 2px;
+    border-radius: 10px;
     cursor: pointer;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 10px;
-    font-weight: 700;
     text-align: center;
-    line-height: 1.1;
-    word-break: break-all;
-    transition: background .15s, transform .15s;
+    vertical-align: middle;
+    font-size: 11px;
+    font-weight: 700;
     color: var(--text);
-    overflow: hidden;
+    word-break: break-all;
+    line-height: 1.15;
+    padding: 4px;
+    transition: transform .12s;
     box-sizing: border-box;
   }
-  .tt-cell:hover { background: var(--panel-solid); transform: scale(1.02); }
+  .tt-cell:active { transform: scale(0.96); }
   .tt-cell.filled { border-style: solid; color: #fff; }
-  .tt-cell.empty { color: var(--text-sub); font-size: 14px; }
+  .tt-cell.empty { color: var(--text-sub); font-size: 18px; font-weight: 400; }
 
   .color-palette { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 4px; }
   .color-swatch {
@@ -2276,10 +2251,14 @@
     </div>
   </div>
 
-  <section id="timetableHost" class="timetable-panel">
-    <h2 class="timetable-title" data-i18n="timetable_heading">📅 時間割</h2>
-    <button id="btnCloseTimetable" class="timetable-close-btn" aria-label="閉じる">✕</button>
-    <div id="timetableGrid" class="timetable-grid"></div>
+  <section id="timetableHost" class="timetable-screen">
+    <header class="tt-header">
+      <h2 class="tt-title" data-i18n="timetable_heading">📅 時間割</h2>
+      <button id="btnCloseTimetable" class="tt-close" aria-label="閉じる">✕</button>
+    </header>
+    <div class="tt-scroll">
+      <table id="timetableGrid" class="tt-table"></table>
+    </div>
   </section>
 </div>
 
@@ -4156,38 +4135,40 @@ setTimeout(function () {
     const grid = document.getElementById('timetableGrid');
     if (!grid) return;
     const dayNames = t('subject_day_short');
-    let html = '<div class="tt-corner"></div>';
+    let head = '<thead><tr><th class="tt-corner-cell"></th>';
     for (let i = 0; i < DAYS.length; i++) {
-      html += `<div class="tt-daylabel">${dayNames[i]}</div>`;
+      head += `<th>${dayNames[i]}</th>`;
     }
+    head += '</tr></thead>';
+    let body = '<tbody>';
     for (let p = 1; p <= NUM_PERIODS; p++) {
       const pt = periodTimes[p] || DEFAULT_PERIOD_TIMES[p];
-      html += `<div class="tt-periodlabel" data-period="${p}">` +
-        `<span class="tt-period-num">${t('subject_period_short', p)}</span>` +
-        `<span class="tt-period-time">${pt.start}<br>-${pt.end}</span>` +
-        `</div>`;
+      body += `<tr><td class="tt-period-cell" data-period="${p}">` +
+        `<span class="num">${t('subject_period_short', p)}</span>` +
+        `<span class="time">${pt.start}<br>-${pt.end}</span>` +
+        `</td>`;
       for (const d of DAYS) {
         const sub = getSubjectAt(d, p);
         if (sub) {
-          html += `<div class="tt-cell filled" data-day="${d}" data-period="${p}" style="background:${sub.color};">${escapeHtml(sub.name)}</div>`;
+          body += `<td class="tt-cell filled" data-day="${d}" data-period="${p}" style="background:${sub.color};">${escapeHtml(sub.name)}</td>`;
         } else {
-          html += `<div class="tt-cell empty" data-day="${d}" data-period="${p}">+</div>`;
+          body += `<td class="tt-cell empty" data-day="${d}" data-period="${p}">+</td>`;
         }
       }
+      body += '</tr>';
     }
-    grid.innerHTML = html;
-    grid.style.gridTemplateRows = `22px repeat(${NUM_PERIODS}, 64px)`;
+    body += '</tbody>';
+    grid.innerHTML = head + body;
     grid.querySelectorAll('.tt-cell').forEach(c => {
       c.addEventListener('click', () => {
         openSubjectEditor(Number(c.dataset.day), Number(c.dataset.period));
       });
     });
-    grid.querySelectorAll('.tt-periodlabel').forEach(el => {
+    grid.querySelectorAll('.tt-period-cell').forEach(el => {
       el.addEventListener('click', () => {
         openPeriodTimeEditor(Number(el.dataset.period));
       });
     });
-    sizeTimetableRows();
   }
   function sizeTimetableRows() {
     // Grid sizes itself via CSS flex + minmax(0,1fr) now; nothing to do.
