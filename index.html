@@ -506,7 +506,6 @@
     overflow: hidden;
     height: 100vh;
     height: 100dvh;
-    touch-action: none;
     overscroll-behavior: none;
   }
   body[data-view="timetable"] .app {
@@ -561,22 +560,17 @@
     flex-direction: column;
     flex: 1 1 0;
     min-height: 0;
-    height: 100%;
     padding-top: calc(env(safe-area-inset-top) + 48px);
     padding-bottom: 4px;
-  }
-  body[data-view="timetable"] .timetable-grid {
-    height: calc(100dvh - env(safe-area-inset-top) - env(safe-area-inset-bottom) - 60px);
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
   }
   .timetable-grid {
     display: grid;
     grid-template-columns: 28px repeat(5, minmax(0, 1fr));
-    grid-template-rows: 22px repeat(6, minmax(0, 1fr));
+    grid-template-rows: 22px repeat(6, 96px);
     gap: 3px;
     padding: 4px 6px;
-    flex: 1 1 0;
-    min-height: 0;
-    overflow: hidden;
   }
   .tt-cell { box-sizing: border-box; }
   body[data-view="timetable"] #timetableHost { overflow: hidden; }
@@ -4091,7 +4085,7 @@ setTimeout(function () {
       rowHasFilled.push(anyFilled);
     }
     grid.innerHTML = html;
-    grid.style.gridTemplateRows = `22px repeat(${NUM_PERIODS}, minmax(0, 1fr))`;
+    grid.style.gridTemplateRows = `22px repeat(${NUM_PERIODS}, 96px)`;
     grid.querySelectorAll('.tt-cell').forEach(c => {
       c.addEventListener('click', () => {
         openSubjectEditor(Number(c.dataset.day), Number(c.dataset.period));
