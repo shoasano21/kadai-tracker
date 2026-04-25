@@ -2464,14 +2464,14 @@
 <div id="periodTimeOverlay" class="modal-overlay" aria-hidden="true">
   <div class="modal period-time-modal" style="max-width:420px;">
     <h2 id="periodTimeTitle">⏰ 1限の時間</h2>
-    <div class="field-row period-time-row">
-      <div class="field">
-        <label for="periodStartInput">開始</label>
-        <input id="periodStartInput" type="time" />
+    <div class="period-time-row" style="display:flex;flex-direction:column;gap:12px;margin-bottom:14px;">
+      <div class="field" style="margin-bottom:0;width:100%;">
+        <label for="periodStartInput" style="display:block;margin-bottom:6px;font-size:13px;font-weight:700;">開始</label>
+        <input id="periodStartInput" type="time" style="display:block;width:100%;min-height:52px;padding:10px 14px;font-size:22px;font-weight:700;text-align:center;box-sizing:border-box;" />
       </div>
-      <div class="field">
-        <label for="periodEndInput">終了</label>
-        <input id="periodEndInput" type="time" />
+      <div class="field" style="margin-bottom:0;width:100%;">
+        <label for="periodEndInput" style="display:block;margin-bottom:6px;font-size:13px;font-weight:700;">終了</label>
+        <input id="periodEndInput" type="time" style="display:block;width:100%;min-height:52px;padding:10px 14px;font-size:22px;font-weight:700;text-align:center;box-sizing:border-box;" />
       </div>
     </div>
     <div class="modal-actions">
