@@ -253,12 +253,12 @@
   body[data-view="calendar"] .calendar-header { margin-bottom: 6px; }
   body[data-view="calendar"] .calendar-header .cal-title { padding: 4px; font-size: 30px; }
   body[data-view="calendar"] .cal-nav { width: 48px; height: 48px; font-size: 26px; font-weight: 500; }
-  body[data-view="calendar"] header.topbar,
   body[data-view="calendar"] .stats-bar,
   body[data-view="calendar"] .filter-bar,
   body[data-view="calendar"] #reminderHost {
     display: none;
   }
+  body[data-view="calendar"] header.topbar { margin-bottom: 8px; }
   body[data-view="calendar"] .cal-cell {
     height: calc((100dvh - 240px - env(safe-area-inset-top) - env(safe-area-inset-bottom)) / var(--cal-rows, 6));
     min-height: 44px;
@@ -283,29 +283,50 @@
     z-index: 1;
   }
 
-  /* Header */
+  /* Header — compact iOS-style nav bar */
   header.topbar {
     position: relative;
     display: flex;
-    align-items: flex-start;
-    gap: 12px;
-    padding: 14px 14px 14px 18px;
-    margin-bottom: 16px;
-    background: var(--panel);
-    backdrop-filter: blur(18px);
-    -webkit-backdrop-filter: blur(18px);
-    border: 1px solid var(--border);
-    border-radius: 18px;
-    box-shadow: var(--shadow);
-  }
-  .topbar-main {
-    flex: 1;
-    min-width: 0;
-    display: flex;
-    flex-direction: column;
     align-items: center;
-    gap: 12px;
+    justify-content: space-between;
+    gap: 8px;
+    padding: 8px 14px;
+    margin-bottom: 14px;
+    background: var(--panel);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    min-height: 44px;
   }
+  .topbar-title {
+    margin: 0;
+    flex: 1;
+    text-align: center;
+    font-size: 17px;
+    font-weight: 700;
+    color: var(--text);
+    letter-spacing: 0.01em;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  .topbar-icon-btn {
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    border: none;
+    background: transparent;
+    color: var(--text);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0;
+    cursor: pointer;
+    transition: background .15s, transform .12s;
+  }
+  .topbar-icon-btn:hover { background: var(--panel-2); }
+  .topbar-icon-btn:active { transform: scale(0.92); }
+  .topbar-icon-btn svg { display: block; }
+  .topbar-spacer { width: 36px; height: 36px; flex-shrink: 0; }
   .topbar-controls {
     display: flex;
     flex-wrap: wrap;
@@ -378,27 +399,7 @@
     max-width: 340px;
     line-height: 1.35;
   }
-  .settings-icon-btn {
-    position: fixed;
-    right: calc(20px + env(safe-area-inset-right));
-    bottom: calc(176px + env(safe-area-inset-bottom));
-    z-index: 90;
-    width: 60px;
-    height: 60px;
-    border-radius: 50%;
-    border: none;
-    background: #fff;
-    color: var(--text);
-    line-height: 1;
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    padding: 0;
-    cursor: pointer;
-    box-shadow: 0 4px 10px rgba(0,0,0,0.1), 0 14px 32px -6px rgba(0,0,0,0.22);
-    transition: transform .2s ease, box-shadow .2s ease;
-  }
-  .settings-icon-btn svg { display: block; }
+  .settings-icon-btn { display: none !important; }
   .settings-icon-btn:hover {
     transform: translateY(-3px);
     box-shadow: 0 6px 14px rgba(0,0,0,0.12), 0 18px 42px -6px rgba(0,0,0,0.28);
@@ -458,39 +459,39 @@
     gap: 4px;
     white-space: nowrap;
   }
-  .stats-bar .stat-emoji {
-    font-size: 22px;
+  .stats-bar .stat-icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
     line-height: 1;
-    margin-left: 4px;
+    margin-right: 2px;
   }
+  .stats-bar .stat-icon svg { display: block; }
   .stats-bar .stat.urgent.has-items .stat-emoji { animation: pulse 1.4s ease-in-out infinite; }
 
   /* Settings panel */
   .settings-panel {
     display: none;
     background: var(--panel);
+    border: 1px solid var(--border);
     border-radius: var(--radius);
-    padding: 10px 10px 12px;
+    padding: 4px 0 6px;
     box-shadow: var(--shadow);
-  }
-  body[data-view="settings"] #settingsHost.settings-panel {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    column-gap: 8px;
-    row-gap: 8px;
+    overflow: hidden;
   }
   .settings-header {
-    grid-column: 1 / -1;
     display: flex;
     align-items: center;
     justify-content: center;
-    padding: 4px 10px 4px;
+    padding: 14px 14px 10px;
+    border-bottom: 1px solid var(--border);
+    margin-bottom: 0;
   }
   .settings-title {
-    margin: 4px 2px 4px;
-    font-size: 20px;
-    font-weight: 800;
-    letter-spacing: -0.01em;
+    margin: 0;
+    font-size: 17px;
+    font-weight: 700;
+    letter-spacing: 0.01em;
     text-align: center;
   }
   .settings-close-btn {
@@ -506,18 +507,47 @@
   }
   .setting-row {
     display: flex;
-    flex-direction: column;
-    align-items: stretch;
+    align-items: center;
     justify-content: space-between;
-    gap: 10px;
-    padding: 12px 12px;
-    border: 1px solid var(--border);
-    border-radius: 12px;
-    background: var(--panel-2);
-    min-height: 100px;
+    gap: 12px;
+    padding: 12px 16px;
+    background: var(--panel);
+    border-top: none;
+    border-bottom: 1px solid var(--border);
   }
-  .setting-row > .setting-info { flex: 1; min-height: 0; }
-  .setting-row > :not(.setting-info) { align-self: flex-end; }
+  .setting-row:last-of-type { border-bottom: none; }
+  .setting-row > .setting-info {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    flex: 1;
+    min-width: 0;
+  }
+  .setting-row > :not(.setting-info) {
+    flex-shrink: 0;
+    align-self: center;
+  }
+  .setting-icon {
+    flex-shrink: 0;
+    width: 28px;
+    height: 28px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--text-sub);
+    border-radius: 6px;
+    background: var(--panel-2);
+  }
+  .setting-icon svg { display: block; }
+  .setting-btn.icon-only {
+    width: 40px;
+    height: 40px;
+    padding: 0;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .setting-btn.icon-only svg { display: block; }
   .setting-info { display: flex; flex-direction: column; gap: 2px; min-width: 0; flex: 1; }
   .setting-label {
     font-size: 15px;
@@ -2081,26 +2111,25 @@
     align-items: center;
     gap: 6px;
     padding: 7px 12px;
-    background: var(--panel-solid);
-    border: 1.5px solid var(--border-strong);
+    background: #f0f0f0;
+    border: 1.5px solid transparent;
     border-radius: 999px;
     font-size: 13px;
     font-weight: 600;
-    color: var(--text);
+    color: #333;
     cursor: pointer;
     font-family: inherit;
     transition: all .15s;
   }
+  [data-theme="dark"] .course-chip {
+    background: rgba(255,255,255,0.08);
+    color: var(--text);
+  }
   .course-chip:hover { transform: translateY(-1px); box-shadow: var(--shadow); }
   .course-chip.active {
-    background: var(--text);
+    background: #007AFF;
     color: #fff;
-    border-color: var(--text);
-  }
-  .course-chip.active[data-color] {
-    background: var(--chip-color, var(--text));
-    border-color: var(--chip-color, var(--text));
-    color: #fff;
+    border-color: #007AFF;
   }
   .course-chip .chip-del {
     display: inline-flex;
@@ -2374,16 +2403,14 @@
 
 <div class="app">
   <header class="topbar">
-    <div class="topbar-main">
-      <h1><span class="title-main" data-i18n="app_title">課題トラッカー</span><span class="title-sub" id="topbarTagline"></span></h1>
-    </div>
+    <h1 class="topbar-title" data-i18n="app_title">課題トラッカー</h1>
+    <button id="btnOpenSettings" class="topbar-icon-btn" data-i18n-title="open_settings" data-i18n-aria="open_settings">
+      <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+        <circle cx="12" cy="12" r="3"/>
+        <path d="M19.4 15a1.7 1.7 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.8-.3 1.7 1.7 0 0 0-1 1.5V21a2 2 0 1 1-4 0v-.1a1.7 1.7 0 0 0-1.1-1.5 1.7 1.7 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0 .3-1.8 1.7 1.7 0 0 0-1.5-1H3a2 2 0 1 1 0-4h.1a1.7 1.7 0 0 0 1.5-1.1 1.7 1.7 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 1.8.3h.1a1.7 1.7 0 0 0 1-1.5V3a2 2 0 1 1 4 0v.1a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.8v.1a1.7 1.7 0 0 0 1.5 1H21a2 2 0 1 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1Z"/>
+      </svg>
+    </button>
   </header>
-  <button id="btnOpenSettings" class="settings-icon-btn" data-i18n-title="open_settings" data-i18n-aria="open_settings">
-    <svg viewBox="0 0 24 24" width="26" height="26" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-      <circle cx="12" cy="12" r="3"/>
-      <path d="M19.4 15a1.7 1.7 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.8-.3 1.7 1.7 0 0 0-1 1.5V21a2 2 0 1 1-4 0v-.1a1.7 1.7 0 0 0-1.1-1.5 1.7 1.7 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0 .3-1.8 1.7 1.7 0 0 0-1.5-1H3a2 2 0 1 1 0-4h.1a1.7 1.7 0 0 0 1.5-1.1 1.7 1.7 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 1.8.3h.1a1.7 1.7 0 0 0 1-1.5V3a2 2 0 1 1 4 0v.1a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.8v.1a1.7 1.7 0 0 0 1.5 1H21a2 2 0 1 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1Z"/>
-    </svg>
-  </button>
   <button id="btnCalendarTimetable" class="calendar-fab" data-i18n-title="setting_timetable" data-i18n-aria="setting_timetable">
     <svg viewBox="0 0 24 24" width="26" height="26" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
       <rect x="3" y="4" width="18" height="17" rx="2"/>
@@ -2395,14 +2422,18 @@
   </button>
   <section class="stats-bar">
     <div class="stat urgent" id="cardUrgent">
+      <span class="stat-icon" aria-hidden="true">
+        <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22a7 7 0 0 0 7-7c0-3-2-5-3.5-7-1-1.3-1.5-3-1.5-5 0-.5-.5-1-1-1-2 1-7 4.5-7 11a7 7 0 0 0 6 9z"/></svg>
+      </span>
       <span class="stat-value" id="sumUrgent">0</span><span class="stat-unit" data-i18n="stat_unit">個</span>
       <span class="stat-label" data-i18n="stat_urgent">Urgent</span>
-      <span class="stat-emoji">🔥</span>
     </div>
     <div class="stat ok">
+      <span class="stat-icon" aria-hidden="true">
+        <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22V8"/><path d="M5 12c0-3 3-5 7-5s7 2 7 5"/><path d="M5 12c0 4 3 5 7 5s7-1 7-5"/></svg>
+      </span>
       <span class="stat-value" id="sumOk">0</span><span class="stat-unit" data-i18n="stat_unit">個</span>
       <span class="stat-label" data-i18n="stat_coming_up">Coming Up</span>
-      <span class="stat-emoji">🌱</span>
     </div>
   </section>
   <button id="btnAddHeader" class="header-add-btn" data-i18n-title="add_task" data-i18n-aria="add_task">＋</button>
@@ -2428,26 +2459,35 @@
 
   <section id="settingsHost" class="settings-panel">
     <div class="settings-header">
-      <h2 class="settings-title" data-i18n="settings_heading">⚙️ 設定</h2>
+      <h2 class="settings-title" data-i18n="settings_heading">設定</h2>
     </div>
     <div class="setting-row">
+      <span class="setting-icon" aria-hidden="true">
+        <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8a6 6 0 0 0-12 0c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.7 21a2 2 0 0 1-3.4 0"/></svg>
+      </span>
       <div class="setting-info">
-        <div class="setting-label" data-i18n="setting_notify">🔔 通知</div>
+        <div class="setting-label" data-i18n="setting_notify">通知</div>
         <div class="setting-desc" data-i18n="setting_notify_desc">締切が近づくと通知します</div>
       </div>
-      <button id="btnNotify" class="btn setting-btn">🔔</button>
+      <button id="btnNotify" class="btn setting-btn icon-only" aria-label="通知"></button>
     </div>
     <div class="setting-row">
+      <span class="setting-icon" aria-hidden="true">
+        <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+      </span>
       <div class="setting-info">
-        <div class="setting-label" data-i18n="setting_notify_time">⏰ 通知時刻</div>
+        <div class="setting-label" data-i18n="setting_notify_time">通知時刻</div>
         <div class="setting-desc" data-i18n="setting_notify_time_desc">毎日この時刻に通知を送信</div>
       </div>
       <input type="time" id="notifyTimeInput" class="setting-time-input" step="60" value="09:00" />
       <span id="notifyTimeLabel" hidden></span>
     </div>
     <div class="setting-row">
+      <span class="setting-icon" aria-hidden="true">
+        <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>
+      </span>
       <div class="setting-info">
-        <div class="setting-label" data-i18n="setting_class_notify">📚 授業の通知</div>
+        <div class="setting-label" data-i18n="setting_class_notify">授業の通知</div>
         <div class="setting-desc" data-i18n="setting_class_notify_desc">授業の開始前に通知します</div>
       </div>
       <select id="classNotifyLead" class="setting-time-input">
@@ -2461,8 +2501,11 @@
       </select>
     </div>
     <div class="setting-row">
+      <span class="setting-icon" aria-hidden="true">
+        <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+      </span>
       <div class="setting-info">
-        <div class="setting-label" data-i18n="setting_class_end_notify">📝 課題登録のリマインダー</div>
+        <div class="setting-label" data-i18n="setting_class_end_notify">課題登録のリマインダー</div>
         <div class="setting-desc" data-i18n="setting_class_end_notify_desc">授業の終了直前に課題の登録を促します</div>
       </div>
       <select id="classEndReminderLead" class="setting-time-input">
@@ -2474,44 +2517,62 @@
       </select>
     </div>
     <div class="setting-row">
+      <span class="setting-icon" aria-hidden="true">
+        <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M9 11V6a2 2 0 1 1 4 0v6"/><path d="M13 9V4a2 2 0 1 1 4 0v9"/><path d="M17 8a2 2 0 1 1 4 0v6.5a8.5 8.5 0 0 1-17 0V11a2 2 0 1 1 4 0v3"/></svg>
+      </span>
       <div class="setting-info">
-        <div class="setting-label" data-i18n="setting_hand">✋ 利き手</div>
+        <div class="setting-label" data-i18n="setting_hand">利き手</div>
         <div class="setting-desc" data-i18n="setting_hand_desc">追加・設定・時間割ボタンの位置を切り替え</div>
       </div>
       <button id="btnHand" class="btn setting-btn">右利き</button>
     </div>
     <div class="setting-row">
+      <span class="setting-icon" aria-hidden="true">
+        <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+      </span>
       <div class="setting-info">
-        <div class="setting-label" data-i18n="setting_theme">🌙 テーマ</div>
+        <div class="setting-label" data-i18n="setting_theme">テーマ</div>
         <div class="setting-desc" data-i18n="setting_theme_desc">ダーク/ライトモード切替</div>
       </div>
-      <button id="btnTheme" class="btn setting-btn" data-i18n-title="setting_theme_title">🌙</button>
+      <button id="btnTheme" class="btn setting-btn icon-only" data-i18n-title="setting_theme_title" aria-label="テーマ切替"></button>
     </div>
     <div class="setting-row">
+      <span class="setting-icon" aria-hidden="true">
+        <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>
+      </span>
       <div class="setting-info">
-        <div class="setting-label" data-i18n="setting_lang">🌐 言語</div>
+        <div class="setting-label" data-i18n="setting_lang">言語</div>
         <div class="setting-desc" data-i18n="setting_lang_desc">表示言語を切り替え</div>
       </div>
       <button id="btnLang" class="btn setting-btn">日本語</button>
     </div>
     <button id="btnOpenTimetable" hidden></button>
     <div class="setting-row">
+      <span class="setting-icon" aria-hidden="true">
+        <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><line x1="6" y1="3" x2="6" y2="21"/><line x1="18" y1="3" x2="18" y2="21"/><line x1="3" y1="9" x2="9" y2="9"/><line x1="15" y1="9" x2="21" y2="9"/><line x1="3" y1="15" x2="9" y2="15"/><line x1="15" y1="15" x2="21" y2="15"/></svg>
+      </span>
       <div class="setting-info">
-        <div class="setting-label" data-i18n="setting_haptic">📳 振動</div>
+        <div class="setting-label" data-i18n="setting_haptic">振動</div>
         <div class="setting-desc" data-i18n="setting_haptic_desc">ボタン操作時の触覚フィードバック</div>
       </div>
-      <button id="btnHaptic" class="btn setting-btn">📳</button>
+      <button id="btnHaptic" class="btn setting-btn icon-only" aria-label="振動"></button>
     </div>
     <div class="setting-row">
+      <span class="setting-icon" aria-hidden="true">
+        <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+      </span>
       <div class="setting-info">
-        <div class="setting-label" data-i18n="setting_help">❓ 使い方</div>
+        <div class="setting-label" data-i18n="setting_help">使い方</div>
         <div class="setting-desc" data-i18n="setting_help_desc">アプリの操作ガイドを見る</div>
       </div>
       <button id="btnOpenHelp" class="btn setting-btn" data-i18n="btn_show">表示</button>
     </div>
     <div class="setting-row">
+      <span class="setting-icon" aria-hidden="true">
+        <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg>
+      </span>
       <div class="setting-info">
-        <div class="setting-label" data-i18n="setting_syllabus">📚 シラバス</div>
+        <div class="setting-label" data-i18n="setting_syllabus">シラバス</div>
         <div class="setting-desc" data-i18n="setting_syllabus_desc">コードを入力して必修科目のシラバスを表示</div>
       </div>
       <button id="btnOpenSyllabus" class="btn setting-btn" data-i18n="btn_show">表示</button>
@@ -2719,31 +2780,31 @@ setTimeout(function () {
       filter_open: '未提出のみ',
       filter_all: '全件',
       filter_done: '提出済のみ',
-      settings_heading: '⚙️ 設定',
-      setting_notify: '🔔 通知',
+      settings_heading: '設定',
+      setting_notify: '通知',
       setting_notify_desc: '締切が近づくと通知します',
-      setting_notify_time: '⏰ 通知時刻',
+      setting_notify_time: '通知時刻',
       setting_notify_time_desc: '毎日この時刻に通知を送信',
       setting_notify_time_title: '通知時刻を変更',
-      setting_class_notify: '📚 授業の通知',
+      setting_class_notify: '授業の通知',
       setting_class_notify_desc: '授業の開始前に通知します',
       class_notify_off: 'オフ',
-      setting_hand: '✋ 利き手',
+      setting_hand: '利き手',
       setting_hand_desc: '追加・設定・時間割ボタンの位置を切り替え',
       hand_right: '右利き',
       hand_left: '左利き',
       class_notif_title: (n) => `まもなく ${n}限`,
       class_notif_body: (name, start, end) => `${name} ${start}〜${end}`,
-      setting_class_end_notify: '📝 課題登録のリマインダー',
+      setting_class_end_notify: '課題登録のリマインダー',
       setting_class_end_notify_desc: '授業の終了直前に課題の登録を促します',
       class_end_notif_title: (name) => `${name} の課題はある？`,
       class_end_notif_body: '出題された課題があれば登録しておきましょう',
-      setting_theme: '🌙 テーマ',
+      setting_theme: 'テーマ',
       setting_theme_desc: 'ダーク/ライトモード切替',
       setting_theme_title: 'テーマ切り替え',
-      setting_lang: '🌐 言語',
+      setting_lang: '言語',
       setting_lang_desc: '表示言語を切り替え',
-      setting_haptic: '📳 振動',
+      setting_haptic: '振動',
       setting_haptic_desc: 'ボタン操作時の触覚フィードバック',
       toast_haptic_on: '📳 振動ON',
       toast_haptic_off: '📴 振動OFF',
@@ -2767,11 +2828,11 @@ setTimeout(function () {
       toast_subject_deleted: '🗑 時間割から削除しました',
       cal_other_tasks: 'その他の課題',
       cal_tasks_header: 'この日の課題',
-      setting_help: '❓ 使い方',
+      setting_help: '使い方',
       setting_help_desc: 'アプリの操作ガイドを見る',
       btn_show: '表示',
       btn_confirm: '確認',
-      setting_syllabus: '📚 シラバス',
+      setting_syllabus: 'シラバス',
       setting_syllabus_desc: 'コードを入力して必修科目のシラバスを表示',
       syllabus_code_title: '📚 シラバス',
       syllabus_code_prompt: 'コードを入力してください',
@@ -2897,31 +2958,31 @@ setTimeout(function () {
       filter_open: 'Open only',
       filter_all: 'All',
       filter_done: 'Done only',
-      settings_heading: '⚙️ Settings',
-      setting_notify: '🔔 Notifications',
+      settings_heading: 'Settings',
+      setting_notify: 'Notifications',
       setting_notify_desc: 'Notify when deadlines approach',
-      setting_notify_time: '⏰ Notify time',
-      setting_class_notify: '📚 Class alerts',
+      setting_notify_time: 'Notify time',
+      setting_class_notify: 'Class alerts',
       setting_class_notify_desc: 'Remind me before each class',
       class_notify_off: 'Off',
-      setting_hand: '✋ Handedness',
+      setting_hand: 'Handedness',
       setting_hand_desc: 'Switch the position of the action buttons',
       hand_right: 'Right',
       hand_left: 'Left',
       class_notif_title: (n) => `Period ${n} starting soon`,
       class_notif_body: (name, start, end) => `${name} ${start}–${end}`,
-      setting_class_end_notify: '📝 Task reminder',
+      setting_class_end_notify: 'Task reminder',
       setting_class_end_notify_desc: 'Prompt to log assignments near class end',
       class_end_notif_title: (name) => `Any ${name} assignments?`,
       class_end_notif_body: 'Add new assignments before you leave',
       setting_notify_time_desc: 'Send notifications at this time daily',
       setting_notify_time_title: 'Change notification time',
-      setting_theme: '🌙 Theme',
+      setting_theme: 'Theme',
       setting_theme_desc: 'Toggle dark / light mode',
       setting_theme_title: 'Toggle theme',
-      setting_lang: '🌐 Language',
+      setting_lang: 'Language',
       setting_lang_desc: 'Change display language',
-      setting_haptic: '📳 Haptic Feedback',
+      setting_haptic: 'Haptic Feedback',
       setting_haptic_desc: 'Vibrate on button presses',
       toast_haptic_on: '📳 Haptics ON',
       toast_haptic_off: '📴 Haptics OFF',
@@ -2945,11 +3006,11 @@ setTimeout(function () {
       toast_subject_deleted: '🗑 Removed from timetable',
       cal_other_tasks: 'Other tasks',
       cal_tasks_header: 'Tasks due',
-      setting_help: '❓ How to use',
+      setting_help: 'How to use',
       setting_help_desc: 'View the in-app guide',
       btn_show: 'Show',
       btn_confirm: 'OK',
-      setting_syllabus: '📚 Syllabus',
+      setting_syllabus: 'Syllabus',
       setting_syllabus_desc: 'Enter a code to view required course syllabi',
       syllabus_code_title: '📚 Syllabus',
       syllabus_code_prompt: 'Enter the code',
@@ -3795,10 +3856,7 @@ setTimeout(function () {
     if (!grid) return;
     const merged = computeCourseCandidates();
     grid.innerHTML = merged.map(c => {
-      const sub = getSubjectByName(c);
-      const color = sub ? sub.color : '';
-      const attr = color ? ` data-color="true" style="--chip-color:${color};border-color:${color};color:${color};"` : '';
-      return `<button type="button" class="course-chip" data-course="${escapeHtml(c)}"${attr}>` +
+      return `<button type="button" class="course-chip" data-course="${escapeHtml(c)}">` +
         `<span class="chip-text">${escapeHtml(c)}</span>` +
         `<span class="chip-del" data-action="del-chip" aria-label="${t('delete_course_title')}">×</span>` +
         `</button>`;
@@ -4654,10 +4712,16 @@ setTimeout(function () {
 
   // ===== Theme =====
   const themeKey = 'kadai_tracker_theme';
+  const SVG_SUN = '<svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41"/></svg>';
+  const SVG_MOON = '<svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>';
+  const SVG_BELL_ON = '<svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8a6 6 0 0 0-12 0c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.7 21a2 2 0 0 1-3.4 0"/></svg>';
+  const SVG_BELL_OFF = '<svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M13.7 21a2 2 0 0 1-3.4 0"/><path d="M18 8a6 6 0 0 0-9.33-5"/><path d="M6.26 6.26A6 6 0 0 0 6 8c0 7-3 9-3 9h14"/><path d="M18 8c0 5 1.5 7 2.45 8"/><line x1="2" y1="2" x2="22" y2="22"/></svg>';
+  const SVG_VIBRATE = '<svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><line x1="6" y1="3" x2="6" y2="21"/><line x1="18" y1="3" x2="18" y2="21"/><line x1="3" y1="9" x2="9" y2="9"/><line x1="15" y1="9" x2="21" y2="9"/><line x1="3" y1="15" x2="9" y2="15"/><line x1="15" y1="15" x2="21" y2="15"/></svg>';
+  const SVG_VIBRATE_OFF = '<svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><line x1="6" y1="3" x2="6" y2="21"/><line x1="18" y1="3" x2="18" y2="21"/><line x1="2" y1="2" x2="22" y2="22"/></svg>';
   function applyTheme(t) {
     if (t === 'dark') document.documentElement.setAttribute('data-theme', 'dark');
     else document.documentElement.removeAttribute('data-theme');
-    $('btnTheme').textContent = t === 'dark' ? '☀️' : '🌙';
+    $('btnTheme').innerHTML = t === 'dark' ? SVG_SUN : SVG_MOON;
   }
   let currentTheme = localStorage.getItem(themeKey) || 'light';
   applyTheme(currentTheme);
@@ -4693,7 +4757,7 @@ setTimeout(function () {
   }
   function updateHapticBtn() {
     const btn = document.getElementById('btnHaptic');
-    if (btn) btn.textContent = hapticEnabled ? '📳' : '📴';
+    if (btn) btn.innerHTML = hapticEnabled ? SVG_VIBRATE : SVG_VIBRATE_OFF;
   }
   const hasNativeBridge = (() => {
     try {
@@ -4821,7 +4885,7 @@ setTimeout(function () {
 
   function updateNotifyBtn() {
     const btn = $('btnNotify');
-    btn.textContent = notifyEnabled ? '🔔' : '🔕';
+    btn.innerHTML = notifyEnabled ? SVG_BELL_ON : SVG_BELL_OFF;
     const lbl = $('notifyTimeLabel');
     if (lbl) lbl.textContent = state.notifyTime || '09:00';
     const input = $('notifyTimeInput');
