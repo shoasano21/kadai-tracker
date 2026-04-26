@@ -3178,7 +3178,7 @@ setTimeout(function () {
   const reminderHost = $('reminderHost');
 
   function defaultState() {
-    return { items: [], notify: false, notifyTime: '09:00', hiddenCourses: [], lastNotified: {}, subjects: [] };
+    return { items: [], notify: true, notifyTime: '09:00', hiddenCourses: [], lastNotified: {}, subjects: [] };
   }
   function loadState() {
     try {
@@ -3189,7 +3189,7 @@ setTimeout(function () {
       parsed.items.forEach(it => { if (it.remindDays === undefined) it.remindDays = 3; });
       return {
         items: parsed.items,
-        notify: !!parsed.notify,
+        notify: parsed.notify !== false,
         notifyTime: typeof parsed.notifyTime === 'string' && /^\d{2}:\d{2}$/.test(parsed.notifyTime) ? parsed.notifyTime : '09:00',
         hiddenCourses: Array.isArray(parsed.hiddenCourses) ? parsed.hiddenCourses : [],
         lastNotified: parsed.lastNotified || {},
