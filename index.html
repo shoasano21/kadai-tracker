@@ -2012,6 +2012,42 @@
     margin-top: 2px;
     font-weight: 600;
   }
+  .series-info-text {
+    font-size: 13px;
+    color: var(--text);
+    background: var(--panel-2);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 8px 10px;
+    margin-bottom: 8px;
+    font-weight: 600;
+  }
+  .seg {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 6px;
+    background: var(--panel-2);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 4px;
+  }
+  .seg-btn {
+    appearance: none;
+    background: transparent;
+    color: var(--text-sub);
+    border: none;
+    border-radius: 8px;
+    padding: 8px 10px;
+    font-size: 13px;
+    font-weight: 700;
+    font-family: inherit;
+    cursor: pointer;
+    transition: background .15s, color .15s;
+  }
+  .seg-btn.active {
+    background: var(--accent);
+    color: #fff;
+  }
   .modal-actions {
     display: flex;
     flex-wrap: wrap;
@@ -2733,6 +2769,32 @@
           <option value="-1" data-i18n="remind_never">通知なし</option>
         </select>
       </div>
+      <div class="field" id="fRepeatField">
+        <label for="fRepeat" data-i18n="field_repeat">🔁 週ごとに繰り返し</label>
+        <select id="fRepeat">
+          <option value="1" data-i18n="repeat_none">繰り返さない</option>
+          <option value="2">2回</option>
+          <option value="3">3回</option>
+          <option value="4">4回</option>
+          <option value="5">5回</option>
+          <option value="6">6回</option>
+          <option value="7">7回</option>
+          <option value="8">8回</option>
+          <option value="9">9回</option>
+          <option value="10">10回</option>
+          <option value="12">12回</option>
+          <option value="15">15回</option>
+          <option value="20">20回</option>
+        </select>
+      </div>
+      <div class="field" id="fSeriesInfo" style="display:none;">
+        <label data-i18n="field_scope">🔁 編集の範囲</label>
+        <div class="series-info-text" id="fSeriesInfoText"></div>
+        <div class="seg" id="fScopeSeg" role="tablist">
+          <button type="button" class="seg-btn active" data-scope="single" data-i18n="scope_single">この課題のみ</button>
+          <button type="button" class="seg-btn" data-scope="all" data-i18n="scope_all">シリーズ全体</button>
+        </div>
+      </div>
       <div class="field-error" id="formError"></div>
       <div class="modal-actions">
         <button type="button" class="btn modal-done-btn" id="btnModalDone" style="display:none;" data-i18n="btn_done">✓ 完了</button>
@@ -2896,9 +2958,19 @@ setTimeout(function () {
       title_undone: '未完了に戻す',
       title_done: '完了にする',
       title_delete: '削除',
+      field_repeat: '🔁 週ごとに繰り返し',
+      repeat_none: '繰り返さない',
+      field_scope: '🔁 編集の範囲',
+      scope_single: 'この課題のみ',
+      scope_all: 'シリーズ全体',
+      series_info: (n, idx) => `🔁 シリーズ ${n}回中の ${idx}回目`,
       toast_added: '✨ 追加しました',
+      toast_added_series: (n) => `✨ 週ごと${n}回分を追加しました`,
       toast_updated: '💾 更新しました',
+      toast_updated_series: (n) => `💾 シリーズ${n}件を更新しました`,
       toast_deleted: '🗑 削除しました',
+      toast_deleted_series: (n) => `🗑 シリーズ${n}件を削除しました`,
+      confirm_delete_series: (n) => `このシリーズ${n}件をすべて削除しますか？`,
       toast_done: (t) => `🎉 「${t}」を完了！`,
       toast_undone: (t) => `↩️ 「${t}」を未完了に`,
       toast_marked_done: '🎉 完了にしました',
@@ -3074,9 +3146,19 @@ setTimeout(function () {
       title_undone: 'Mark undone',
       title_done: 'Mark done',
       title_delete: 'Delete',
+      field_repeat: '🔁 Weekly repeat',
+      repeat_none: 'Do not repeat',
+      field_scope: '🔁 Edit scope',
+      scope_single: 'This task only',
+      scope_all: 'Whole series',
+      series_info: (n, idx) => `🔁 Item ${idx} of ${n} in series`,
       toast_added: '✨ Added',
+      toast_added_series: (n) => `✨ Added ${n} weekly tasks`,
       toast_updated: '💾 Updated',
+      toast_updated_series: (n) => `💾 Updated ${n} tasks in series`,
       toast_deleted: '🗑 Deleted',
+      toast_deleted_series: (n) => `🗑 Deleted ${n} tasks in series`,
+      confirm_delete_series: (n) => `Delete all ${n} tasks in this series?`,
       toast_done: (t) => `🎉 Completed "${t}"!`,
       toast_undone: (t) => `↩️ Reopened "${t}"`,
       toast_marked_done: '🎉 Marked as done',
@@ -3873,11 +3955,38 @@ setTimeout(function () {
 
   let editingId = null;
 
+  function newSeriesId() {
+    return 's' + Date.now().toString(36) + Math.floor(Math.random() * 1e6).toString(36);
+  }
+  function addDaysYmd(ymd, days) {
+    if (!ymd) return ymd;
+    const [y, m, d] = ymd.split('-').map(Number);
+    const dt = new Date(y, m - 1, d);
+    dt.setDate(dt.getDate() + days);
+    const yy = dt.getFullYear();
+    const mm = String(dt.getMonth() + 1).padStart(2, '0');
+    const dd = String(dt.getDate()).padStart(2, '0');
+    return `${yy}-${mm}-${dd}`;
+  }
+  function getScope() {
+    const btn = document.querySelector('#fScopeSeg .seg-btn.active');
+    return (btn && btn.dataset.scope) || 'single';
+  }
+  function setScope(scope) {
+    document.querySelectorAll('#fScopeSeg .seg-btn').forEach(b => {
+      b.classList.toggle('active', b.dataset.scope === scope);
+    });
+  }
+
   function openModal() {
     editingId = null;
     $('addForm').reset();
     $('fStart').value = todayStr();
     $('fRemindDays').value = '3';
+    $('fRepeat').value = '1';
+    $('fRepeatField').style.display = '';
+    $('fSeriesInfo').style.display = 'none';
+    setScope('single');
     $('formError').textContent = '';
     $('modalTitle').textContent = t('modal_add_title');
     renderCourseChips();
@@ -3901,6 +4010,20 @@ setTimeout(function () {
     $('fStart').value = it.start || todayStr();
     $('fEnd').value = it.end || '';
     $('fRemindDays').value = String(it.remindDays ?? 3);
+    $('fRepeat').value = '1';
+    setScope('single');
+    if (it.seriesId) {
+      const series = state.items
+        .filter(x => x.seriesId === it.seriesId)
+        .sort((a, b) => (a.start || '').localeCompare(b.start || ''));
+      const idx = series.findIndex(x => x.id === it.id) + 1;
+      $('fSeriesInfoText').textContent = t('series_info', series.length, idx);
+      $('fSeriesInfo').style.display = '';
+      $('fRepeatField').style.display = 'none';
+    } else {
+      $('fSeriesInfo').style.display = 'none';
+      $('fRepeatField').style.display = '';
+    }
     $('formError').textContent = '';
     $('modalTitle').textContent = t('modal_edit_title');
     renderCourseChips();
@@ -3966,6 +4089,12 @@ setTimeout(function () {
     $('fTitle').focus();
   });
 
+  $('fScopeSeg').addEventListener('click', (e) => {
+    const btn = e.target.closest('.seg-btn');
+    if (!btn) return;
+    setScope(btn.dataset.scope);
+  });
+
   // Modal edit actions: done toggle + delete
   $('btnModalDone').addEventListener('click', () => {
     if (editingId === null) return;
@@ -3982,12 +4111,23 @@ setTimeout(function () {
     if (editingId === null) return;
     const it = state.items.find(x => x.id === editingId);
     if (!it) return;
-    if (!confirm(t('confirm_delete', it.title))) return;
-    state.items = state.items.filter(x => x.id !== editingId);
-    saveState();
-    render();
-    syncNativeNotifications();
-    toast(t('toast_deleted'), 'warn');
+    if (it.seriesId && getScope() === 'all') {
+      const siblings = state.items.filter(x => x.seriesId === it.seriesId);
+      if (!confirm(t('confirm_delete_series', siblings.length))) return;
+      const n = siblings.length;
+      state.items = state.items.filter(x => x.seriesId !== it.seriesId);
+      saveState();
+      render();
+      syncNativeNotifications();
+      toast(t('toast_deleted_series', n), 'warn');
+    } else {
+      if (!confirm(t('confirm_delete', it.title))) return;
+      state.items = state.items.filter(x => x.id !== editingId);
+      saveState();
+      render();
+      syncNativeNotifications();
+      toast(t('toast_deleted'), 'warn');
+    }
     closeModal();
   });
   $('modalOverlay').addEventListener('click', (e) => {
@@ -4005,6 +4145,7 @@ setTimeout(function () {
     const start = $('fStart').value;
     const end = $('fEnd').value;
     const remindDays = Number($('fRemindDays').value);
+    const repeatCount = Math.max(1, Math.min(20, Number($('fRepeat').value) || 1));
     const err = $('formError');
     err.textContent = '';
     if (!course) return (err.textContent = t('err_course'));
@@ -4014,14 +4155,64 @@ setTimeout(function () {
     if (end < start) return (err.textContent = t('err_end_before_start'));
     if (editingId !== null) {
       const it = state.items.find(x => x.id === editingId);
-      if (it) Object.assign(it, { course, title, type, desc, start, end, remindDays });
-      saveState();
-      render();
-      syncNativeNotifications();
-      toast(t('toast_updated'), 'success');
+      if (!it) { closeModal(); return; }
+      if (it.seriesId && getScope() === 'all') {
+        const siblings = state.items.filter(x => x.seriesId === it.seriesId);
+        siblings.forEach(x => {
+          x.course = course; x.title = title; x.type = type;
+          x.desc = desc; x.remindDays = remindDays;
+        });
+        it.start = start; it.end = end;
+        saveState();
+        render();
+        syncNativeNotifications();
+        toast(t('toast_updated_series', siblings.length), 'success');
+      } else if (!it.seriesId && repeatCount > 1) {
+        const sid = newSeriesId();
+        Object.assign(it, { course, title, type, desc, start, end, remindDays, seriesId: sid });
+        let nextId = state.items.reduce((m, x) => Math.max(m, x.id), 0) + 1;
+        for (let i = 1; i < repeatCount; i++) {
+          state.items.push({
+            id: nextId++,
+            course, title, type, desc,
+            start: addDaysYmd(start, 7 * i),
+            end: addDaysYmd(end, 7 * i),
+            remindDays, seriesId: sid, done: false
+          });
+        }
+        saveState();
+        render();
+        syncNativeNotifications();
+        toast(t('toast_added_series', repeatCount), 'success');
+      } else {
+        Object.assign(it, { course, title, type, desc, start, end, remindDays });
+        saveState();
+        render();
+        syncNativeNotifications();
+        toast(t('toast_updated'), 'success');
+      }
       editingId = null;
     } else {
-      addItem({ course, title, type, desc, start, end, remindDays });
+      if (repeatCount > 1) {
+        const sid = newSeriesId();
+        let nextId = state.items.reduce((m, x) => Math.max(m, x.id), 0) + 1;
+        for (let i = 0; i < repeatCount; i++) {
+          state.items.push({
+            id: nextId++,
+            course, title, type, desc,
+            start: addDaysYmd(start, 7 * i),
+            end: addDaysYmd(end, 7 * i),
+            remindDays, seriesId: sid, done: false
+          });
+        }
+        saveState();
+        render();
+        syncNativeNotifications();
+        toast(t('toast_added_series', repeatCount), 'success');
+        launchEmojiBurst();
+      } else {
+        addItem({ course, title, type, desc, start, end, remindDays });
+      }
     }
     closeModal();
   });
